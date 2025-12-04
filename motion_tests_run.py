@@ -1,3 +1,5 @@
+# run in temrinal: sudo pigpiod, every time doing smth w motors
+
 import sys
 import time
 import random
@@ -10,32 +12,42 @@ from torso_control import TorsoMotors
 head_motors = HeadMotors()
 torso_motors = TorsoMotors()
 
-LIMITS = { # ASK: DIRECTIONS OF THESE
+LIMITS = { # ranges reset on yaw
     # l and r from mirrly pov!
-    "head_yaw":   {"left": 590, "center": 807, "right": 970},  # left / right ASK: 180 used for center later...?
-    "head_pitch": {"up": 118, "center": 200, "down": 279},  # up / down
-    "eye_self":   {"left": 221, "center": 245, "right": 268},  # eyeball
-    "eye_brow_l": {"open": 210, "center": 350, "close": 467},  # left eyelid
-    "eye_brow_r": {"open": 343, "center": 343, "close": 643},  # right eyelid
-    "arm_r": {"up": 90, "rest": 170, "down": 170},  # right arm (confirmed)
-    "arm_l": {"up": 160, "rest": 80, "down": 80},  # right arm (confirmed)
+    "head_yaw":   {"left": 0, "center": 200, "right": 400},  # left / right (re-calibrated)
+    "head_pitch": {"up": 240, "center": 180, "down": 118},  # up / down (re-calibrated but 'up' might be changed)
+    "eye_self":   {"left": 160, "center": 210, "right": 268},  # eyeball (re-calibrated)
+    "eye_brow_l": {"open": 370, "close": 210},  # left eyelid
+    "eye_brow_r": {"open": 343, "close": 510},  # right eyelid
+
+    # torso calibrations not yet checked
+    "arm_r": {"up": 90, "rest": 170, "down": 170},  # right arm
+    "arm_l": {"up": 160, "rest": 80, "down": 80},  # left arm
     "r_shoulder": {"up": 160, "rest": 70, "down": 70},  # right arm
     "l_shoulder": {"up": 60, "rest": 160, "down": 160},  # right arm
 } 
 
-start_exp = False # should be false
+PITCH_SPEED = 1000 # for head_pitch use 1000 speed
+                    # need sufficient speed to overcome weight
+EYELID_SPEED = 800 # for eyelid, use 700-1000 speed to move the mech arms (un-lubed)
+                    # eyelid will hit eyeball if eyeball too un-centered
+                    # refer to random blink for sleep time vs blink speed, at least 1 to be safe
+
+start_exp = False
 start_cond = "test"
 
 def center_all():
     print("CENTRE ALL")
     # head motors: larger speed # = faster
     head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
-    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], 400)
+    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
     head_motors.move("eye_self", LIMITS["eye_self"]["center"], 400)
-    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["center"], 400)
-    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["center"], 400)
+    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
-    # ASK: torso motors: larger speed # = slower ?
+    # torso motors: larger speed # = slower 
+    # first time torso motors move, do faster, 0.001 speed
+        # ASK: When to do first movement to guarantee this
     torso_motors.arm_move("arm_r", LIMITS["arm_r"]["rest"], 0.01)
     torso_motors.arm_move("arm_l", LIMITS["arm_l"]["rest"], 0.01)
     torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["rest"], 0.01)
@@ -44,18 +56,34 @@ def center_all():
     time.sleep(1.0)
 
 def look_point_left():
-    head_motors.move("head_yaw", LIMITS["head_yaw"]["left"], 300)
-    head_motors.move("eye_self", LIMITS["eye_self"]["left"], 300)
+    head_motors.move("head_yaw", LIMITS["head_yaw"]["left"], 500)
+    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+    head_motors.move("eye_self", LIMITS["eye_self"]["left"], 500)
+
     torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
     torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
+    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
+    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["down"], 0.01)
+
     time.sleep(2)
 
 def look_point_right():
-    head_motors.move("head_yaw", LIMITS["head_yaw"]["right"], 300)
-    head_motors.move("eye_self", LIMITS["eye_self"]["right"], 300)
+    head_motors.move("head_yaw", LIMITS["head_yaw"]["right"], 500)
+    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+    head_motors.move("eye_self", LIMITS["eye_self"]["right"], 500)
+
     torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
     torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
+    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
+    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["down"], 0.01)
+
     time.sleep(2)
+
+##### idle functions not needed but part of threading structure, so kept in 
 
 def keyboard_listener(paused, eyebrow_process, yaw_process, rsh_process):
     global start_exp
@@ -162,6 +190,7 @@ def hand_shoulder_idle(paused):
                 time.sleep(0.01)
                 continue
         time.sleep(0.5)
+#####
 
 def terminate_program():
     print("Terminating program.")
@@ -173,8 +202,7 @@ def terminate_program():
 if __name__ == "__main__":
     
     paused = multiprocessing.Event() # like a traffic light to allow actions
-    paused.set() # ASK: for multiprocessing.Event, is .set() stopping or allowing action? name is opposite
-    # original experiment_run says this starts it paused
+    paused.set()
 
     random_brow_process = multiprocessing.Process(target=eye_brow_idle, args=(paused,))
     random_yaw_roll_process = multiprocessing.Process(target=yaw_roll, args=(paused,))
@@ -187,26 +215,10 @@ if __name__ == "__main__":
         keyboard_thread.daemon = True
         keyboard_thread.start()
         
-        # Wake up motion
-        head_motors.move("eye_brow_l", 210, 500)
-        head_motors.move("eye_brow_r", 510, 500)
-        head_motors.move("head_pitch", 125, 800)
-        head_motors.move("head_yaw", 180, 400)
-
-        torso_motors.arm_move("arm_r", 170, 0.001)  # 170 Down - 90 Up When screw is front
-        torso_motors.arm_move("arm_l", 80, 0.001)  # 160 Up - 80 Down When screw is front
-        torso_motors.arm_move("r_shoulder", 70, 0.001)  # 70 cap front - 160 cap top -
-        torso_motors.arm_move("l_shoulder", 160, 0.001)  # 160 cap front - 60 cap top
-        
         # Wait until the experiment starts
         print("Enter 'test' to start...")
         while not start_exp:
             time.sleep(1)
-        
-        print("Start background idle motions")       
-        random_brow_process.start()        
-        random_yaw_roll_process.start()        
-        random_rsh_process.start()
         
         if start_cond == 'test':
             print("Range of motion test")
@@ -216,18 +228,20 @@ if __name__ == "__main__":
             center_all()
 
             print("Testing Yaw")
-            head_motors.move("head_yaw", LIMITS["head_yaw"]["left"], 300)
+            head_motors.move("head_yaw", LIMITS["head_yaw"]["left"], 500)
             time.sleep(1)
-            head_motors.move("head_yaw", LIMITS["head_yaw"]["right"], 300)
+            head_motors.move("head_yaw", LIMITS["head_yaw"]["right"], 500)
             time.sleep(1)
             center_all()
+            time.sleep(1)
 
             print("Testing Pitch")
-            head_motors.move("head_pitch", LIMITS["head_pitch"]["down"], 100) # do slowly, motion is tough on motors
+            head_motors.move("head_pitch", LIMITS["head_pitch"]["down"], PITCH_SPEED)
             time.sleep(1)
-            head_motors.move("head_pitch", LIMITS["head_pitch"]["up"], 100)
+            head_motors.move("head_pitch", LIMITS["head_pitch"]["up"], PITCH_SPEED)
             time.sleep(1)
             center_all()
+            time.sleep(1)
 
             print("Testing Eyeballs")
             head_motors.move("eye_self", LIMITS["eye_self"]["left"], 400)
@@ -235,6 +249,7 @@ if __name__ == "__main__":
             head_motors.move("eye_self", LIMITS["eye_self"]["right"], 400)
             time.sleep(1)
             center_all()
+            time.sleep(1)
 
             print("Testing Eyelids")
             head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], 400)
@@ -244,18 +259,20 @@ if __name__ == "__main__":
             head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["close"], 400)
             time.sleep(1)
             center_all()
+            time.sleep(1)
 
             print("Done range of motion test")
 
             print("Look and point left")
             look_point_left()
             center_all()
+            time.sleep(1)
 
             print("Look and point right")
             look_point_right()
             center_all()
-
             time.sleep(1)
+
             paused.set()
         time.sleep(1)
         
