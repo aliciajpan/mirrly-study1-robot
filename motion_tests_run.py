@@ -95,6 +95,8 @@ def celebrate_arms_up():
     torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
     torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
 
+    time.sleep(2)
+
 def sad_look_down():
     head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
     head_motors.move("head_pitch", LIMITS["head_pitch"]["down"], PITCH_SPEED)
@@ -106,6 +108,8 @@ def sad_look_down():
     torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["down"], 0.01)
     torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
     torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["down"], 0.01)
+
+    time.sleep(2)
 
 def talking_left_arm():
     head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
@@ -119,6 +123,8 @@ def talking_left_arm():
     torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
     torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
 
+    time.sleep(2)
+
 def talking_right_arm():
     head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
     head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
@@ -130,6 +136,8 @@ def talking_right_arm():
     torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
     torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
     torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["down"], 0.01)
+
+    time.sleep(2)
 
 def eyes_left():
     head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
@@ -143,6 +151,8 @@ def eyes_left():
     torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
     torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["down"], 0.01)
 
+    time.sleep(2)
+
 def eyes_right():
     head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
     head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
@@ -154,6 +164,8 @@ def eyes_right():
     torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["down"], 0.01)
     torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
     torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["down"], 0.01)
+
+    time.sleep(2)
 
 ##### idle functions not needed but part of threading structure, so kept in 
 
@@ -337,6 +349,30 @@ if __name__ == "__main__":
 
             print("Look and point right")
             look_point_right()
+            center_all()
+
+            print("Celebrate arms up")
+            celebrate_arms_up()
+            center_all()
+
+            print("Look sad")
+            sad_look_down()
+            center_all()
+
+            print("Raise left arm while talking")
+            talking_left_arm()
+            center_all()
+
+            print("Raise right arm while talking")
+            talking_right_arm()
+            center_all()
+            
+            print("Move eyeballs left")
+            eyes_left()
+            center_all()
+
+            print("Move eyeballs right")
+            eyes_right()
             center_all()
 
             paused.set()
