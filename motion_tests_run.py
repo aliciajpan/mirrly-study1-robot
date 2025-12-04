@@ -53,14 +53,14 @@ def center_all():
     torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["rest"], 0.01)
     torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["rest"], 0.01)
 
-    time.sleep(1.0)
+    time.sleep(2.0)
 
 def look_point_left():
     head_motors.move("head_yaw", LIMITS["head_yaw"]["left"], 500)
     head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+    head_motors.move("eye_self", LIMITS["eye_self"]["left"], 500)
     head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
     head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
-    head_motors.move("eye_self", LIMITS["eye_self"]["left"], 500)
 
     torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
     torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
@@ -72,9 +72,9 @@ def look_point_left():
 def look_point_right():
     head_motors.move("head_yaw", LIMITS["head_yaw"]["right"], 500)
     head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+    head_motors.move("eye_self", LIMITS["eye_self"]["right"], 500)
     head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
     head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
-    head_motors.move("eye_self", LIMITS["eye_self"]["right"], 500)
 
     torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
     torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
@@ -82,6 +82,78 @@ def look_point_right():
     torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["down"], 0.01)
 
     time.sleep(2)
+
+def celebrate_arms_up():
+    head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
+    head_motors.move("head_pitch", LIMITS["head_pitch"]["up"], PITCH_SPEED)
+    head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
+    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+
+    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
+    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
+    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
+    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
+
+def sad_look_down():
+    head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
+    head_motors.move("head_pitch", LIMITS["head_pitch"]["down"], PITCH_SPEED)
+    head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
+    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["close"], EYELID_SPEED)
+    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["close"], EYELID_SPEED)
+
+    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
+    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["down"], 0.01)
+    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
+    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["down"], 0.01)
+
+def talking_left_arm():
+    head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
+    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+    head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
+    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+
+    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
+    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["down"], 0.01)
+    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
+    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
+
+def talking_right_arm():
+    head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
+    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+    head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
+    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+
+    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
+    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
+    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
+    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["down"], 0.01)
+
+def eyes_left():
+    head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
+    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+    head_motors.move("eye_self", LIMITS["eye_self"]["left"], 500)
+    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+
+    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
+    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["down"], 0.01)
+    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
+    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["down"], 0.01)
+
+def eyes_right():
+    head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
+    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+    head_motors.move("eye_self", LIMITS["eye_self"]["right"], 500)
+    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+
+    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
+    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["down"], 0.01)
+    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
+    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["down"], 0.01)
 
 ##### idle functions not needed but part of threading structure, so kept in 
 
@@ -233,7 +305,6 @@ if __name__ == "__main__":
             head_motors.move("head_yaw", LIMITS["head_yaw"]["right"], 500)
             time.sleep(1)
             center_all()
-            time.sleep(1)
 
             print("Testing Pitch")
             head_motors.move("head_pitch", LIMITS["head_pitch"]["down"], PITCH_SPEED)
@@ -241,7 +312,6 @@ if __name__ == "__main__":
             head_motors.move("head_pitch", LIMITS["head_pitch"]["up"], PITCH_SPEED)
             time.sleep(1)
             center_all()
-            time.sleep(1)
 
             print("Testing Eyeballs")
             head_motors.move("eye_self", LIMITS["eye_self"]["left"], 400)
@@ -249,29 +319,25 @@ if __name__ == "__main__":
             head_motors.move("eye_self", LIMITS["eye_self"]["right"], 400)
             time.sleep(1)
             center_all()
-            time.sleep(1)
 
             print("Testing Eyelids")
-            head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], 400)
-            head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], 400)
+            head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+            head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
             time.sleep(1)
-            head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["close"], 400)
-            head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["close"], 400)
+            head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["close"], EYELID_SPEED)
+            head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["close"], EYELID_SPEED)
             time.sleep(1)
             center_all()
-            time.sleep(1)
 
             print("Done range of motion test")
 
             print("Look and point left")
             look_point_left()
             center_all()
-            time.sleep(1)
 
             print("Look and point right")
             look_point_right()
             center_all()
-            time.sleep(1)
 
             paused.set()
         time.sleep(1)
