@@ -14,7 +14,11 @@ from pathlib import Path
 
 try:
     import websockets
-    from websockets.server import WebSocketServerProtocol
+    # Try new API first, fall back to old API
+    try:
+        from websockets.asyncio.server import serve
+    except ImportError:
+        from websockets.server import serve
 except ImportError:
     print("Error: websockets module not found. Install with: pip install websockets")
     sys.exit(1)
@@ -73,9 +77,24 @@ class GestureExecutor:
         try:
             result = await loop.run_in_executor(None, execute_gesture, gesture_name)
             self.is_running = False
-            return result
+            
+            # Ensure result is a proper dict
+            if isinstance(result, dict):
+                return result
+            else:
+                return {
+                    'status': 'error',
+                    'message': f'Invalid response from gesture executor: {result}'
+                }
+        except asyncio.CancelledError:
+            self.is_running = False
+            return {
+                'status': 'warning',
+                'message': 'Gesture execution cancelled'
+            }
         except Exception as e:
             self.is_running = False
+            logger.error(f"Exception during gesture execution: {str(e)}", exc_info=True)
             return {
                 'status': 'error',
                 'message': f'Failed to execute gesture: {str(e)}'
@@ -146,7 +165,7 @@ class RobotServer:
         self.clients = set()
         logger.info(f"Robot server initialized on {self.host}:{self.port}")
     
-    async def handler(self, websocket: WebSocketServerProtocol, path: str):
+    async def handler(self, websocket, path=None):
         """Handle incoming WebSocket connections."""
         self.clients.add(websocket)
         client_addr = websocket.remote_address
@@ -154,13 +173,24 @@ class RobotServer:
         
         try:
             async for message in websocket:
-                response = await self._process_message(message, client_addr)
-                await websocket.send(json.dumps(response))
+                try:
+                    response = await self._process_message(message, client_addr)
+                    await websocket.send(json.dumps(response))
+                except Exception as e:
+                    logger.error(f"Error processing message from {client_addr}: {str(e)}", exc_info=True)
+                    error_response = {
+                        'status': 'error',
+                        'message': f'Server error: {str(e)}'
+                    }
+                    try:
+                        await websocket.send(json.dumps(error_response))
+                    except:
+                        pass  # Client may have disconnected
         
         except websockets.exceptions.ConnectionClosed:
             logger.info(f"Client disconnected: {client_addr}")
         except Exception as e:
-            logger.error(f"Error handling client {client_addr}: {str(e)}")
+            logger.error(f"Error handling client {client_addr}: {str(e)}", exc_info=True)
         finally:
             self.clients.discard(websocket)
     

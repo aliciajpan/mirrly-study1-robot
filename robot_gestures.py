@@ -4,12 +4,36 @@ Contains all gesture definitions and motor control commands.
 """
 
 import time
-from control_modules.head_control import HeadMotors
-from control_modules.torso_control import TorsoMotors
+import sys
+import os
 
-# Initialize motor controllers
-head_motors = HeadMotors()
-torso_motors = TorsoMotors()
+# Try to import motor control modules
+try:
+    from control_modules.head_control import HeadMotors
+    from control_modules.torso_control import TorsoMotors
+    MOTORS_AVAILABLE = True
+except Exception as e:
+    print(f"Warning: Motor control modules not available: {e}")
+    print("Running in SIMULATION MODE (no hardware required)")
+    MOTORS_AVAILABLE = False
+    HeadMotors = None
+    TorsoMotors = None
+
+# Initialize motor controllers if available
+head_motors = None
+torso_motors = None
+
+if MOTORS_AVAILABLE:
+    try:
+        head_motors = HeadMotors()
+        torso_motors = TorsoMotors()
+        print("✓ Motors initialized successfully")
+    except Exception as e:
+        print(f"Warning: Could not initialize motors: {e}")
+        print("Running in SIMULATION MODE (no hardware required)")
+        MOTORS_AVAILABLE = False
+        head_motors = None
+        torso_motors = None
 
 # Motor calibration limits (device-specific)
 LIMITS = {
@@ -35,6 +59,12 @@ class GestureController:
     def center_all(self):
         """Reset all motors to center positions."""
         print("CENTRE ALL")
+        
+        if not MOTORS_AVAILABLE:
+            print("  [SIMULATION] Moving to center position")
+            time.sleep(2.0)
+            return
+        
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["center"], 400)
@@ -50,6 +80,11 @@ class GestureController:
 
     def look_point_left(self):
         """Look and point to the left."""
+        if not MOTORS_AVAILABLE:
+            print("  [SIMULATION] Looking and pointing left")
+            time.sleep(2)
+            return
+        
         head_motors.move("head_yaw", LIMITS["head_yaw"]["left"], 500)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["left"], 500)
@@ -65,6 +100,11 @@ class GestureController:
 
     def look_point_right(self):
         """Look and point to the right."""
+        if not MOTORS_AVAILABLE:
+            print("  [SIMULATION] Looking and pointing right")
+            time.sleep(2)
+            return
+        
         head_motors.move("head_yaw", LIMITS["head_yaw"]["right"], 500)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["right"], 500)
@@ -80,6 +120,11 @@ class GestureController:
 
     def celebrate_arms_up(self):
         """Celebrate with arms raised."""
+        if not MOTORS_AVAILABLE:
+            print("  [SIMULATION] Celebrating with arms up")
+            time.sleep(2)
+            return
+        
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["up"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
@@ -95,6 +140,11 @@ class GestureController:
 
     def sad_look_down(self):
         """Express sadness by looking down."""
+        if not MOTORS_AVAILABLE:
+            print("  [SIMULATION] Looking down sad")
+            time.sleep(2)
+            return
+        
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["down"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
@@ -110,6 +160,11 @@ class GestureController:
 
     def talking_left_arm(self):
         """Talk while gesturing with left arm."""
+        if not MOTORS_AVAILABLE:
+            print("  [SIMULATION] Talking with left arm gesture")
+            time.sleep(2)
+            return
+        
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
@@ -125,6 +180,11 @@ class GestureController:
 
     def talking_right_arm(self):
         """Talk while gesturing with right arm."""
+        if not MOTORS_AVAILABLE:
+            print("  [SIMULATION] Talking with right arm gesture")
+            time.sleep(2)
+            return
+        
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
@@ -140,6 +200,11 @@ class GestureController:
 
     def eyes_left(self):
         """Look at left with eyes only."""
+        if not MOTORS_AVAILABLE:
+            print("  [SIMULATION] Eyes looking left")
+            time.sleep(2)
+            return
+        
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["left"], 500)
@@ -155,6 +220,11 @@ class GestureController:
 
     def eyes_right(self):
         """Look at right with eyes only."""
+        if not MOTORS_AVAILABLE:
+            print("  [SIMULATION] Eyes looking right")
+            time.sleep(2)
+            return
+        
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["right"], 500)
@@ -171,6 +241,11 @@ class GestureController:
     def cleanup(self):
         """Release all motors and close connections."""
         print("Cleaning up motors...")
+        
+        if not MOTORS_AVAILABLE:
+            print("  [SIMULATION] No motors to cleanup")
+            return
+        
         try:
             torso_motors.release_motors()
             torso_motors.release_hands('all')
@@ -181,7 +256,12 @@ class GestureController:
 
 
 # Create global instance
-gesture_controller = GestureController()
+try:
+    gesture_controller = GestureController()
+except Exception as e:
+    print(f"Error creating gesture controller: {e}")
+    print("Robot server will still start but gestures may fail")
+    gesture_controller = GestureController()  # Try again - this should work in simulation mode
 
 # Gesture registry - maps gesture names to methods
 GESTURES = {
