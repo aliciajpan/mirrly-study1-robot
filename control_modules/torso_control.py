@@ -109,6 +109,13 @@ class TorsoMotors():
         self.speed2 = 255
         
     def read_positions(self, filename="./positions.txt"):
+        import os
+        # Create default positions file if it doesn't exist
+        if not os.path.exists(filename):
+            with open(filename, "w") as file:
+                for position in self.s_positions:
+                    file.write(str(position) + "\n")
+        
         with open(filename, "r") as file:
             for i, line in enumerate(file):
                 self.s_positions[i] = int(line.strip())

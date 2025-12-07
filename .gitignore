@@ -211,3 +211,7 @@ marimo/_lsp/
 __marimo__/
 
 .github/
+# Robot gesture motor logs
+motor_logs/
+# Robot gesture position data
+positions.txt
