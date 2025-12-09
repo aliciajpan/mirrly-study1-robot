@@ -231,6 +231,7 @@ async def main():
     
     parser = argparse.ArgumentParser(description='Robot Control Client')
     parser.add_argument('--uri', default=default_uri, help=f'Server URI (default: {default_uri} from .env)')
+    parser.add_argument('--interactive', action='store_true', help='Interactive shell')
     parser.add_argument('--demo', action='store_true', help='Run demo sequence')
     parser.add_argument('--media-demo', action='store_true', help='Run media demo (video/images)')
     parser.add_argument('--gesture', help='Execute single gesture')
@@ -245,7 +246,10 @@ async def main():
     try:
         await client.connect()
         
-        if args.demo:
+        if args.interactive:
+            await client.list_gestures()
+            await client.interactive()
+        elif args.demo:
             await demo_sequence(client)
         elif args.media_demo:
             await media_demo(client)
