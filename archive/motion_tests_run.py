@@ -6,8 +6,8 @@ import random
 import threading
 import multiprocessing
 
-from head_control import HeadMotors
-from torso_control import TorsoMotors
+from control_modules import HeadMotors
+from control_modules import TorsoMotors
 
 head_motors = HeadMotors()
 torso_motors = TorsoMotors()
