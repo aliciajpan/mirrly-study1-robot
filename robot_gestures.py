@@ -71,10 +71,10 @@ class GestureController:
         head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
         head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
-        torso_motors.arm_move("arm_r", LIMITS["arm_r"]["rest"], 0.01)
-        torso_motors.arm_move("arm_l", LIMITS["arm_l"]["rest"], 0.01)
-        torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["rest"], 0.01)
-        torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["rest"], 0.01)
+        torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
+        torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
+        torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
+        torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
 
         time.sleep(2.0)
 
@@ -94,7 +94,7 @@ class GestureController:
         torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
         torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
-        torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["down"], 0.01)
+        torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
 
         time.sleep(2)
 
@@ -114,7 +114,7 @@ class GestureController:
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
         torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
-        torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["down"], 0.01)
+        torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
 
         time.sleep(2)
 
@@ -152,9 +152,9 @@ class GestureController:
         head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["close"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
-        torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["down"], 0.01)
+        torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
         torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
-        torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["down"], 0.01)
+        torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
 
         time.sleep(2)
 
@@ -172,7 +172,7 @@ class GestureController:
         head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
-        torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["down"], 0.01)
+        torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
         torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
         torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
 
@@ -194,7 +194,7 @@ class GestureController:
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
         torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
-        torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["down"], 0.01)
+        torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
 
         time.sleep(2)
 
@@ -212,9 +212,9 @@ class GestureController:
         head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
-        torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["down"], 0.01)
+        torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
         torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
-        torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["down"], 0.01)
+        torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
 
         time.sleep(2)
 
@@ -232,9 +232,9 @@ class GestureController:
         head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
-        torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["down"], 0.01)
+        torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
         torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
-        torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["down"], 0.01)
+        torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
 
         time.sleep(2)
 
