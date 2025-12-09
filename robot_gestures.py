@@ -37,6 +37,7 @@ if MOTORS_AVAILABLE:
 
 # Motor calibration limits (device-specific)
 LIMITS = {
+<<<<<<< Updated upstream
     "head_yaw":   {"left": 0, "center": 200, "right": 400},
     "head_pitch": {"up": 240, "center": 180, "down": 118},
     "eye_self":   {"left": 160, "center": 210, "right": 268},
@@ -46,6 +47,17 @@ LIMITS = {
     "arm_l": {"up": 160, "rest": 130, "down": 80}, # rest means T-pose
     "r_shoulder": {"up": 160, "front": 70}, # up means screw face of shoulder to ceiling
     "l_shoulder": {"up": 60, "front": 150}, # up means screw face of shoulder to ceiling
+=======
+    "head_yaw":   {"left": 0, "center": 200, "right": 400},  # left / right ASK: 180 used for center later...?
+    "head_pitch": {"up": 240, "center": 180, "down": 118},  # up / down
+    "eye_self":   {"left": 160, "center": 220, "right": 268},  # eyeball
+    "eye_brow_l": {"open": 370, "close": 210},  # left eyelid
+    "eye_brow_r": {"open": 343, "close": 510},  # right eyelid
+    "arm_r": {"up": 90, "rest": 120, "down": 170},  # right arm (confirmed)
+    "arm_l": {"up": 160, "rest": 130, "down": 80},  # right arm (confirmed)
+    "r_shoulder": {"up": 160, "front": 70, "down": 70},  # right arm
+    "l_shoulder": {"up": 60, "front": 150, "down": 150},  # right arm
+>>>>>>> Stashed changes
 }
 
 # Speed constants
