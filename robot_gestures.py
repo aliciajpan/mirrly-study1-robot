@@ -42,10 +42,10 @@ LIMITS = {
     "eye_self":   {"left": 160, "center": 210, "right": 268},
     "eye_brow_l": {"open": 370, "close": 210},
     "eye_brow_r": {"open": 343, "close": 510},
-    "arm_r": {"up": 90, "rest": 170, "down": 170},
-    "arm_l": {"up": 160, "rest": 80, "down": 80},
-    "r_shoulder": {"up": 160, "rest": 70, "down": 70},
-    "l_shoulder": {"up": 60, "rest": 160, "down": 160},
+    "arm_r": {"up": 90, "rest": 120, "down": 170}, # rest means T-pose
+    "arm_l": {"up": 160, "rest": 130, "down": 80}, # rest means T-pose
+    "r_shoulder": {"up": 160, "front": 70}, # up means screw face of shoulder to ceiling
+    "l_shoulder": {"up": 60, "front": 150}, # up means screw face of shoulder to ceiling
 }
 
 # Speed constants
