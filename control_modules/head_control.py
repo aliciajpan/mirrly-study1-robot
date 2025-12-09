@@ -4,7 +4,8 @@
 # sudo python3 setup.py install
 
 import os
-""" 
+from pathlib import Path
+"""
 # Makes problem when running it from bash script
 if os.name == 'nt':
     import msvcrt
@@ -42,7 +43,31 @@ DXL_ID_4                      = 4 # Right eye
 DXL_ID_5                      = 5 # Eye
 
 # ex) Windows: "COM*", Linux: "/dev/ttyUSB*", Mac: "/dev/tty.usbserial-*"
-DEVICENAME                  = '/dev/ttyUSB0'
+
+def _select_device_name():
+    """Choose the first available serial port for Dynamixel head motors."""
+    # Allow override via env var for field debugging
+    env_port = os.getenv("DXL_PORT") or os.getenv("DXL_DEVICENAME")
+    candidates = [
+        env_port,
+        "/dev/ttyUSB0",
+        "/dev/ttyUSB1",
+        "/dev/ttyUSB2",
+        "/dev/ttyACM0",
+        "/dev/ttyACM1",
+        "/dev/serial0",
+    ]
+    for port in candidates:
+        if port and Path(port).exists():
+            print(f"Using Dynamixel port: {port}")
+            return port
+    # Fallback to common default; connection will raise if missing
+    fallback = env_port or "/dev/ttyUSB0"
+    print(f"No detected Dynamixel port; falling back to {fallback}")
+    return fallback
+
+
+DEVICENAME = _select_device_name()
 
 TORQUE_ENABLE               = 0     # Value for enabling the torque
 TORQUE_DISABLE              = 1     # Value for disabling the torque
