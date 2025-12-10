@@ -1,5 +1,5 @@
-# run in terminal: 'sudo pigpiod' every time doing smth w motors
-# run in terminal: 'sudo shutdown -h now' AND WAIT FOR SCREEN FULLY OFF every time power down
+# run 'sudo pigpiod' every time doing smth w motors - prevents jitter
+# run 'sudo shutdown -h now' AND WAIT FOR SCREEN FULLY OFF every time power down - safe RPi power down
 # run in terminal: ctrl+C to end after program done
 
 # mirrly will stand to the left side of the TV screen from participant POV
@@ -15,7 +15,7 @@ import multiprocessing
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from control_modules.head_control import HeadMotors
 from control_modules.torso_control import TorsoMotors
-from robot_gestures import GestureController, LIMITS, PITCH_SPEED, EYELID_SPEED #
+from robot_gestures import GestureController, LIMITS, PITCH_SPEED, EYELID_SPEED, head_motors, torso_motors #
 
 robot_motions = GestureController() # THIS ALREADY INITS head_motors & torso_motors; doing it again here will lock GPIO
 
@@ -345,9 +345,12 @@ def hand_shoulder_idle(paused):
 
 def terminate_program():
     print("Terminating program.")
+    '''
     torso_motors.release_motors()
     torso_motors.release_hands('all')
     head_motors.close()
+    '''
+    robot_motions.cleanup() # already does the above
     sys.exit(0)
         
 if __name__ == "__main__":
