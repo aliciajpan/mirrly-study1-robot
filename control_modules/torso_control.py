@@ -32,7 +32,7 @@ class TorsoMotors():
         # Hand pins
         # self.hs_pins = [31, 11 ,13, 15] #BOARD scheme l_hand, shoulder, r_hand, Shoulder
         self.hs_pins = [6, 27 ,17, 22] #BOARD scheme
-        self.s_positions = [80, 170, 150, 70]
+        self.s_positions = [80, 150, 170, 70]
         self.read_positions()
 
         # Connect to the Arduino
