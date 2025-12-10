@@ -427,5 +427,5 @@ if __name__ == "__main__":
             time.sleep(1)
         
     except KeyboardInterrupt:
-        print(f"Exception occurred: {e}")
+        print(f"\nProgram ended by keyboard interrupt")
         terminate_program()
