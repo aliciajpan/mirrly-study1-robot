@@ -11,8 +11,10 @@ import vlc
 import pygame
 
 from mode_config import ModeManager
-from head_control import HeadMotors
-from torso_control import TorsoMotors
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from control_modules.head_control import HeadMotors
+from control_modules.torso_control import TorsoMotors
 
 mode_manager = ModeManager()
 head_motors = HeadMotors()

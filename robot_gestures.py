@@ -19,6 +19,17 @@ except Exception as e:
     HeadMotors = None
     TorsoMotors = None
 
+# Try to import media playback module
+try:
+    from media_player import media_player
+    MEDIA_AVAILABLE = media_player.is_available()
+    if MEDIA_AVAILABLE:
+        print("✓ Media playback available")
+except Exception as e:
+    print(f"Warning: Media playback not available: {e}")
+    MEDIA_AVAILABLE = False
+    media_player = None
+
 # Initialize motor controllers if available
 head_motors = None
 torso_motors = None
@@ -238,9 +249,165 @@ class GestureController:
 
         time.sleep(2)
 
+    def gesture_with_video(self, video_path=None):
+        """
+        Example gesture with synchronized video playback.
+        Play video on screen while performing gesture.
+        
+        Args:
+            video_path (str): Path to video file. If None, uses default or skips video.
+        """
+        print("GESTURE WITH VIDEO")
+        
+        # Start video playback in background (non-blocking)
+        video_thread = None
+        if MEDIA_AVAILABLE and video_path and media_player:
+            print(f"  Playing video: {video_path}")
+            video_thread = media_player.play_video(
+                video_path=video_path,
+                fullscreen=True,
+                muted=False,
+                blocking=False  # Don't wait for video to finish
+            )
+        elif video_path:
+            print(f"  [SIMULATION] Would play video: {video_path}")
+        
+        # Perform gesture movements
+        if not MOTORS_AVAILABLE:
+            print("  [SIMULATION] Performing gesture with video")
+            time.sleep(3.0)  # Simulate gesture duration
+        else:
+            # Example: Celebratory gesture
+            head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
+            head_motors.move("head_pitch", LIMITS["head_pitch"]["up"], PITCH_SPEED)
+            head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
+            head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+            head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+
+            torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
+            torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
+            torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
+            torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
+            
+            time.sleep(0.5)
+        
+        # Wait for video to finish if it was started
+        if video_thread:
+            print("  Waiting for video to complete...")
+            video_thread.join()
+        
+        print("  Gesture with video complete")
+
+    def countdown_gesture(self):
+        """
+        Play countdown video with synchronized celebratory gesture.
+        Uses: static/media/video/countdown_video.mp4
+        """
+        print("COUNTDOWN GESTURE")
+        
+        video_path = "static/media/video/countdown_video.mp4"
+        
+        # Start countdown video (non-blocking)
+        video_thread = None
+        if MEDIA_AVAILABLE and media_player:
+            print(f"  Playing countdown video: {video_path}")
+            video_thread = media_player.play_video(
+                video_path=video_path,
+                fullscreen=True,
+                muted=False,
+                blocking=False
+            )
+        else:
+            print(f"  [SIMULATION] Would play countdown video: {video_path}")
+        
+        # Perform celebratory movements during countdown
+        if not MOTORS_AVAILABLE:
+            print("  [SIMULATION] Performing countdown gesture")
+            time.sleep(5.0)
+        else:
+            # Center position at start
+            head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
+            head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+            head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
+            head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+            head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+            
+            # Anticipatory arm movements
+            torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
+            torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
+            torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
+            torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
+            
+            time.sleep(0.5)
+        
+        # Wait for countdown video to finish
+        if video_thread:
+            print("  Waiting for countdown to complete...")
+            video_thread.join()
+        
+        print("  Countdown gesture complete")
+
+    def show_diamond(self, duration=3.0):
+        """
+        Display diamond image on screen.
+        Uses: static/media/image/diamond.jpeg
+        
+        Args:
+            duration (float): How long to display the image (default: 3 seconds)
+        """
+        print(f"SHOW DIAMOND (duration: {duration}s)")
+        
+        image_path = "static/media/image/diamond.jpeg"
+        
+        # Display diamond image
+        if MEDIA_AVAILABLE and media_player:
+            print(f"  Displaying diamond: {image_path}")
+            media_player.play_image(
+                image_path=image_path,
+                duration=duration,
+                fullscreen=True,
+                blocking=True
+            )
+        else:
+            print(f"  [SIMULATION] Would display diamond: {image_path} for {duration}s")
+            time.sleep(duration)
+        
+        print("  Diamond display complete")
+
+    def show_star(self, duration=3.0):
+        """
+        Display star image on screen.
+        Uses: static/media/image/star.jpeg
+        
+        Args:
+            duration (float): How long to display the image (default: 3 seconds)
+        """
+        print(f"SHOW STAR (duration: {duration}s)")
+        
+        image_path = "static/media/image/star.jpeg"
+        
+        # Display star image
+        if MEDIA_AVAILABLE and media_player:
+            print(f"  Displaying star: {image_path}")
+            media_player.play_image(
+                image_path=image_path,
+                duration=duration,
+                fullscreen=True,
+                blocking=True
+            )
+        else:
+            print(f"  [SIMULATION] Would display star: {image_path} for {duration}s")
+            time.sleep(duration)
+        
+        print("  Star display complete")
+
     def cleanup(self):
         """Release all motors and close connections."""
         print("Cleaning up motors...")
+        
+        # Stop any playing videos
+        if MEDIA_AVAILABLE and media_player:
+            media_player.stop_all()
         
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] No motors to cleanup")
@@ -274,15 +441,20 @@ GESTURES = {
     'talking_right_arm': gesture_controller.talking_right_arm,
     'eyes_left': gesture_controller.eyes_left,
     'eyes_right': gesture_controller.eyes_right,
+    'gesture_with_video': gesture_controller.gesture_with_video,
+    'countdown_gesture': gesture_controller.countdown_gesture,
+    'show_diamond': gesture_controller.show_diamond,
+    'show_star': gesture_controller.show_star,
 }
 
 
-def execute_gesture(gesture_name):
+def execute_gesture(gesture_name, **kwargs):
     """
-    Execute a gesture by name.
+    Execute a gesture by name with optional parameters.
     
     Args:
         gesture_name (str): Name of the gesture to execute
+        **kwargs: Optional parameters to pass to the gesture (e.g., video_path)
         
     Returns:
         dict: Response with status and message
@@ -294,10 +466,34 @@ def execute_gesture(gesture_name):
         }
     
     try:
-        GESTURES[gesture_name]()
+        # Call gesture with or without parameters
+        gesture_func = GESTURES[gesture_name]
+        if kwargs:
+            gesture_func(**kwargs)
+        else:
+            gesture_func()
+        
         return {
             'status': 'success',
             'message': f'Gesture "{gesture_name}" executed successfully'
+        }
+    except TypeError as e:
+        # Handle cases where gesture doesn't accept parameters
+        if 'unexpected keyword argument' in str(e):
+            try:
+                GESTURES[gesture_name]()
+                return {
+                    'status': 'success',
+                    'message': f'Gesture "{gesture_name}" executed successfully (parameters ignored)'
+                }
+            except Exception as ex:
+                return {
+                    'status': 'error',
+                    'message': f'Error executing gesture "{gesture_name}": {str(ex)}'
+                }
+        return {
+            'status': 'error',
+            'message': f'Error executing gesture "{gesture_name}": {str(e)}'
         }
     except Exception as e:
         return {

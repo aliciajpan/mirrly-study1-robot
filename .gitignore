@@ -215,3 +215,13 @@ __marimo__/
 motor_logs/
 # Robot gesture position data
 positions.txt
+
+# Media files (videos/images are large, track structure only)
+static/media/video/*.mp4
+static/media/video/*.avi
+static/media/video/*.mov
+static/media/image/*.jpeg
+static/media/image/*.jpg
+static/media/image/*.png
+# But keep the README
+!static/media/README.md

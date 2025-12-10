@@ -53,12 +53,13 @@ class GestureExecutor:
         self.is_paused = False
         self.gesture_task: Optional[asyncio.Task] = None
     
-    async def execute(self, gesture_name: str) -> Dict:
+    async def execute(self, gesture_name: str, **params) -> Dict:
         """
         Execute a gesture with play/pause/restart control.
         
         Args:
             gesture_name: Name of gesture to execute
+            **params: Optional parameters to pass to the gesture
             
         Returns:
             Response dict with status and message
@@ -75,7 +76,8 @@ class GestureExecutor:
         # Run gesture in executor to avoid blocking
         loop = asyncio.get_event_loop()
         try:
-            result = await loop.run_in_executor(None, execute_gesture, gesture_name)
+            # Pass parameters to execute_gesture
+            result = await loop.run_in_executor(None, lambda: execute_gesture(gesture_name, **params))
             self.is_running = False
             
             # Ensure result is a proper dict
@@ -225,8 +227,12 @@ class RobotServer:
                     'message': 'Missing "gesture" field',
                     'timestamp': timestamp
                 }
-            logger.info(f"[{client_addr}] Executing gesture: {gesture_name}")
-            result = await self.executor.execute(gesture_name)
+            
+            # Extract optional parameters (e.g., video_path)
+            params = data.get('params', {})
+            
+            logger.info(f"[{client_addr}] Executing gesture: {gesture_name} with params: {params}")
+            result = await self.executor.execute(gesture_name, **params)
             result['timestamp'] = timestamp
             return result
         

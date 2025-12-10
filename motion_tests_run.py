@@ -1,13 +1,18 @@
 # run in temrinal: sudo pigpiod, every time doing smth w motors
 
+import os
 import sys
 import time
 import random
 import threading
 import multiprocessing
 
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from control_modules.head_control import HeadMotors
 from control_modules.torso_control import TorsoMotors
+
+head_motors = HeadMotors()
+torso_motors = TorsoMotors()
 
 # Motor calibration limits (device-specific)
 LIMITS = {
@@ -161,6 +166,11 @@ def eyes_right(self):
     torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
 
     time.sleep(2)
+
+def outro_game():
+    celebrate_arms_up()
+    center_all()
+
 
 def outro_game():
     celebrate_arms_up()
