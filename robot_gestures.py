@@ -239,6 +239,177 @@ class GestureController:
         torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
 
         time.sleep(2)
+        
+        
+    def game_tts_1_prompt(self): # audio is 15 sec long
+        self.talking_right_arm()
+        self.talking_left_arm()
+        self.center_all()
+
+        # In his right eye, ...
+        self.talking_right_arm()
+        self.center_all()
+
+        # ... made his vision cloudy
+        self.sad_look_down()
+        self.center_all()
+
+        # Which of Mikey's eyes...
+        self.look_point_left()
+        self.center_all()
+
+    def game_tts_1_answer(self): # audio is 8 sec long
+        self.talking_left_arm()
+        self.center_all()
+        self.celebrate_arms_up()
+        self.center_all()
+
+    def game_tts_2_prompt(self): # audio is 14 sec long
+        # pause until when they're playing with...
+        self.celebrate_arms_up()
+        self.center_all()
+
+        # covered part of their vision in their left eye
+        self.talking_left_arm()
+        self.center_all()
+
+        # which of Alex's eyes...
+        self.talking_left_arm()
+        self.center_all()
+
+    def game_tts_2_answer(self): # audio is 6 sec long
+        self.talking_right_arm()
+        self.center_all()
+        self.talking_left_arm()
+        self.center_all()
+
+    def game_tts_3_prompt(self): # audio is 15 sec long
+
+        #start when Fiona used to have an
+        self.talking_right_arm()
+        self.center_all()
+
+        # which eye do you think...
+        self.look_point_left()
+        self.center_all()
+
+    def game_tts_3_answer(self): # audio is 7 sec long
+        self.talking_left_arm()
+        self.center_all()
+        self.celebrate_arms_up()
+        self.center_all()
+
+    def game_tts_4_prompt(self): # audio is 16 sec long
+        self.celebrate_arms_up()
+        self.center_all()
+
+        # She used to get...
+        self.talking_right_arm()
+        self.talking_left_arm()
+        self.center_all()
+
+        self.look_point_right()
+        self.center_all()
+
+    def game_tts_4_answer(self): # audio is 7 sec long
+        self.talking_left_arm()
+        self.center_all()
+        self.celebrate_arms_up()
+        self.center_all()
+
+    def game_tts_5_prompt(self): # audio is 14 sec long
+        self.celebrate_arms_up()
+        self.center_all()
+
+        # Daniel's vision is blury
+        self.talking_left_arm()
+        self.center_all()
+
+        # which eye is should
+        self.look_point_left()
+        self.center_all()
+
+    def game_tts_5_answer(self): # audio is 6 sec long
+        self.talking_right_arm()
+        self.center_all()
+        self.talking_left_arm()
+        self.center_all()
+
+
+    def video_tts_all(self): # audio is 48 sec long
+        self.video_tts_1()
+        self.video_tts_2()
+        self.video_tts_3()
+        self.video_tts_4()
+        
+    def video_tts_1(self): # audio is 48 sec long
+        self.talking_right_arm()
+        self.center_all()
+        #
+        self.look_point_left()
+        self.center_all()
+        #
+        self.celebrate_arms_up()
+        self.center_all()
+        #
+        time.sleep(3)
+        self.talking_left_arm()
+        self.center_all()
+        #
+        self.talking_left_arm()
+        self.talking_right_arm()
+        self.center_all()
+        #
+        self.talking_right_arm()
+        self.center_all()
+
+    def video_tts_2(self): # audio is 13 sec long
+        self.celebrate_arms_up()
+        time.sleep(3)
+        self.center_all()
+        #
+        self.talking_right_arm()
+        self.center_all()
+
+    def video_tts_3(self): # audio is 56 sec long
+        self.celebrate_arms_up()
+        time.sleep(2)
+        self.center_all()
+        #
+        self.talking_left_arm()
+        time.sleep(2)
+        self.center_all()
+        #
+        self.talking_right_arm()
+        self.center_all()
+        #
+        self.talking_right_arm()
+        time.sleep(3)
+        self.center_all()
+        #
+        self.celebrate_arms_up()
+        time.sleep(2)
+        self.center_all()
+        #
+        self.talking_left_arm()
+        time.sleep(2)
+        self.center_all()
+        #
+        self.talking_right_arm()
+        time.sleep(2)
+        self.center_all()
+
+    def video_tts_4(self): # audio is 21 sec long
+        self.celebrate_arms_up()
+        time.sleep(4)
+        #
+        self.look_point_right()
+        self.center_all()
+
+    def outro_game(self):
+        self.celebrate_arms_up()
+        self.center_all()
+
 
     def gesture_with_video(self, video_path=None):
         """
@@ -432,6 +603,22 @@ GESTURES = {
     'talking_right_arm': gesture_controller.talking_right_arm,
     'eyes_left': gesture_controller.eyes_left,
     'eyes_right': gesture_controller.eyes_right,
+    'game_tts_1_prompt': gesture_controller.game_tts_1_prompt,
+    'game_tts_1_answer': gesture_controller.game_tts_1_answer,
+    'game_tts_2_prompt': gesture_controller.game_tts_2_prompt,
+    'game_tts_2_answer': gesture_controller.game_tts_2_answer,
+    'game_tts_3_prompt': gesture_controller.game_tts_3_prompt,
+    'game_tts_3_answer': gesture_controller.game_tts_3_answer,
+    'game_tts_4_prompt': gesture_controller.game_tts_4_prompt,
+    'game_tts_4_answer': gesture_controller.game_tts_4_answer,
+    'game_tts_5_prompt': gesture_controller.game_tts_5_prompt,
+    'game_tts_5_answer': gesture_controller.game_tts_5_answer,
+    'video_tts_all': gesture_controller.video_tts_all,
+    'video_tts_1': gesture_controller.video_tts_1,
+    'video_tts_2': gesture_controller.video_tts_2,
+    'video_tts_3': gesture_controller.video_tts_3,
+    'video_tts_4': gesture_controller.video_tts_4,
+    'outro_game': gesture_controller.outro_game,
     'gesture_with_video': gesture_controller.gesture_with_video,
     'countdown_gesture': gesture_controller.countdown_gesture,
     'show_diamond': gesture_controller.show_diamond,
