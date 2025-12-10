@@ -1,4 +1,6 @@
-# run in temrinal: sudo pigpiod, every time doing smth w motors
+# run in terminal: 'sudo pigpiod' every time doing smth w motors
+# run in terminal: 'sudo shutdown -h now' AND WAIT FOR SCREEN FULLY OFF every time power down
+# run in terminal: ctrl+C to end after program done
 
 import os
 import sys
@@ -10,10 +12,16 @@ import multiprocessing
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from control_modules.head_control import HeadMotors
 from control_modules.torso_control import TorsoMotors
+from robot_gestures import GestureController, LIMITS, PITCH_SPEED, EYELID_SPEED #
 
 head_motors = HeadMotors()
 torso_motors = TorsoMotors()
+robot_motions = GestureController() #
 
+start_exp = False
+start_cond = "test"
+
+'''
 # Motor calibration limits (device-specific)
 LIMITS = {
     "head_yaw":   {"left": 0, "center": 200, "right": 400},
@@ -31,16 +39,7 @@ LIMITS = {
 PITCH_SPEED = 1000      # Head pitch requires higher speed to overcome weight
 EYELID_SPEED = 800      # Eyelids need 700-1000 speed for unlubricated mechanism
 
-head_motors = HeadMotors()
-torso_motors = TorsoMotors()
-
-start_exp = False
-start_cond = "test"
-
 def center_all():
-    """Reset all motors to center positions."""
-    print("CENTRE ALL")
-    
     head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
     head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
     head_motors.move("eye_self", LIMITS["eye_self"]["center"], 400)
@@ -110,7 +109,6 @@ def sad_look_down():
     time.sleep(2)
 
 def talking_left_arm():
-
     head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
     head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
     head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
@@ -139,7 +137,6 @@ def talking_right_arm():
     time.sleep(2)
 
 def eyes_left():
-    
     head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
     head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
     head_motors.move("eye_self", LIMITS["eye_self"]["left"], 500)
@@ -166,28 +163,87 @@ def eyes_right(self):
     torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
 
     time.sleep(2)
+'''
+
+def video_tts_1(): # audio is 48 sec long
+    robot_motions.talking_right_arm()
+    robot_motions.center_all()
+    #
+    robot_motions.look_point_left()
+    robot_motions.center_all()
+    #
+    robot_motions.celebrate_arms_up()
+    robot_motions.center_all()
+    #
+    time.sleep(3)
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+    #
+    robot_motions.talking_left_arm()
+    robot_motions.talking_right_arm()
+    robot_motions.center_all()
+    #
+    robot_motions.talking_right_arm()
+    robot_motions.center_all()
+
+def video_tts_2(): # audio is 13 sec long
+    robot_motions.celebrate_arms_up()
+    time.sleep(3)
+    robot_motions.center_all()
+    #
+    robot_motions.talking_right_arm()
+    robot_motions.center_all()
+
+def video_tts_3(): # audio is 56 sec long
+    robot_motions.celebrate_arms_up()
+    time.sleep(2)
+    robot_motions.center_all()
+    #
+    robot_motions.talking_left_arm()
+    time.sleep(2)
+    robot_motions.center_all()
+    #
+    robot_motions.talking_right_arm()
+    robot_motions.center_all()
+    #
+    robot_motions.talking_right_arm()
+    time.sleep(3)
+    robot_motions.center_all()
+    #
+    robot_motions.celebrate_arms_up()
+    time.sleep(2)
+    robot_motions.center_all()
+    #
+    robot_motions.talking_left_arm()
+    time.sleep(2)
+    robot_motions.center_all()
+    #
+    robot_motions.talking_right_arm()
+    time.sleep(2)
+    robot_motions.center_all()
+
+def video_tts_4(): # audio is 21 sec long
+    robot_motions.celebrate_arms_up()
+    time.sleep(4)
+    #
+    robot_motions.look_point_right()
+    robot_motions.center_all()
 
 def outro_game():
-    celebrate_arms_up()
-    center_all()
+    robot_motions.celebrate_arms_up()
+    robot_motions.center_all()
 
-
-def outro_game():
-    celebrate_arms_up()
-    center_all()
-
-
-##### idle functions not needed but part of threading structure, so kept in 
+##### idle functions part of threading structure, so kept in 
 
 def keyboard_listener(paused, eyebrow_process, yaw_process, rsh_process):
     global start_exp
     global start_cond
     paused_state = True  # track the paused state
     while True:
-        user_input = input("Enter command ('test' to start, 'p' to toggle pausing, 'q' to quit): ").lower()
-        if user_input == 'test':
+        user_input = input("Enter command ('test' or 'vid#' (# 1 to 4) to start, 'p' to toggle pausing, 'q' to quit): ").lower()
+        if user_input == 'test' or 'vid1' or 'vid2' or 'vid3' or 'vid4':
             start_exp = True
-            start_cond = 'test'
+            start_cond = user_input
             print("Test started.")
         elif user_input == 'p':
             if paused_state:
@@ -310,17 +366,56 @@ if __name__ == "__main__":
         keyboard_thread.start()
         
         # Wait until the experiment starts
-        print("Enter 'test' to start...")
+        print("Enter 'test', 'vid1', 'vid2', 'vid3', or 'vid4' to start: ")
         while not start_exp:
             time.sleep(1)
         
         if start_cond == 'test':
-            print("Range of motion test")
             paused.clear()
             time.sleep(1)
 
             print("OUTRO GAME")
             outro_game()
+
+            paused.set()
+        time.sleep(1)
+
+        if start_cond == 'vid1':
+            paused.clear()
+            time.sleep(1)
+
+            print("video_tts_1")
+            video_tts_1()
+
+            paused.set()
+        time.sleep(1)
+
+        if start_cond == 'vid2':
+            paused.clear()
+            time.sleep(1)
+
+            print("video_tts_2")
+            video_tts_2()
+
+            paused.set()
+        time.sleep(1)
+
+        if start_cond == 'vid3':
+            paused.clear()
+            time.sleep(1)
+
+            print("video_tts_3")
+            video_tts_3()
+
+            paused.set()
+        time.sleep(1)
+
+        if start_cond == 'vid4':
+            paused.clear()
+            time.sleep(1)
+
+            print("video_tts_4")
+            video_tts_4()
 
             paused.set()
         time.sleep(1)

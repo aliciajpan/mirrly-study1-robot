@@ -68,7 +68,6 @@ class GestureController:
     """Manages all robot gestures and coordinated movements."""
 
     def center_all(self):
-        """Reset all motors to center positions."""
         print("CENTRE ALL")
         
         if not MOTORS_AVAILABLE:
@@ -90,7 +89,6 @@ class GestureController:
         time.sleep(2.0)
 
     def look_point_left(self):
-        """Look and point to the left."""
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Looking and pointing left")
             time.sleep(2)
@@ -110,7 +108,6 @@ class GestureController:
         time.sleep(2)
 
     def look_point_right(self):
-        """Look and point to the right."""
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Looking and pointing right")
             time.sleep(2)
@@ -130,7 +127,6 @@ class GestureController:
         time.sleep(2)
 
     def celebrate_arms_up(self):
-        """Celebrate with arms raised."""
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Celebrating with arms up")
             time.sleep(2)
@@ -150,7 +146,6 @@ class GestureController:
         time.sleep(2)
 
     def sad_look_down(self):
-        """Express sadness by looking down."""
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Looking down sad")
             time.sleep(2)
@@ -170,7 +165,6 @@ class GestureController:
         time.sleep(2)
 
     def talking_left_arm(self):
-        """Talk while gesturing with left arm."""
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Talking with left arm gesture")
             time.sleep(2)
@@ -190,7 +184,6 @@ class GestureController:
         time.sleep(2)
 
     def talking_right_arm(self):
-        """Talk while gesturing with right arm."""
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Talking with right arm gesture")
             time.sleep(2)
@@ -210,7 +203,6 @@ class GestureController:
         time.sleep(2)
 
     def eyes_left(self):
-        """Look at left with eyes only."""
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Eyes looking left")
             time.sleep(2)
@@ -230,7 +222,6 @@ class GestureController:
         time.sleep(2)
 
     def eyes_right(self):
-        """Look at right with eyes only."""
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Eyes looking right")
             time.sleep(2)
