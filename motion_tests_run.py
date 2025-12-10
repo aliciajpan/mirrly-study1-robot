@@ -17,9 +17,7 @@ from control_modules.head_control import HeadMotors
 from control_modules.torso_control import TorsoMotors
 from robot_gestures import GestureController, LIMITS, PITCH_SPEED, EYELID_SPEED #
 
-head_motors = HeadMotors()
-torso_motors = TorsoMotors()
-robot_motions = GestureController() #
+robot_motions = GestureController() # THIS ALREADY INITS head_motors & torso_motors; doing it again here will lock GPIO
 
 start_exp = False
 start_cond = "test"
