@@ -166,6 +166,101 @@ def eyes_right(self):
     time.sleep(2)
 '''
 
+def game_tts_1_prompt(): # audio is 15 sec long
+    robot_motions.talking_right_arm()
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+
+    # In his right eye, ...
+    robot_motions.talking_right_arm()
+    robot_motions.center_all()
+
+    # ... made his vision cloudy
+    robot_motions.sad_look_down()
+    robot_motions.center_all()
+
+    # Which of Mikey's eyes...
+    robot_motions.look_point_left()
+    robot_motions.center_all()
+
+def game_tts_1_answer(): # audio is 8 sec long
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+    robot_motions.celebrate_arms_up()
+    robot_motions.center_all()
+
+def game_tts_2_prompt(): # audio is 14 sec long
+    # pause until when they're playing with...
+    robot_motions.celebrate_arms_up()
+    robot_motions.center_all()
+
+    # covered part of their vision in their left eye
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+
+    # which of Alex's eyes...
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+
+def game_tts_2_answer(): # audio is 6 sec long
+    robot_motions.talking_right_arm()
+    robot_motions.center_all()
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+
+def game_tts_3_prompt(): # audio is 15 sec long
+
+    #start when Fiona used to have an
+    robot_motions.talking_right_arm()
+    robot_motions.center_all()
+
+    # which eye do you think...
+    robot_motions.look_point_left()
+    robot_motions.center_all()
+
+def game_tts_3_answer(): # audio is 7 sec long
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+    robot_motions.celebrate_arms_up()
+    robot_motions.center_all()
+
+def game_tts_4_prompt(): # audio is 16 sec long
+    robot_motions.celebrate_arms_up()
+    robot_motions.center_all()
+
+    # She used to get...
+    robot_motions.talking_right_arm()
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+
+    robot_motions.look_point_right()
+    robot_motions.center_all()
+
+def game_tts_4_answer(): # audio is 7 sec long
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+    robot_motions.celebrate_arms_up()
+    robot_motions.center_all()
+
+def game_tts_5_prompt(): # audio is 14 sec long
+    robot_motions.celebrate_arms_up()
+    robot_motions.center_all()
+
+    # Daniel's vision is blury
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+
+    # which eye is should
+    robot_motions.look_point_left()
+    robot_motions.center_all()
+
+def game_tts_5_answer(): # audio is 6 sec long
+    robot_motions.talking_right_arm()
+    robot_motions.center_all()
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+
+
 def video_tts_1(): # audio is 48 sec long
     robot_motions.talking_right_arm()
     robot_motions.center_all()
