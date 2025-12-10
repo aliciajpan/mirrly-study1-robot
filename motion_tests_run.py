@@ -2,6 +2,9 @@
 # run in terminal: 'sudo shutdown -h now' AND WAIT FOR SCREEN FULLY OFF every time power down
 # run in terminal: ctrl+C to end after program done
 
+# mirrly will stand to the left side of the TV screen from participant POV
+# from mirrly POV, the scdreen will be to the right
+
 import os
 import sys
 import time
