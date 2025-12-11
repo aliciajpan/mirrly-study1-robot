@@ -65,7 +65,7 @@ LIMITS = {
 }
 
 # Speed constants
-PITCH_SPEED = 1000      # Head pitch requires higher speed to overcome weight
+PITCH_SPEED = 800      # Head pitch requires higher speed to overcome weight
 EYELID_SPEED = 800      # Eyelids need 700-1000 speed for unlubricated mechanism
 
 # Concurrency primitives (imported by robot_server)
@@ -337,6 +337,23 @@ class GestureController:
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
         torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
         torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
+
+        interruptible_sleep(2)
+
+    def talking_both_arms(self):
+        if not MOTORS_AVAILABLE:
+            print("  [SIMULATION] Talking with both arm gesture")
+            interruptible_sleep(2)
+            return
+        
+        head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
+        head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+        head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
+
+        torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
+        torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
+        torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
+        torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
 
         interruptible_sleep(2)
 
@@ -756,6 +773,7 @@ GESTURES = {
     'sad_look_down': gesture_controller.sad_look_down,
     'talking_left_arm': gesture_controller.talking_left_arm,
     'talking_right_arm': gesture_controller.talking_right_arm,
+    'talking_both_arms': gesture_controller.talking_both_arms,
     'eyes_left': gesture_controller.eyes_left,
     'eyes_right': gesture_controller.eyes_right,
     'game_tts_1_prompt': gesture_controller.game_tts_1_prompt,
