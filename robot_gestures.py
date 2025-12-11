@@ -812,12 +812,10 @@ def execute_gesture(gesture_name, **kwargs):
                 try:
                     if torso_motors:
                         try:
+                            # Just stop power; do not close pigpio connection from the child
                             torso_motors.release_motors()
-                            torso_motors.release_hands('all')
                         except Exception as e:
                             print(f"[GESTURE] Error releasing torso motors: {e}")
-                    if head_motors:
-                        head_motors.close()
                 except Exception as e:
                     print(f"[GESTURE] Error during motor cleanup: {e}")
                 sys.exit(0)  # Exit gracefully

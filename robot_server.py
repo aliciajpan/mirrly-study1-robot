@@ -1,6 +1,6 @@
 """
 Robot WebSocket server for remote gesture control.
-Handles incoming commands and manages gesture execution with play/pause/restart control.
+Handles incoming commands and manages gesture execution with play/stop control.
 """
 
 import asyncio
@@ -60,7 +60,6 @@ class GestureExecutor:
     def __init__(self):
         self.current_gesture: Optional[str] = None
         self.is_running = False
-        self.is_paused = False
         self.gesture_process: Optional[multiprocessing.Process] = None
         self.gesture_task: Optional[asyncio.Task] = None
         self.cleanup_task: Optional[asyncio.Task] = None  # Track async cleanup
@@ -167,8 +166,8 @@ class GestureExecutor:
         except Exception as e:
             logger.error(f"Error during process cleanup: {e}")
     
-    async def pause(self) -> Dict:
-        """Pause current gesture execution (terminates the gesture process)."""
+    async def stop(self) -> Dict:
+        """Stop current gesture execution (terminates the gesture process)."""
         if not self.is_running:
             return {
                 'status': 'warning',
@@ -177,7 +176,7 @@ class GestureExecutor:
         
         # Immediately terminate the gesture process
         if self.gesture_process and self.gesture_process.is_alive():
-            logger.info(f"Terminating gesture process for pause: {self.current_gesture}")
+            logger.info(f"Terminating gesture process for stop: {self.current_gesture}")
             self.gesture_process.terminate()
             
             # Schedule async cleanup (don't wait for it)
@@ -196,46 +195,14 @@ class GestureExecutor:
             except asyncio.CancelledError:
                 pass
         
-        self.is_paused = True
         self.is_running = False
-        logger.info(f"Gesture paused: {self.current_gesture}")
+        logger.info(f"Gesture stopped: {self.current_gesture}")
         
         return {
             'status': 'success',
-            'message': f'Gesture "{self.current_gesture}" paused',
+            'message': f'Gesture "{self.current_gesture}" stopped',
             'current_gesture': self.current_gesture
         }
-    
-    async def resume(self) -> Dict:
-        """Resume (restart) paused gesture."""
-        if not self.current_gesture:
-            return {
-                'status': 'warning',
-                'message': 'No gesture to resume'
-            }
-        
-        if not self.is_paused:
-            return {
-                'status': 'warning',
-                'message': 'No paused gesture'
-            }
-        
-        logger.info(f"Resuming gesture: {self.current_gesture}")
-        return await self.restart()
-    
-    async def restart(self) -> Dict:
-        """Restart current gesture from beginning."""
-        if not self.current_gesture:
-            return {
-                'status': 'warning',
-                'message': 'No gesture to restart'
-            }
-        
-        self.is_paused = False
-        gesture_to_restart = self.current_gesture
-        logger.info(f"Restarting gesture: {gesture_to_restart}")
-        
-        return await self.execute(gesture_to_restart)
     
     def get_status(self) -> Dict:
         """Get current executor status."""
@@ -325,21 +292,9 @@ class RobotServer:
             result['timestamp'] = timestamp
             return result
         
-        elif action == 'pause':
-            logger.info(f"[{client_addr}] Pause requested")
-            result = await self.executor.pause()
-            result['timestamp'] = timestamp
-            return result
-        
-        elif action == 'resume':
-            logger.info(f"[{client_addr}] Resume requested")
-            result = await self.executor.resume()
-            result['timestamp'] = timestamp
-            return result
-        
-        elif action == 'restart':
-            logger.info(f"[{client_addr}] Restart requested")
-            result = await self.executor.restart()
+        elif action == 'stop':
+            logger.info(f"[{client_addr}] Stop requested")
+            result = await self.executor.stop()
             result['timestamp'] = timestamp
             return result
         
@@ -364,7 +319,7 @@ class RobotServer:
             logger.warning(f"[{client_addr}] Unknown action: {action}")
             return {
                 'status': 'error',
-                'message': f'Unknown action: {action}. Valid actions: gesture, pause, resume, restart, status, list',
+                'message': f'Unknown action: {action}. Valid actions: gesture, stop, status, list',
                 'timestamp': timestamp
             }
     

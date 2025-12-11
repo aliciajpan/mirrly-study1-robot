@@ -132,11 +132,19 @@ class TorsoMotors():
         #print("target: " + str(angle))
         def motion_smooth():
             for i in custom_range(initial, angle):
-                servo.angle = i
+                # Abort early if the servo has already been closed by cleanup/stop
+                if getattr(servo, "closed", False):
+                    break
+                try:
+                    servo.angle = i
+                except Exception:
+                    # Swallow pigpio state errors that occur when stop closes the pin mid-move
+                    break
                 time.sleep(speed)
-            time.sleep(1)
+            time.sleep(0.5)
             
         process = multiprocessing.Process(target=motion_smooth)
+        process.daemon = True
         process.start()
         #process.join()
         

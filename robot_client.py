@@ -130,17 +130,9 @@ class RobotClient:
             'gesture': gesture_name
         })
     
-    async def pause(self):
-        """Pause current gesture."""
-        await self.send_command({'action': 'pause'})
-    
-    async def resume(self):
-        """Resume paused gesture."""
-        await self.send_command({'action': 'resume'})
-    
-    async def restart(self):
-        """Restart current gesture."""
-        await self.send_command({'action': 'restart'})
+    async def stop(self):
+        """Stop current gesture."""
+        await self.send_command({'action': 'stop'})
     
     async def status(self):
         """Get server status."""
@@ -157,9 +149,7 @@ class RobotClient:
         print("  countdown               - Play countdown video")
         print("  diamond [duration]      - Show diamond image (default: 3s)")
         print("  star [duration]         - Show star image (default: 3s)")
-        print("  pause                   - Pause current gesture")
-        print("  resume                  - Resume paused gesture")
-        print("  restart                 - Restart current gesture")
+        print("  stop                    - Stop current gesture")
         print("  quit                    - Exit\n")
         
         loop = asyncio.get_event_loop()
@@ -179,12 +169,8 @@ class RobotClient:
                     await self.list_gestures()
                 elif command == 'status':
                     await self.status()
-                elif command == 'pause':
-                    await self.pause()
-                elif command == 'resume':
-                    await self.resume()
-                elif command == 'restart':
-                    await self.restart()
+                elif command == 'stop':
+                    await self.stop()
                 elif command == 'countdown':
                     await self.execute_gesture('countdown_gesture')
                 elif command.startswith('diamond'):
