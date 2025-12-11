@@ -29,7 +29,7 @@ except ImportError:
     print("Error: python-dotenv module not found. Install with: pip install python-dotenv")
     sys.exit(1)
 
-from robot_gestures import execute_gesture, get_available_gestures, gesture_controller
+from robot_gestures import execute_gesture, get_available_gestures, gesture_controller, start_idle_motions, stop_idle_motions
 
 # Load environment variables from .env file
 env_path = Path(__file__).parent / '.env'
@@ -282,6 +282,10 @@ class RobotServer:
     async def start(self):
         """Start the WebSocket server."""
         logger.info(f"Starting WebSocket server on ws://{self.host}:{self.port}")
+        
+        # Start idle motions in background
+        start_idle_motions()
+        
         async with websockets.serve(self.handler, self.host, self.port):
             logger.info("Server is running. Press Ctrl+C to stop.")
             try:

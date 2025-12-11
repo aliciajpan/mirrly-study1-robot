@@ -6,6 +6,8 @@ Contains all gesture definitions and motor control commands.
 import time
 import sys
 import os
+import random
+import threading
 
 # Try to import motor control modules
 try:
@@ -63,6 +65,99 @@ LIMITS = {
 PITCH_SPEED = 1000      # Head pitch requires higher speed to overcome weight
 EYELID_SPEED = 800      # Eyelids need 700-1000 speed for unlubricated mechanism
 
+# Idle motion control flags
+Idle_paused = threading.Event()  # Set when idle motions should pause
+Idle_paused.set()  # Start paused (unpause when gesture starts)
+idle_threads = []  # Track background idle threads
+
+
+# Background idle motion functions
+def idle_eyebrow_motion():
+    """
+    Background thread: Continuous idle eyebrow blinking.
+    Runs in parallel with gestures, respects pause flag.
+    """
+    while True:
+        Idle_paused.wait()  # Block when paused
+        probability = 0.07  # Probability of eyebrow idle movement per cycle
+        blink_speed = random.choice([800, 1000])
+        
+        if random.random() < probability:
+            if not MOTORS_AVAILABLE:
+                print("  [SIMULATION] Idle eyebrow blink")
+            else:
+                try:
+                    head_motors.move("eye_brow_l", 210, blink_speed - 100)
+                    time.sleep(0.01)
+                    head_motors.move("eye_brow_r", 510, blink_speed)
+                    sleep_dur = 0.4 if blink_speed == 1000 else 0.8 if blink_speed == 800 else 0.9
+                    time.sleep(sleep_dur)
+                    head_motors.move("eye_brow_l", 350, blink_speed - 100)
+                    time.sleep(0.01)
+                    head_motors.move("eye_brow_r", 343, blink_speed)
+                except Exception as e:
+                    print(f"Error in eyebrow idle motion: {e}")
+        
+        time.sleep(0.5)
+
+
+def idle_head_yaw_motion():
+    """
+    Background thread: Continuous idle head yaw (side-to-side) movement.
+    Runs in parallel with gestures, respects pause flag.
+    Higher priority than gestures to avoid override.
+    """
+    while True:
+        Idle_paused.wait()  # Block when paused
+        probability = 0.07  # Probability of head movement per cycle
+        
+        if random.random() < probability:
+            if not MOTORS_AVAILABLE:
+                print("  [SIMULATION] Idle head yaw roll")
+            else:
+                try:
+                    random_value = random.randint(0, 300)
+                    random_speed = random.randint(300, 500)
+                    head_motors.move("head_yaw", random_value, random_speed)
+                    random_rt = random.randint(1, 3)
+                    time.sleep(random_rt)
+                    head_motors.move("head_yaw", 180, random_speed)  # Return to center
+                except Exception as e:
+                    print(f"Error in head yaw idle motion: {e}")
+        
+        time.sleep(0.5)
+
+
+def start_idle_motions():
+    """Start background idle motion threads."""
+    global idle_threads
+    
+    if not MOTORS_AVAILABLE:
+        print("✓ Idle motions ready (simulation mode)")
+        return
+    
+    # Resume idle motions
+    Idle_paused.set()
+    
+    # Create and start threads if not already running
+    if not idle_threads or not any(t.is_alive() for t in idle_threads):
+        eyebrow_thread = threading.Thread(target=idle_eyebrow_motion, daemon=True)
+        yaw_thread = threading.Thread(target=idle_head_yaw_motion, daemon=True)
+        
+        eyebrow_thread.start()
+        yaw_thread.start()
+        
+        idle_threads = [eyebrow_thread, yaw_thread]
+        print("✓ Idle motions started")
+    else:
+        print("✓ Idle motions resumed")
+
+
+def stop_idle_motions():
+    """Pause idle motions (e.g., during gesture execution)."""
+    Idle_paused.clear()
+    print("  Idle motions paused")
+
 
 class GestureController:
     """Manages all robot gestures and coordinated movements."""
@@ -78,8 +173,8 @@ class GestureController:
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["center"], 400)
-        head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-        head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
         torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
@@ -97,8 +192,8 @@ class GestureController:
         head_motors.move("head_yaw", LIMITS["head_yaw"]["left"], 500)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["left"], 500)
-        head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-        head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
         torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
@@ -116,8 +211,8 @@ class GestureController:
         head_motors.move("head_yaw", LIMITS["head_yaw"]["right"], 500)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["right"], 500)
-        head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-        head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
@@ -135,8 +230,8 @@ class GestureController:
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["up"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
-        head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-        head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
@@ -154,8 +249,8 @@ class GestureController:
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["down"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
-        head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["close"], EYELID_SPEED)
-        head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["close"], EYELID_SPEED)
+        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["close"], EYELID_SPEED)
+        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["close"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
@@ -173,8 +268,8 @@ class GestureController:
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
-        head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-        head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
@@ -192,8 +287,8 @@ class GestureController:
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
-        head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-        head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
@@ -211,8 +306,8 @@ class GestureController:
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["left"], 500)
-        head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-        head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
@@ -230,8 +325,8 @@ class GestureController:
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["right"], 500)
-        head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-        head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
@@ -443,8 +538,8 @@ class GestureController:
             head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
             head_motors.move("head_pitch", LIMITS["head_pitch"]["up"], PITCH_SPEED)
             head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
-            head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-            head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+            # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+            # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
             torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
             torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
@@ -491,8 +586,8 @@ class GestureController:
             head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
             head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
             head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
-            head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-            head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+            # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+            # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
             
             # Anticipatory arm movements
             torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
