@@ -39,6 +39,8 @@ from robot_gestures import (
     motor_lock,
 )
 
+import multiprocessing
+
 # Load environment variables from .env file
 env_path = Path(__file__).parent / '.env'
 load_dotenv(dotenv_path=env_path)
@@ -53,17 +55,38 @@ logger = logging.getLogger(__name__)
 
 
 class GestureExecutor:
-    """Manages gesture execution state (play, pause, restart)."""
+    """Manages gesture execution state with process-based control."""
     
     def __init__(self):
         self.current_gesture: Optional[str] = None
         self.is_running = False
         self.is_paused = False
+        self.gesture_process: Optional[multiprocessing.Process] = None
         self.gesture_task: Optional[asyncio.Task] = None
+        self.cleanup_task: Optional[asyncio.Task] = None  # Track async cleanup
+    
+    async def _wait_for_gesture_completion(self, process):
+        """Asynchronously wait for gesture process to complete."""
+        loop = asyncio.get_event_loop()
+        try:
+            await asyncio.wait_for(
+                loop.run_in_executor(None, process.join),
+                timeout=None
+            )
+            
+            # Check final exit code
+            if process.exitcode == 0:
+                logger.info(f"Gesture process completed successfully")
+            elif process.exitcode is None:
+                logger.info(f"Gesture process was terminated")
+            else:
+                logger.warning(f"Gesture process exited with code {process.exitcode}")
+        except Exception as e:
+            logger.error(f"Error waiting for gesture completion: {e}")
     
     async def execute(self, gesture_name: str, **params) -> Dict:
         """
-        Execute a gesture with play/pause/restart control.
+        Execute a gesture with play/pause/stop control via multiprocessing.
         
         Args:
             gesture_name: Name of gesture to execute
@@ -72,15 +95,15 @@ class GestureExecutor:
         Returns:
             Response dict with status and message
         """
-        # Signal any currently running gesture to stop
-        Gesture_stop.set()
-        await asyncio.sleep(0.05)  # Allow gesture to check stop flag
-        Gesture_stop.clear()  # Clear for next gesture
-        
-        # Cancel existing gesture if running
-        if self.gesture_task and not self.gesture_task.done():
-            self.gesture_task.cancel()
-            await asyncio.sleep(0.1)  # Allow cancellation to complete
+        # Terminate any currently running gesture process
+        if self.gesture_process and self.gesture_process.is_alive():
+            logger.info(f"Terminating previous gesture process before executing {gesture_name}")
+            self.gesture_process.terminate()
+            self.gesture_process.join(timeout=2.0)
+            if self.gesture_process.is_alive():
+                logger.warning("Gesture process did not terminate gracefully, killing it")
+                self.gesture_process.kill()
+                self.gesture_process.join()
         
         self.current_gesture = gesture_name
         self.is_running = True
@@ -89,9 +112,19 @@ class GestureExecutor:
         # Run gesture in executor to avoid blocking
         loop = asyncio.get_event_loop()
         try:
-            # Pass parameters to execute_gesture
-            result = await loop.run_in_executor(None, lambda: execute_gesture(gesture_name, **params))
-            self.is_running = False
+            # Create a task that runs execute_gesture (which starts the process)
+            # execute_gesture returns (process, result_dict) immediately
+            self.gesture_task = loop.run_in_executor(None, lambda: execute_gesture(gesture_name, **params))
+            
+            # Get the process and result from execute_gesture (returns immediately)
+            process, result = await self.gesture_task
+            
+            # Store the process so pause() can terminate it
+            self.gesture_process = process
+            
+            # Schedule async completion tracking (don't wait for it)
+            if process:
+                asyncio.create_task(self._wait_for_gesture_completion(process))
             
             # Ensure result is a proper dict
             if isinstance(result, dict):
@@ -115,19 +148,57 @@ class GestureExecutor:
                 'message': f'Failed to execute gesture: {str(e)}'
             }
     
+    async def _async_process_cleanup(self, process, timeout=2.0):
+        """Asynchronously wait for process to terminate, then kill if needed."""
+        loop = asyncio.get_event_loop()
+        try:
+            await asyncio.wait_for(
+                loop.run_in_executor(None, process.join),
+                timeout=timeout
+            )
+        except asyncio.TimeoutError:
+            if process.is_alive():
+                logger.warning("Process did not terminate, killing it")
+                process.kill()
+                try:
+                    await loop.run_in_executor(None, process.join)
+                except Exception as e:
+                    logger.error(f"Error joining killed process: {e}")
+        except Exception as e:
+            logger.error(f"Error during process cleanup: {e}")
+    
     async def pause(self) -> Dict:
-        """Pause current gesture execution."""
+        """Pause current gesture execution (terminates the gesture process)."""
         if not self.is_running:
             return {
                 'status': 'warning',
                 'message': 'No gesture currently running'
             }
         
-        self.is_paused = True
-        # Set stop flag to signal gesture to pause
-        Gesture_stop.set()
-        if self.gesture_task:
+        # Immediately terminate the gesture process
+        if self.gesture_process and self.gesture_process.is_alive():
+            logger.info(f"Terminating gesture process for pause: {self.current_gesture}")
+            self.gesture_process.terminate()
+            
+            # Schedule async cleanup (don't wait for it)
+            if self.cleanup_task:
+                self.cleanup_task.cancel()
+            self.cleanup_task = asyncio.create_task(
+                self._async_process_cleanup(self.gesture_process)
+            )
+        
+        # Cancel the execution task if it's still running
+        if self.gesture_task and not self.gesture_task.done():
+            logger.info("Cancelling gesture execution task")
             self.gesture_task.cancel()
+            try:
+                await self.gesture_task
+            except asyncio.CancelledError:
+                pass
+        
+        self.is_paused = True
+        self.is_running = False
+        logger.info(f"Gesture paused: {self.current_gesture}")
         
         return {
             'status': 'success',
@@ -136,7 +207,7 @@ class GestureExecutor:
         }
     
     async def resume(self) -> Dict:
-        """Resume paused gesture."""
+        """Resume (restart) paused gesture."""
         if not self.current_gesture:
             return {
                 'status': 'warning',
@@ -149,10 +220,8 @@ class GestureExecutor:
                 'message': 'No paused gesture'
             }
         
-        self.is_paused = False
-        # Clear stop flag to allow resumption
-        Gesture_stop.clear()
-        return await self.execute(self.current_gesture)
+        logger.info(f"Resuming gesture: {self.current_gesture}")
+        return await self.restart()
     
     async def restart(self) -> Dict:
         """Restart current gesture from beginning."""
@@ -163,9 +232,10 @@ class GestureExecutor:
             }
         
         self.is_paused = False
-        # Clear stop flag and restart from beginning
-        Gesture_stop.clear()
-        return await self.execute(self.current_gesture)
+        gesture_to_restart = self.current_gesture
+        logger.info(f"Restarting gesture: {gesture_to_restart}")
+        
+        return await self.execute(gesture_to_restart)
     
     def get_status(self) -> Dict:
         """Get current executor status."""

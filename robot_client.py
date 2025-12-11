@@ -36,86 +36,124 @@ class RobotClient:
             uri = f"ws://{host}:{port}"
         self.uri = uri
         self.websocket = None
+        self.gesture_task = None  # Track active gesture task
+        self.pending_requests = {}  # Map request_id to response Future
+        self.request_counter = 0
+        self.receiver_task = None  # Background task reading messages
     
     async def connect(self):
         """Connect to robot server."""
         try:
             self.websocket = await websockets.connect(self.uri)
             print(f"✓ Connected to {self.uri}")
+            # Start background receiver task
+            self.receiver_task = asyncio.create_task(self._receive_messages())
         except Exception as e:
             print(f"✗ Connection failed: {e}")
             sys.exit(1)
     
+    async def _receive_messages(self):
+        """Background task that continuously receives messages from server."""
+        try:
+            async for message in self.websocket:
+                try:
+                    response = json.loads(message)
+                    # Print responses in a user-friendly way
+                    if response.get('status') == 'success':
+                        if 'gestures' in response:
+                            # List response
+                            print("\nAvailable gestures:")
+                            for gesture in response['gestures']:
+                                print(f"  - {gesture}")
+                            print(f"Total: {response['count']} gestures\n")
+                        elif 'executor' in response:
+                            # Status response
+                            executor = response['executor']
+                            print("\nServer Status:")
+                            print(f"  Current gesture: {executor['current_gesture'] or 'None'}")
+                            print(f"  Running: {executor['is_running']}")
+                            print(f"  Paused: {executor['is_paused']}\n")
+                        elif 'message' in response:
+                            print(f"✓ {response['message']}")
+                    elif response.get('status') == 'error':
+                        print(f"✗ Error: {response.get('message', 'Unknown error')}")
+                    elif response.get('status') == 'warning':
+                        print(f"⚠ {response.get('message', 'Warning')}")
+                except json.JSONDecodeError:
+                    print(f"Received non-JSON message: {message}")
+        except asyncio.CancelledError:
+            pass
+        except websockets.exceptions.ConnectionClosed:
+            print("Server connection closed")
+        except Exception as e:
+            print(f"Receiver error: {e}")
+    
     async def disconnect(self):
         """Disconnect from server."""
+        if self.receiver_task:
+            self.receiver_task.cancel()
+            try:
+                await self.receiver_task
+            except asyncio.CancelledError:
+                pass
         if self.websocket:
             await self.websocket.close()
             print("✓ Disconnected")
     
     async def send_command(self, command: dict) -> dict:
-        """Send command and get response."""
+        """Send command to server (fire-and-forget)."""
         try:
             await self.websocket.send(json.dumps(command))
-            response = await self.websocket.recv()
-            return json.loads(response)
+            return {'status': 'sent', 'message': 'Command sent to server'}
         except Exception as e:
-            print(f"✗ Error: {e}")
+            print(f"✗ Error sending command: {e}")
             return {'status': 'error', 'message': str(e)}
     
     async def list_gestures(self):
         """List available gestures."""
-        response = await self.send_command({'action': 'list'})
-        if response['status'] == 'success':
-            print("\nAvailable gestures:")
-            for gesture in response['gestures']:
-                print(f"  - {gesture}")
-            print(f"\nTotal: {response['count']} gestures\n")
-        else:
-            print(f"Error: {response['message']}")
+        await self.send_command({'action': 'list'})
     
     async def execute_gesture(self, gesture_name: str):
-        """Execute a gesture."""
-        print(f"\nExecuting: {gesture_name}...")
-        response = await self.send_command({
+        """Execute a gesture (non-blocking - runs in background)."""
+        # Cancel any existing gesture task
+        if self.gesture_task and not self.gesture_task.done():
+            print(f"Cancelling previous gesture...")
+            self.gesture_task.cancel()
+            try:
+                await self.gesture_task
+            except asyncio.CancelledError:
+                pass
+        
+        print(f"\n→ Starting gesture: {gesture_name}")
+        await self.send_command({
             'action': 'gesture',
             'gesture': gesture_name
         })
-        print(f"Status: {response['status']}")
-        if response['status'] != 'success':
-            print(f"Message: {response['message']}")
     
     async def pause(self):
         """Pause current gesture."""
-        response = await self.send_command({'action': 'pause'})
-        print(f"Pause: {response['message']}")
+        await self.send_command({'action': 'pause'})
     
     async def resume(self):
         """Resume paused gesture."""
-        response = await self.send_command({'action': 'resume'})
-        print(f"Resume: {response['message']}")
+        await self.send_command({'action': 'resume'})
     
     async def restart(self):
         """Restart current gesture."""
-        response = await self.send_command({'action': 'restart'})
-        print(f"Restart: {response['message']}")
+        await self.send_command({'action': 'restart'})
     
     async def status(self):
         """Get server status."""
-        response = await self.send_command({'action': 'status'})
-        if response['status'] == 'success':
-            executor = response['executor']
-            print("\nServer Status:")
-            print(f"  Current gesture: {executor['current_gesture'] or 'None'}")
-            print(f"  Running: {executor['is_running']}")
-            print(f"  Paused: {executor['is_paused']}\n")
+        await self.send_command({'action': 'status'})
     
     async def interactive(self):
-        """Interactive command loop."""
-        print("\nInteractive Mode")
-        print("Commands:")
+        """Interactive command loop (non-blocking)."""
+        print("\nInteractive Mode - All commands execute instantly")
+        print("Responses from server appear as they arrive")
+        print("\nCommands:")
         print("  list                    - List all available gestures")
         print("  status                  - Get server status")
-        print("  gesture <name>          - Execute gesture")
+        print("  gesture <name>          - Execute gesture (interrupts previous)")
         print("  countdown               - Play countdown video")
         print("  diamond [duration]      - Show diamond image (default: 3s)")
         print("  star [duration]         - Show star image (default: 3s)")
@@ -124,9 +162,13 @@ class RobotClient:
         print("  restart                 - Restart current gesture")
         print("  quit                    - Exit\n")
         
+        loop = asyncio.get_event_loop()
+        
         while True:
             try:
-                command = input("> ").strip()
+                # Use run_in_executor to get non-blocking input
+                command = await loop.run_in_executor(None, input, "> ")
+                command = command.strip()
                 
                 if not command:
                     continue
@@ -168,6 +210,7 @@ class RobotClient:
                     print(f"Unknown command: {command}")
             
             except KeyboardInterrupt:
+                print("\n")
                 break
             except Exception as e:
                 print(f"Error: {e}")

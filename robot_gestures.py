@@ -8,6 +8,9 @@ import sys
 import os
 import random
 import threading
+import multiprocessing
+import signal
+from multiprocessing import Process
 
 # Try to import motor control modules
 try:
@@ -66,13 +69,40 @@ PITCH_SPEED = 1000      # Head pitch requires higher speed to overcome weight
 EYELID_SPEED = 800      # Eyelids need 700-1000 speed for unlubricated mechanism
 
 # Concurrency primitives (imported by robot_server)
-Gesture_stop = threading.Event()
+Gesture_stop = threading.Event()  # Set to pause/resume, not for hard stop
 motor_lock = threading.Lock()
 
 # Idle motion control flags
 Idle_paused = threading.Event()  # Set when idle motions should pause
 Idle_paused.set()  # Start paused (unpause when gesture starts)
 idle_threads = []  # Track background idle threads
+
+
+def interruptible_sleep(duration: float):
+    """
+    Sleep for duration seconds, but respond to Gesture_stop flag for pause/resume.
+    
+    When Gesture_stop is set, the gesture pauses and waits for it to be cleared.
+    This allows for pause/resume functionality without terminating the gesture.
+    
+    Args:
+        duration (float): How long to sleep in seconds
+    """
+    end_time = time.time() + duration
+    while time.time() < end_time:
+        # If pause flag is set, wait for it to be cleared (resume)
+        if Gesture_stop.is_set():
+            print("  [PAUSE] Gesture paused, waiting for resume...")
+            # Wait in small increments so we can still detect clear()
+            while Gesture_stop.is_set():
+                time.sleep(0.05)  # Check every 50ms if pause is still active
+            print("  [RESUME] Gesture resumed")
+        
+        # Sleep in small chunks (0.1s) to check stop flag frequently
+        remaining = end_time - time.time()
+        if remaining <= 0:
+            break
+        time.sleep(min(0.1, remaining))
 
 
 # Background idle motion functions
@@ -82,27 +112,32 @@ def idle_eyebrow_motion():
     Runs in parallel with gestures, respects pause flag.
     """
     while True:
-        Idle_paused.wait()  # Block when paused
-        probability = 0.07  # Probability of eyebrow idle movement per cycle
-        blink_speed = random.choice([800, 1000])
-        
-        if random.random() < probability:
-            if not MOTORS_AVAILABLE:
-                print("  [SIMULATION] Idle eyebrow blink")
-            else:
-                try:
-                    head_motors.move("eye_brow_l", 210, blink_speed - 100)
-                    time.sleep(0.01)
-                    head_motors.move("eye_brow_r", 510, blink_speed)
-                    sleep_dur = 0.4 if blink_speed == 1000 else 0.8 if blink_speed == 800 else 0.9
-                    time.sleep(sleep_dur)
-                    head_motors.move("eye_brow_l", 350, blink_speed - 100)
-                    time.sleep(0.01)
-                    head_motors.move("eye_brow_r", 343, blink_speed)
-                except Exception as e:
-                    print(f"Error in eyebrow idle motion: {e}")
-        
-        time.sleep(0.5)
+        try:
+            Idle_paused.wait()  # Block when paused
+            probability = 0.07  # Probability of eyebrow idle movement per cycle
+            blink_speed = random.choice([800, 1000])
+            
+            if random.random() < probability:
+                if not MOTORS_AVAILABLE:
+                    print("  [SIMULATION] Idle eyebrow blink")
+                else:
+                    try:
+                        head_motors.move("eye_brow_l", 210, blink_speed - 100)
+                        time.sleep(0.01)
+                        head_motors.move("eye_brow_r", 510, blink_speed)
+                        sleep_dur = 0.4 if blink_speed == 1000 else 0.8 if blink_speed == 800 else 0.9
+                        time.sleep(sleep_dur)
+                        head_motors.move("eye_brow_l", 350, blink_speed - 100)
+                        time.sleep(0.01)
+                        head_motors.move("eye_brow_r", 343, blink_speed)
+                    except Exception as e:
+                        # Silently continue on port errors (gesture likely terminated)
+                        pass
+            
+            time.sleep(0.5)
+        except Exception as e:
+            # Catch any unexpected errors and continue
+            time.sleep(0.5)
 
 
 def idle_head_yaw_motion():
@@ -112,24 +147,29 @@ def idle_head_yaw_motion():
     Higher priority than gestures to avoid override.
     """
     while True:
-        Idle_paused.wait()  # Block when paused
-        probability = 0.07  # Probability of head movement per cycle
-        
-        if random.random() < probability:
-            if not MOTORS_AVAILABLE:
-                print("  [SIMULATION] Idle head yaw roll")
-            else:
-                try:
-                    random_value = random.randint(0, 300)
-                    random_speed = random.randint(300, 500)
-                    head_motors.move("head_yaw", random_value, random_speed)
-                    random_rt = random.randint(1, 3)
-                    time.sleep(random_rt)
-                    head_motors.move("head_yaw", 180, random_speed)  # Return to center
-                except Exception as e:
-                    print(f"Error in head yaw idle motion: {e}")
-        
-        time.sleep(0.5)
+        try:
+            Idle_paused.wait()  # Block when paused
+            probability = 0.07  # Probability of head movement per cycle
+            
+            if random.random() < probability:
+                if not MOTORS_AVAILABLE:
+                    print("  [SIMULATION] Idle head yaw roll")
+                else:
+                    try:
+                        random_value = random.randint(0, 300)
+                        random_speed = random.randint(300, 500)
+                        head_motors.move("head_yaw", random_value, random_speed)
+                        random_rt = random.randint(1, 3)
+                        time.sleep(random_rt)
+                        head_motors.move("head_yaw", 180, random_speed)  # Return to center
+                    except Exception as e:
+                        # Silently continue on port errors (gesture likely terminated)
+                        pass
+            
+            time.sleep(0.5)
+        except Exception as e:
+            # Catch any unexpected errors and continue
+            time.sleep(0.5)
 
 
 def start_idle_motions():
@@ -170,7 +210,7 @@ class GestureController:
         
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Moving to center position")
-            time.sleep(2.0)
+            interruptible_sleep(2.0)
             return
         
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
@@ -184,12 +224,12 @@ class GestureController:
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
         torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
 
-        time.sleep(2.0)
+        interruptible_sleep(2.0)
 
     def look_point_left(self):
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Looking and pointing left")
-            time.sleep(2)
+            interruptible_sleep(2)
             return
         
         head_motors.move("head_yaw", LIMITS["head_yaw"]["left"], 500)
@@ -203,12 +243,12 @@ class GestureController:
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
 
-        time.sleep(2)
+        interruptible_sleep(2)
 
     def look_point_right(self):
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Looking and pointing right")
-            time.sleep(2)
+            interruptible_sleep(2)
             return
         
         head_motors.move("head_yaw", LIMITS["head_yaw"]["right"], 500)
@@ -222,12 +262,12 @@ class GestureController:
         torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
         torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
 
-        time.sleep(2)
+        interruptible_sleep(2)
 
     def celebrate_arms_up(self):
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Celebrating with arms up")
-            time.sleep(2)
+            interruptible_sleep(2)
             return
         
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
@@ -241,12 +281,12 @@ class GestureController:
         torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
         torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
 
-        time.sleep(2)
+        interruptible_sleep(2)
 
     def sad_look_down(self):
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Looking down sad")
-            time.sleep(2)
+            interruptible_sleep(2)
             return
         
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
@@ -260,12 +300,12 @@ class GestureController:
         torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
         torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
 
-        time.sleep(2)
+        interruptible_sleep(2)
 
     def talking_left_arm(self):
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Talking with left arm gesture")
-            time.sleep(2)
+            interruptible_sleep(2)
             return
         
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
@@ -279,12 +319,12 @@ class GestureController:
         torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
         torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
 
-        time.sleep(2)
+        interruptible_sleep(2)
 
     def talking_right_arm(self):
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Talking with right arm gesture")
-            time.sleep(2)
+            interruptible_sleep(2)
             return
         
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
@@ -298,12 +338,12 @@ class GestureController:
         torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
         torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
 
-        time.sleep(2)
+        interruptible_sleep(2)
 
     def eyes_left(self):
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Eyes looking left")
-            time.sleep(2)
+            interruptible_sleep(2)
             return
         
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
@@ -317,12 +357,12 @@ class GestureController:
         torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
         torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
 
-        time.sleep(2)
+        interruptible_sleep(2)
 
     def eyes_right(self):
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Eyes looking right")
-            time.sleep(2)
+            interruptible_sleep(2)
             return
         
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
@@ -336,7 +376,7 @@ class GestureController:
         torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
         torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
 
-        time.sleep(2)
+        interruptible_sleep(2)
         
         
     def game_tts_1_prompt(self): # audio is 15 sec long
@@ -484,36 +524,36 @@ class GestureController:
     def video_tts_3(self): # audio is 56 sec long
         print('video_tts_3')
         self.celebrate_arms_up()
-        time.sleep(2)
+        interruptible_sleep(2)
         self.center_all()
         #
         self.talking_left_arm()
-        time.sleep(2)
+        interruptible_sleep(2)
         self.center_all()
         #
         self.talking_right_arm()
         self.center_all()
         #
         self.talking_right_arm()
-        time.sleep(3)
+        interruptible_sleep(3)
         self.center_all()
         #
         self.celebrate_arms_up()
-        time.sleep(2)
+        interruptible_sleep(2)
         self.center_all()
         #
         self.talking_left_arm()
-        time.sleep(2)
+        interruptible_sleep(2)
         self.center_all()
         #
         self.talking_right_arm()
-        time.sleep(2)
+        interruptible_sleep(2)
         self.center_all()
 
     def video_tts_4(self): # audio is 21 sec long
         print('video_tts_4')
         self.celebrate_arms_up()
-        time.sleep(4)
+        interruptible_sleep(4)
         #
         self.look_point_right()
         self.center_all()
@@ -550,7 +590,7 @@ class GestureController:
         # Perform gesture movements
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Performing gesture with video")
-            time.sleep(3.0)  # Simulate gesture duration
+            interruptible_sleep(3.0)  # Simulate gesture duration
         else:
             # Example: Celebratory gesture
             head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
@@ -600,7 +640,7 @@ class GestureController:
         # Perform celebratory movements during countdown
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Performing countdown gesture")
-            time.sleep(5.0)
+            interruptible_sleep(5.0)
         else:
             # Center position at start
             head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
@@ -615,7 +655,7 @@ class GestureController:
             torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
             torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
             
-            time.sleep(0.5)
+            interruptible_sleep(0.5)
         
         # Wait for countdown video to finish
         if video_thread:
@@ -744,52 +784,75 @@ GESTURES = {
 def execute_gesture(gesture_name, **kwargs):
     """
     Execute a gesture by name with optional parameters.
+    Runs gesture in a separate process for easy termination.
     
     Args:
         gesture_name (str): Name of the gesture to execute
         **kwargs: Optional parameters to pass to the gesture (e.g., video_path)
         
     Returns:
-        dict: Response with status and message
+        tuple: (process object, result dict) where result has status and message
     """
     if gesture_name not in GESTURES:
-        return {
+        return None, {
             'status': 'error',
             'message': f'Gesture "{gesture_name}" not found. Available gestures: {list(GESTURES.keys())}'
         }
     
     try:
-        # Call gesture with or without parameters
+        # Get the gesture function
         gesture_func = GESTURES[gesture_name]
-        if kwargs:
-            gesture_func(**kwargs)
-        else:
-            gesture_func()
         
-        return {
-            'status': 'success',
-            'message': f'Gesture "{gesture_name}" executed successfully'
-        }
-    except TypeError as e:
-        # Handle cases where gesture doesn't accept parameters
-        if 'unexpected keyword argument' in str(e):
+        # Create a wrapper function that can be run in a process
+        def gesture_wrapper():
+            # Setup signal handler for graceful shutdown
+            def signal_handler(signum, frame):
+                print(f"[GESTURE] Received SIGTERM, cleaning up motors...")
+                # Cleanly close motor connections
+                try:
+                    if torso_motors:
+                        try:
+                            torso_motors.release_motors()
+                            torso_motors.release_hands('all')
+                        except Exception as e:
+                            print(f"[GESTURE] Error releasing torso motors: {e}")
+                    if head_motors:
+                        head_motors.close()
+                except Exception as e:
+                    print(f"[GESTURE] Error during motor cleanup: {e}")
+                sys.exit(0)  # Exit gracefully
+            
+            # Register signal handler (only works on Unix/Linux)
             try:
-                GESTURES[gesture_name]()
-                return {
-                    'status': 'success',
-                    'message': f'Gesture "{gesture_name}" executed successfully (parameters ignored)'
-                }
-            except Exception as ex:
-                return {
-                    'status': 'error',
-                    'message': f'Error executing gesture "{gesture_name}": {str(ex)}'
-                }
-        return {
-            'status': 'error',
-            'message': f'Error executing gesture "{gesture_name}": {str(e)}'
+                signal.signal(signal.SIGTERM, signal_handler)
+            except (ValueError, RuntimeError):
+                # Signal handling not available on Windows
+                pass
+            
+            # Execute the gesture
+            try:
+                if kwargs:
+                    gesture_func(**kwargs)
+                else:
+                    gesture_func()
+            except Exception as e:
+                print(f"[GESTURE] Error executing gesture: {e}")
+                raise
+        
+        # Run gesture in a separate process
+        process = Process(target=gesture_wrapper, daemon=False)
+        process.start()
+        
+        # Return process immediately without waiting
+        # The server will handle waiting for the process asynchronously
+        result = {
+            'status': 'success',
+            'message': f'Gesture "{gesture_name}" started'
         }
+        
+        return process, result
     except Exception as e:
-        return {
+        return None, {
             'status': 'error',
             'message': f'Error executing gesture "{gesture_name}": {str(e)}'
         }
