@@ -325,7 +325,12 @@ if __name__ == "__main__":
             time.sleep(1)
 
             print("celebrate")
-            robot_motions.celebrate_arms_up()
+            robot_motions.center_all()
+            
+            torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
+            torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
+            torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
+            torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
 
             paused.set()
         time.sleep(1)
