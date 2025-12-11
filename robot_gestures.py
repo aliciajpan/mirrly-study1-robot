@@ -65,6 +65,10 @@ LIMITS = {
 PITCH_SPEED = 1000      # Head pitch requires higher speed to overcome weight
 EYELID_SPEED = 800      # Eyelids need 700-1000 speed for unlubricated mechanism
 
+# Concurrency primitives (imported by robot_server)
+Gesture_stop = threading.Event()
+motor_lock = threading.Lock()
+
 # Idle motion control flags
 Idle_paused = threading.Event()  # Set when idle motions should pause
 Idle_paused.set()  # Start paused (unpause when gesture starts)
@@ -163,7 +167,6 @@ class GestureController:
     """Manages all robot gestures and coordinated movements."""
 
     def center_all(self):
-        print("CENTRE ALL")
         
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Moving to center position")
@@ -337,6 +340,7 @@ class GestureController:
         
         
     def game_tts_1_prompt(self): # audio is 15 sec long
+        print('game_tts_1_prompt')
         self.talking_right_arm()
         self.talking_left_arm()
         self.center_all()
@@ -354,12 +358,14 @@ class GestureController:
         self.center_all()
 
     def game_tts_1_answer(self): # audio is 8 sec long
+        print('game_tts_1_answer')
         self.talking_left_arm()
         self.center_all()
         self.celebrate_arms_up()
         self.center_all()
 
     def game_tts_2_prompt(self): # audio is 14 sec long
+        print('game_tts_2_prompt')
         # pause until when they're playing with...
         self.celebrate_arms_up()
         self.center_all()
@@ -373,13 +379,14 @@ class GestureController:
         self.center_all()
 
     def game_tts_2_answer(self): # audio is 6 sec long
+        print('game_tts_2_answer')
         self.talking_right_arm()
         self.center_all()
         self.talking_left_arm()
         self.center_all()
 
     def game_tts_3_prompt(self): # audio is 15 sec long
-
+        print('game_tts_3_prompt')
         #start when Fiona used to have an
         self.talking_right_arm()
         self.center_all()
@@ -389,12 +396,14 @@ class GestureController:
         self.center_all()
 
     def game_tts_3_answer(self): # audio is 7 sec long
+        print('game_tts_3_answer')
         self.talking_left_arm()
         self.center_all()
         self.celebrate_arms_up()
         self.center_all()
 
     def game_tts_4_prompt(self): # audio is 16 sec long
+        print('game_tts_4_prompt')
         self.celebrate_arms_up()
         self.center_all()
 
@@ -407,12 +416,14 @@ class GestureController:
         self.center_all()
 
     def game_tts_4_answer(self): # audio is 7 sec long
+        print('game_tts_4_answer')
         self.talking_left_arm()
         self.center_all()
         self.celebrate_arms_up()
         self.center_all()
 
     def game_tts_5_prompt(self): # audio is 14 sec long
+        print('game_tts_5_prompt')
         self.celebrate_arms_up()
         self.center_all()
 
@@ -425,6 +436,7 @@ class GestureController:
         self.center_all()
 
     def game_tts_5_answer(self): # audio is 6 sec long
+        print('game_tts_5_answer')
         self.talking_right_arm()
         self.center_all()
         self.talking_left_arm()
@@ -432,12 +444,14 @@ class GestureController:
 
 
     def video_tts_all(self): # audio is 48 sec long
+        print('video_tts_all')
         self.video_tts_1()
         self.video_tts_2()
         self.video_tts_3()
         self.video_tts_4()
         
     def video_tts_1(self): # audio is 48 sec long
+        print('video_tts_1')
         self.talking_right_arm()
         self.center_all()
         #
@@ -459,6 +473,7 @@ class GestureController:
         self.center_all()
 
     def video_tts_2(self): # audio is 13 sec long
+        print('video_tts_2')
         self.celebrate_arms_up()
         time.sleep(3)
         self.center_all()
@@ -467,6 +482,7 @@ class GestureController:
         self.center_all()
 
     def video_tts_3(self): # audio is 56 sec long
+        print('video_tts_3')
         self.celebrate_arms_up()
         time.sleep(2)
         self.center_all()
@@ -495,6 +511,7 @@ class GestureController:
         self.center_all()
 
     def video_tts_4(self): # audio is 21 sec long
+        print('video_tts_4')
         self.celebrate_arms_up()
         time.sleep(4)
         #
@@ -502,6 +519,7 @@ class GestureController:
         self.center_all()
 
     def outro_game(self):
+        print('outro_game')
         self.celebrate_arms_up()
         self.center_all()
 
@@ -556,6 +574,8 @@ class GestureController:
         print("  Gesture with video complete")
 
     def countdown_gesture(self):
+        print('COUNTDOWN GESTURE')
+
         """
         Play countdown video with synchronized celebratory gesture.
         Uses: static/media/video/countdown_video.mp4

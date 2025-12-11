@@ -29,7 +29,15 @@ except ImportError:
     print("Error: python-dotenv module not found. Install with: pip install python-dotenv")
     sys.exit(1)
 
-from robot_gestures import execute_gesture, get_available_gestures, gesture_controller, start_idle_motions, stop_idle_motions
+from robot_gestures import (
+    execute_gesture,
+    get_available_gestures,
+    gesture_controller,
+    start_idle_motions,
+    stop_idle_motions,
+    Gesture_stop,
+    motor_lock,
+)
 
 # Load environment variables from .env file
 env_path = Path(__file__).parent / '.env'
@@ -64,6 +72,11 @@ class GestureExecutor:
         Returns:
             Response dict with status and message
         """
+        # Signal any currently running gesture to stop
+        Gesture_stop.set()
+        await asyncio.sleep(0.05)  # Allow gesture to check stop flag
+        Gesture_stop.clear()  # Clear for next gesture
+        
         # Cancel existing gesture if running
         if self.gesture_task and not self.gesture_task.done():
             self.gesture_task.cancel()
@@ -111,6 +124,8 @@ class GestureExecutor:
             }
         
         self.is_paused = True
+        # Set stop flag to signal gesture to pause
+        Gesture_stop.set()
         if self.gesture_task:
             self.gesture_task.cancel()
         
@@ -135,6 +150,8 @@ class GestureExecutor:
             }
         
         self.is_paused = False
+        # Clear stop flag to allow resumption
+        Gesture_stop.clear()
         return await self.execute(self.current_gesture)
     
     async def restart(self) -> Dict:
@@ -146,6 +163,8 @@ class GestureExecutor:
             }
         
         self.is_paused = False
+        # Clear stop flag and restart from beginning
+        Gesture_stop.clear()
         return await self.execute(self.current_gesture)
     
     def get_status(self) -> Dict:
