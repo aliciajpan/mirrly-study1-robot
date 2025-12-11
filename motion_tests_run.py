@@ -23,13 +23,14 @@ start_exp = False
 start_cond = "test"
 
 def game_tts_1_prompt(): # audio is 15 sec long
-    robot_motions.talking_right_arm()
-    robot_motions.talking_left_arm()
+    robot_motions.talking_both_arm()
     robot_motions.center_all()
+    time.sleep(1)
 
     # In his right eye, ...
     robot_motions.talking_right_arm()
     robot_motions.center_all()
+    time.sleep(1)
 
     # ... made his vision cloudy
     robot_motions.sad_look_down()
@@ -42,20 +43,26 @@ def game_tts_1_prompt(): # audio is 15 sec long
 def game_tts_1_answer(): # audio is 8 sec long
     robot_motions.talking_left_arm()
     robot_motions.center_all()
+    time.sleep(1)
+
     robot_motions.celebrate_arms_up()
     robot_motions.center_all()
 
 def game_tts_2_prompt(): # audio is 14 sec long
     # pause until when they're playing with...
+    time.sleep(1)
+    time.sleep(1)
     robot_motions.celebrate_arms_up()
     robot_motions.center_all()
+    time.sleep(1)
 
     # covered part of their vision in their left eye
     robot_motions.talking_left_arm()
     robot_motions.center_all()
 
+    time.sleep(1)
     # which of Alex's eyes...
-    robot_motions.talking_left_arm()
+    robot_motions.look_point_left()
     robot_motions.center_all()
 
 def game_tts_2_answer(): # audio is 6 sec long
@@ -330,6 +337,7 @@ if __name__ == "__main__":
         
         # Wait until the experiment starts
         # print("Enter 'test', 'vid1', 'vid2', 'vid3', or 'vid4' to start: ")
+        print("Enter 'test', 'game1', 'game2', 'game3', or 'game4' to start: ")
         while not start_exp:
 
             time.sleep(1)
@@ -349,42 +357,52 @@ if __name__ == "__main__":
             paused.set()
         time.sleep(1)
 
-        if start_cond == 'vid1':
+        if start_cond == 'g1':
             paused.clear()
             time.sleep(1)
 
-            print("video_tts_1")
-            video_tts_1()
+            print("game_tts_1")
+            game_tts_1_prompt()
 
             paused.set()
         time.sleep(1)
 
-        if start_cond == 'vid2':
+        if start_cond == 'f1':
             paused.clear()
             time.sleep(1)
 
-            print("video_tts_2")
-            video_tts_2()
+            print("game_tts_1")
+            game_tts_1_answer()
 
             paused.set()
         time.sleep(1)
 
-        if start_cond == 'vid3':
+        if start_cond == 'game2':
             paused.clear()
             time.sleep(1)
 
-            print("video_tts_3")
-            video_tts_3()
+            print("game_tts_2")
+            game_tts_2_prompt()
 
             paused.set()
         time.sleep(1)
 
-        if start_cond == 'vid4':
+        if start_cond == 'game3':
             paused.clear()
             time.sleep(1)
 
-            print("video_tts_4")
-            video_tts_4()
+            print("game_tts_3")
+            game_tts_3_prompt()
+
+            paused.set()
+        time.sleep(1)
+
+        if start_cond == 'game4':
+            paused.clear()
+            time.sleep(1)
+
+            print("game_tts_4")
+            game_tts_4_prompt()
 
             paused.set()
         time.sleep(1)

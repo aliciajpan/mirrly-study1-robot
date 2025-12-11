@@ -238,10 +238,10 @@ class GestureController:
         # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
         # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
-        torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
-        torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
-        torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
-        torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
+        torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.001)
+        torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.001)
+        torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.001)
+        torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.001)
 
         interruptible_sleep(2)
 
@@ -340,7 +340,7 @@ class GestureController:
 
         interruptible_sleep(2)
 
-    def talking_both_arms(self):
+    def talking_both_arm(self):
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Talking with both arm gesture")
             interruptible_sleep(2)
