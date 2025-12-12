@@ -59,7 +59,7 @@ LIMITS = {
     "eye_brow_l": {"open": 370, "close": 210},
     "eye_brow_r": {"open": 343, "close": 510},
     "arm_r": {"up": 90, "rest": 120, "down": 170}, # rest means T-pose
-    "arm_l": {"up": 160, "rest": 130, "down": 80}, # rest means T-pose
+    "arm_l": {"up": 160, "rest": 130, "down": 50}, # rest means T-pose
     "r_shoulder": {"up": 160, "front": 70}, # up means screw face of shoulder to ceiling
     "l_shoulder": {"up": 60, "front": 150}, # up means screw face of shoulder to ceiling
 }
