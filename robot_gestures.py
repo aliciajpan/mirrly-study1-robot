@@ -546,14 +546,15 @@ class GestureController:
         self.video_tts_4()
         
     def video_tts_1(self): # audio is 48 sec long
-        print('video_tts_1')
         self.talking_right_arm()
         self.center_all()
         #
         self.look_point_left()
+        time.sleep(3)
         self.center_all()
         #
         self.celebrate_arms_up()
+        time.sleep(2)
         self.center_all()
         #
         time.sleep(3)
@@ -565,59 +566,65 @@ class GestureController:
         self.center_all()
         #
         self.talking_right_arm()
+        time.sleep(4)
         self.center_all()
+        #
+        self.sad_look_down()
 
     def video_tts_2(self): # audio is 13 sec long
-        print('video_tts_2')
         self.celebrate_arms_up()
         time.sleep(3)
         self.center_all()
         #
         self.talking_right_arm()
+        time.sleep(1)
         self.center_all()
 
     def video_tts_3(self): # audio is 56 sec long
-        print('video_tts_3')
         self.celebrate_arms_up()
-        interruptible_sleep(2)
+        time.sleep(1)
         self.center_all()
         #
         self.talking_left_arm()
-        interruptible_sleep(2)
+        time.sleep(2)
         self.center_all()
         #
         self.talking_right_arm()
+        time.sleep(2)
         self.center_all()
         #
-        self.talking_right_arm()
-        interruptible_sleep(3)
+        self.talking_both_arms()
+        time.sleep(7)
         self.center_all()
         #
         self.celebrate_arms_up()
-        interruptible_sleep(2)
+        time.sleep(2)
         self.center_all()
         #
         self.talking_left_arm()
-        interruptible_sleep(2)
+        time.sleep(2)
         self.center_all()
         #
         self.talking_right_arm()
-        interruptible_sleep(2)
+        time.sleep(2)
+        self.turn_head_left()
+        self.turn_head_right()
         self.center_all()
 
     def video_tts_4(self): # audio is 21 sec long
-        print('video_tts_4')
         self.celebrate_arms_up()
-        interruptible_sleep(4)
+        time.sleep(6)
         #
-        self.look_point_right()
+        self.talking_left_arm()
+        self.center_all()
+        self.talking_both_arms()
+        time.sleep(2)
         self.center_all()
 
     def outro_game(self):
         print('outro_game')
         self.celebrate_arms_up()
         self.center_all()
-
 
     def gesture_with_video(self, video_path=None):
         """
