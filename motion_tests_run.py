@@ -116,7 +116,6 @@ def game_tts_5_answer(): # audio is 6 sec long
     robot_motions.talking_left_arm()
     robot_motions.center_all()
 
-
 def video_tts_1(): # audio is 48 sec long
     robot_motions.talking_right_arm()
     robot_motions.center_all()
@@ -140,6 +139,8 @@ def video_tts_1(): # audio is 48 sec long
     robot_motions.talking_right_arm()
     time.sleep(4)
     robot_motions.center_all()
+    #
+    robot_motions.sad_look_down()
 
 def video_tts_2(): # audio is 13 sec long
     robot_motions.celebrate_arms_up()
@@ -163,7 +164,7 @@ def video_tts_3(): # audio is 56 sec long
     time.sleep(2)
     robot_motions.center_all()
     #
-    robot_motions.talking_right_arm()
+    robot_motions.talking_both_arms()
     time.sleep(7)
     robot_motions.center_all()
     #
@@ -176,15 +177,19 @@ def video_tts_3(): # audio is 56 sec long
     robot_motions.center_all()
     #
     robot_motions.talking_right_arm()
+    time.sleep(2)
     robot_motions.turn_head_left()
     robot_motions.turn_head_right()
     robot_motions.center_all()
 
 def video_tts_4(): # audio is 21 sec long
     robot_motions.celebrate_arms_up()
-    time.sleep(4)
+    time.sleep(6)
     #
-    robot_motions.look_point_right()
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+    robot_motions.talking_both_arms()
+    time.sleep(2)
     robot_motions.center_all()
 
 def outro_game():
