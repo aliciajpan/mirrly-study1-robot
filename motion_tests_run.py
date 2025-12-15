@@ -122,9 +122,11 @@ def video_tts_1(): # audio is 48 sec long
     robot_motions.center_all()
     #
     robot_motions.look_point_left()
+    time.sleep(3)
     robot_motions.center_all()
     #
     robot_motions.celebrate_arms_up()
+    time.sleep(2)
     robot_motions.center_all()
     #
     time.sleep(3)
@@ -136,6 +138,7 @@ def video_tts_1(): # audio is 48 sec long
     robot_motions.center_all()
     #
     robot_motions.talking_right_arm()
+    time.sleep(4)
     robot_motions.center_all()
 
 def video_tts_2(): # audio is 13 sec long
@@ -144,11 +147,12 @@ def video_tts_2(): # audio is 13 sec long
     robot_motions.center_all()
     #
     robot_motions.talking_right_arm()
+    time.sleep(1)
     robot_motions.center_all()
 
 def video_tts_3(): # audio is 56 sec long
     robot_motions.celebrate_arms_up()
-    time.sleep(2)
+    time.sleep(1)
     robot_motions.center_all()
     #
     robot_motions.talking_left_arm()
@@ -156,10 +160,11 @@ def video_tts_3(): # audio is 56 sec long
     robot_motions.center_all()
     #
     robot_motions.talking_right_arm()
+    time.sleep(2)
     robot_motions.center_all()
     #
     robot_motions.talking_right_arm()
-    time.sleep(3)
+    time.sleep(7)
     robot_motions.center_all()
     #
     robot_motions.celebrate_arms_up()
@@ -171,7 +176,8 @@ def video_tts_3(): # audio is 56 sec long
     robot_motions.center_all()
     #
     robot_motions.talking_right_arm()
-    time.sleep(2)
+    robot_motions.turn_head_left()
+    robot_motions.turn_head_right()
     robot_motions.center_all()
 
 def video_tts_4(): # audio is 21 sec long
@@ -314,10 +320,13 @@ if __name__ == "__main__":
                                                                             random_yaw_roll_process, random_rsh_process))
         keyboard_thread.daemon = True
         keyboard_thread.start()
+
+        robot_motions.center_all()
         
         # Wait until the experiment starts
-        print("Enter 'test', 'vid1', 'vid2', 'vid3', or 'vid4' to start: ")
+        # print("Enter 'test', 'vid1', 'vid2', 'vid3', or 'vid4' to start: ")
         while not start_exp:
+
             time.sleep(1)
         
         if start_cond == 'test':

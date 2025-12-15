@@ -394,6 +394,44 @@ class GestureController:
         torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
 
         interruptible_sleep(2)
+
+    def turn_head_left(self):
+        if not MOTORS_AVAILABLE:
+            print("  [SIMULATION] Head turning left")
+            interruptible_sleep(2)
+            return
+        
+        head_motors.move("head_yaw", LIMITS["head_yaw"]["left"], 400)
+        head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+        head_motors.move("eye_self", LIMITS["eye_self"]["right"], 500)
+        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+
+        torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
+        torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
+        torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
+        torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
+
+        interruptible_sleep(2)
+
+    def turn_head_right(self):
+        if not MOTORS_AVAILABLE:
+            print("  [SIMULATION] Head turning right")
+            interruptible_sleep(2)
+            return
+        
+        head_motors.move("head_yaw", LIMITS["head_yaw"]["right"], 400)
+        head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+        head_motors.move("eye_self", LIMITS["eye_self"]["right"], 500)
+        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+
+        torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
+        torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
+        torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
+        torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
+
+        interruptible_sleep(2)
         
         
     def game_tts_1_prompt(self): # audio is 15 sec long
@@ -776,6 +814,8 @@ GESTURES = {
     'talking_both_arms': gesture_controller.talking_both_arms,
     'eyes_left': gesture_controller.eyes_left,
     'eyes_right': gesture_controller.eyes_right,
+    'turn_head_left': gesture_controller.turn_head_left,
+    'turn_head_right': gesture_controller.turn_head_right,
     'game_tts_1_prompt': gesture_controller.game_tts_1_prompt,
     'game_tts_1_answer': gesture_controller.game_tts_1_answer,
     'game_tts_2_prompt': gesture_controller.game_tts_2_prompt,
