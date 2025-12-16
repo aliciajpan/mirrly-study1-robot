@@ -22,150 +22,6 @@ robot_motions = GestureController() # THIS ALREADY INITS head_motors & torso_mot
 start_exp = False
 start_cond = "test"
 
-'''
-# Motor calibration limits (device-specific)
-LIMITS = {
-    "head_yaw":   {"left": 0, "center": 200, "right": 400},
-    "head_pitch": {"up": 240, "center": 180, "down": 118},
-    "eye_self":   {"left": 160, "center": 210, "right": 268},
-    "eye_brow_l": {"open": 370, "close": 210},
-    "eye_brow_r": {"open": 343, "close": 510},
-    "arm_r": {"up": 90, "rest": 120, "down": 170}, # rest means T-pose
-    "arm_l": {"up": 160, "rest": 130, "down": 80}, # rest means T-pose
-    "r_shoulder": {"up": 160, "front": 70}, # up means screw face of shoulder to ceiling
-    "l_shoulder": {"up": 60, "front": 150}, # up means screw face of shoulder to ceiling
-}
-
-# Speed constants
-PITCH_SPEED = 1000      # Head pitch requires higher speed to overcome weight
-EYELID_SPEED = 800      # Eyelids need 700-1000 speed for unlubricated mechanism
-
-def center_all():
-    head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
-    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
-    head_motors.move("eye_self", LIMITS["eye_self"]["center"], 400)
-    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
-
-    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
-    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
-    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
-    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
-
-    time.sleep(2.0)
-
-def look_point_left():
-    head_motors.move("head_yaw", LIMITS["head_yaw"]["left"], 500)
-    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
-    head_motors.move("eye_self", LIMITS["eye_self"]["left"], 500)
-    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
-
-    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
-    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
-    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
-    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
-
-    time.sleep(2)
-
-def look_point_right():
-    head_motors.move("head_yaw", LIMITS["head_yaw"]["right"], 500)
-    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
-    head_motors.move("eye_self", LIMITS["eye_self"]["right"], 500)
-    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
-
-    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
-    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
-    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
-    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
-
-    time.sleep(2)
-
-def celebrate_arms_up():
-    head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
-    head_motors.move("head_pitch", LIMITS["head_pitch"]["up"], PITCH_SPEED)
-    head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
-    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
-
-    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
-    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
-    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
-    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
-
-    time.sleep(2)
-
-def sad_look_down():
-    head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
-    head_motors.move("head_pitch", LIMITS["head_pitch"]["down"], PITCH_SPEED)
-    head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
-    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["close"], EYELID_SPEED)
-    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["close"], EYELID_SPEED)
-
-    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
-    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
-    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
-    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
-    time.sleep(2)
-
-def talking_left_arm():
-    head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
-    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
-    head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
-    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
-
-    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
-    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
-    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
-    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
-
-    time.sleep(2)
-
-def talking_right_arm():
-    head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
-    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
-    head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
-    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
-
-    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
-    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
-    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
-    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
-
-    time.sleep(2)
-
-def eyes_left():
-    head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
-    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
-    head_motors.move("eye_self", LIMITS["eye_self"]["left"], 500)
-    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
-
-    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
-    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
-    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
-    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
-
-    time.sleep(2)
-
-def eyes_right(self):
-    head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
-    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
-    head_motors.move("eye_self", LIMITS["eye_self"]["right"], 500)
-    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
-
-    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
-    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
-    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
-    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
-
-    time.sleep(2)
-'''
-
 def game_tts_1_prompt(): # audio is 15 sec long
     robot_motions.talking_right_arm()
     robot_motions.talking_left_arm()
@@ -260,15 +116,16 @@ def game_tts_5_answer(): # audio is 6 sec long
     robot_motions.talking_left_arm()
     robot_motions.center_all()
 
-
 def video_tts_1(): # audio is 48 sec long
     robot_motions.talking_right_arm()
     robot_motions.center_all()
     #
     robot_motions.look_point_left()
+    time.sleep(3)
     robot_motions.center_all()
     #
     robot_motions.celebrate_arms_up()
+    time.sleep(2)
     robot_motions.center_all()
     #
     time.sleep(3)
@@ -280,7 +137,10 @@ def video_tts_1(): # audio is 48 sec long
     robot_motions.center_all()
     #
     robot_motions.talking_right_arm()
+    time.sleep(4)
     robot_motions.center_all()
+    #
+    robot_motions.sad_look_down()
 
 def video_tts_2(): # audio is 13 sec long
     robot_motions.celebrate_arms_up()
@@ -288,11 +148,12 @@ def video_tts_2(): # audio is 13 sec long
     robot_motions.center_all()
     #
     robot_motions.talking_right_arm()
+    time.sleep(1)
     robot_motions.center_all()
 
 def video_tts_3(): # audio is 56 sec long
     robot_motions.celebrate_arms_up()
-    time.sleep(2)
+    time.sleep(1)
     robot_motions.center_all()
     #
     robot_motions.talking_left_arm()
@@ -300,10 +161,11 @@ def video_tts_3(): # audio is 56 sec long
     robot_motions.center_all()
     #
     robot_motions.talking_right_arm()
+    time.sleep(2)
     robot_motions.center_all()
     #
-    robot_motions.talking_right_arm()
-    time.sleep(3)
+    robot_motions.talking_both_arms()
+    time.sleep(7)
     robot_motions.center_all()
     #
     robot_motions.celebrate_arms_up()
@@ -316,13 +178,18 @@ def video_tts_3(): # audio is 56 sec long
     #
     robot_motions.talking_right_arm()
     time.sleep(2)
+    robot_motions.turn_head_left()
+    robot_motions.turn_head_right()
     robot_motions.center_all()
 
 def video_tts_4(): # audio is 21 sec long
     robot_motions.celebrate_arms_up()
-    time.sleep(4)
+    time.sleep(6)
     #
-    robot_motions.look_point_right()
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+    robot_motions.talking_both_arms()
+    time.sleep(2)
     robot_motions.center_all()
 
 def outro_game():
@@ -440,12 +307,7 @@ def hand_shoulder_idle(paused):
 
 def terminate_program():
     print("Terminating program.")
-    '''
-    torso_motors.release_motors()
-    torso_motors.release_hands('all')
-    head_motors.close()
-    '''
-    robot_motions.cleanup() # already does the above
+    robot_motions.cleanup()
     sys.exit(0)
         
 if __name__ == "__main__":
@@ -463,18 +325,26 @@ if __name__ == "__main__":
                                                                             random_yaw_roll_process, random_rsh_process))
         keyboard_thread.daemon = True
         keyboard_thread.start()
+
+        robot_motions.center_all()
         
         # Wait until the experiment starts
-        print("Enter 'test', 'vid1', 'vid2', 'vid3', or 'vid4' to start: ")
+        # print("Enter 'test', 'vid1', 'vid2', 'vid3', or 'vid4' to start: ")
         while not start_exp:
+
             time.sleep(1)
         
         if start_cond == 'test':
             paused.clear()
             time.sleep(1)
 
-            print("OUTRO GAME")
-            outro_game()
+            print("celebrate")
+            robot_motions.center_all()
+            
+            torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
+            torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
+            torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
+            torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
 
             paused.set()
         time.sleep(1)
