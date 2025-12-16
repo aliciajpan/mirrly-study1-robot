@@ -418,7 +418,8 @@ class GestureController:
 
     def game_tts_1_answer(self): # audio is 8 sec long
         print('game_tts_1_answer')
-        self.talking_left_arm()
+        self.center_all()
+        self.talking_right_arm()
         self.center_all()
         self.celebrate_arms_up()
         self.center_all()
@@ -439,9 +440,10 @@ class GestureController:
 
     def game_tts_2_answer(self): # audio is 6 sec long
         print('game_tts_2_answer')
-        self.talking_right_arm()
         self.center_all()
         self.talking_left_arm()
+        self.center_all()
+        self.talking_right_arm()
         self.center_all()
 
     def game_tts_3_prompt(self): # audio is 15 sec long
@@ -456,7 +458,8 @@ class GestureController:
 
     def game_tts_3_answer(self): # audio is 7 sec long
         print('game_tts_3_answer')
-        self.talking_left_arm()
+        self.center_all()
+        self.talking_right_arm()
         self.center_all()
         self.celebrate_arms_up()
         self.center_all()
@@ -476,7 +479,8 @@ class GestureController:
 
     def game_tts_4_answer(self): # audio is 7 sec long
         print('game_tts_4_answer')
-        self.talking_left_arm()
+        self.center_all()
+        self.talking_right_arm()
         self.center_all()
         self.celebrate_arms_up()
         self.center_all()
@@ -496,9 +500,10 @@ class GestureController:
 
     def game_tts_5_answer(self): # audio is 6 sec long
         print('game_tts_5_answer')
-        self.talking_right_arm()
         self.center_all()
         self.talking_left_arm()
+        self.center_all()
+        self.talking_right_arm()
         self.center_all()
 
 
