@@ -216,11 +216,11 @@ def game_tts_2_answer(): # audio is 6 sec long
     robot_motions.center_all()
 
 def game_tts_3_prompt(): # audio is 15 sec long
-
+    time.sleep(5)
     #start when Fiona used to have an
     robot_motions.talking_right_arm()
     robot_motions.center_all()
-
+    time.sleep(3)
     # which eye do you think...
     robot_motions.look_point_left()
     robot_motions.center_all()
@@ -232,6 +232,7 @@ def game_tts_3_answer(): # audio is 7 sec long
     robot_motions.center_all()
 
 def game_tts_4_prompt(): # audio is 16 sec long
+    time.sleep(1)
     robot_motions.celebrate_arms_up()
     robot_motions.center_all()
 
@@ -240,7 +241,8 @@ def game_tts_4_prompt(): # audio is 16 sec long
     robot_motions.talking_left_arm()
     robot_motions.center_all()
 
-    robot_motions.look_point_right()
+    time.sleep(1)
+    robot_motions.look_point_left()
     robot_motions.center_all()
 
 def game_tts_4_answer(): # audio is 7 sec long
@@ -250,13 +252,16 @@ def game_tts_4_answer(): # audio is 7 sec long
     robot_motions.center_all()
 
 def game_tts_5_prompt(): # audio is 14 sec long
+    time.sleep(2)
     robot_motions.celebrate_arms_up()
     robot_motions.center_all()
 
+    time.sleep(2)
     # Daniel's vision is blury
     robot_motions.talking_left_arm()
     robot_motions.center_all()
 
+    time.sleep(1)
     # which eye is should
     robot_motions.look_point_left()
     robot_motions.center_all()
@@ -288,6 +293,8 @@ def video_tts_1(): # audio is 48 sec long
     #
     robot_motions.talking_right_arm()
     robot_motions.center_all()
+    #
+    robot_motions.sad_look_down()
 
 def video_tts_2(): # audio is 13 sec long
     robot_motions.celebrate_arms_up()
@@ -327,9 +334,12 @@ def video_tts_3(): # audio is 56 sec long
 
 def video_tts_4(): # audio is 21 sec long
     robot_motions.celebrate_arms_up()
-    time.sleep(4)
+    time.sleep(6)
     #
-    robot_motions.look_point_right()
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+    robot_motions.talking_both_arms()
+    time.sleep(2)
     robot_motions.center_all()
 
 def outro_game():
@@ -506,7 +516,7 @@ if __name__ == "__main__":
             paused.set()
         time.sleep(1)
 
-        if start_cond == 'game2':
+        if start_cond == 'g2':
             paused.clear()
             time.sleep(1)
 
@@ -516,7 +526,17 @@ if __name__ == "__main__":
             paused.set()
         time.sleep(1)
 
-        if start_cond == 'game3':
+        if start_cond == 'f2':
+            paused.clear()
+            time.sleep(1)
+
+            print("game_tts_2")
+            game_tts_2_answer()
+
+            paused.set()
+        time.sleep(1)
+
+        if start_cond == 'g3':
             paused.clear()
             time.sleep(1)
 
@@ -526,12 +546,52 @@ if __name__ == "__main__":
             paused.set()
         time.sleep(1)
 
-        if start_cond == 'game4':
+        if start_cond == 'f3':
+            paused.clear()
+            time.sleep(1)
+
+            print("game_tts_3")
+            game_tts_1_answer()
+
+            paused.set()
+        time.sleep(1)
+
+        if start_cond == 'g4':
             paused.clear()
             time.sleep(1)
 
             print("game_tts_4")
             game_tts_4_prompt()
+
+            paused.set()
+        time.sleep(1)
+
+        if start_cond == 'f4':
+            paused.clear()
+            time.sleep(1)
+
+            print("game_tts_4")
+            game_tts_1_answer()
+
+            paused.set()
+        time.sleep(1)
+
+        if start_cond == 'g5':
+            paused.clear()
+            time.sleep(1)
+
+            print("game_tts_5")
+            game_tts_4_prompt()
+
+            paused.set()
+        time.sleep(1)
+
+        if start_cond == 'f5':
+            paused.clear()
+            time.sleep(1)
+
+            print("game_tts_5")
+            game_tts_1_answer()
 
             paused.set()
         time.sleep(1)
