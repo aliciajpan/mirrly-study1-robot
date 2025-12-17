@@ -433,6 +433,70 @@ class GestureController:
 
         interruptible_sleep(2)
         
+    def overall_intro_tts(self):
+        self.talking_right_arm()
+        self.center_all()
+        time.sleep(2)
+        #I'm so excited to spend...
+        self.celebrate_arms_up()
+        self.center_all()
+        time.sleep(1)
+        #I will be helping
+        self.talking_left_arm()
+        self.center_all()
+        time.sleep(2)
+        self.talking_right_arm()
+        self.center_all()
+        time.sleep(3)
+        #Thank you for coming and...
+        self.celebrate_arms_up()
+        self.center_all()
+        time.sleep(2)
+        #all about an eye condition
+        self.look_point_left()
+        self.center_all()
+        time.sleep(1)
+        
+    def intro_game(self): # audio is 51 sec long 
+            print('intro_game')
+            self.celebrate_arms_up()
+            time.sleep(3)
+            self.center_all()
+            #
+            self.talking_both_arms()
+            time.sleep(5)
+            self.center_all()
+            #
+            self.look_point_left()
+            self.center_all()
+            #
+            self.look_point_left()
+            time.sleep(4)
+            self.center_all()
+            #
+            self.talking_right_arm()
+            time.sleep(1)
+            self.center_all
+            #
+            self.talking_left_arm()
+            time.sleep(1)
+            self.center_all
+            #
+            self.talking_both_arms()
+            time.sleep(4)
+            self.center_all
+            #
+            self.celebrate_arms_up()
+            self.center_all()
+
+    def overall_outro(self): # audio is 8 sec long
+            print('overall_outro')
+            self.talking_both_arms()
+            time.sleep(3)
+            self.center_all()
+            self.celebrate_arms_up()
+            time.sleep(3)
+            self.center_all()
         
     def game_tts_1_prompt(self): # audio is 15 sec long
         self.talking_both_arms()
@@ -848,6 +912,9 @@ GESTURES = {
     'countdown_gesture': gesture_controller.countdown_gesture,
     'show_diamond': gesture_controller.show_diamond,
     'show_star': gesture_controller.show_star,
+    'overall_intro_tts': gesture_controller.overall_intro_tts,
+    'intro_game': gesture_controller.intro_game,
+    'overall_outro': gesture_controller.overall_outro,
 }
 
 
