@@ -59,9 +59,9 @@ LIMITS = {
     "eye_brow_l": {"open": 370, "close": 210},
     "eye_brow_r": {"open": 343, "close": 510},
     "arm_r": {"up": 90, "rest": 120, "down": 170}, # rest means T-pose
-    "arm_l": {"up": 160, "rest": 130, "down": 50}, # rest means T-pose
-    "r_shoulder": {"up": 160, "front": 70}, # up means screw face of shoulder to ceiling
-    "l_shoulder": {"up": 60, "front": 150}, # up means screw face of shoulder to ceiling
+    "arm_l": {"up": 110, "rest": 130, "down": 30}, # rest means T-pose
+    "r_shoulder": {"up": 160, "front": 80}, # up means screw face of shoulder to ceiling
+    "l_shoulder": {"up": 60, "front": 160}, # up means screw face of shoulder to ceiling
 }
 
 # Speed constants
@@ -277,9 +277,9 @@ class GestureController:
         # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
-        torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
+        torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
         torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
-        torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
+        torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
 
         interruptible_sleep(2)
 
@@ -435,14 +435,14 @@ class GestureController:
         
         
     def game_tts_1_prompt(self): # audio is 15 sec long
-        print('game_tts_1_prompt')
-        self.talking_right_arm()
-        self.talking_left_arm()
+        self.talking_both_arms()
         self.center_all()
+        time.sleep(1)
 
         # In his right eye, ...
         self.talking_right_arm()
         self.center_all()
+        time.sleep(1)
 
         # ... made his vision cloudy
         self.sad_look_down()
@@ -453,52 +453,54 @@ class GestureController:
         self.center_all()
 
     def game_tts_1_answer(self): # audio is 8 sec long
-        print('game_tts_1_answer')
         self.talking_left_arm()
         self.center_all()
+        time.sleep(1)
+
         self.celebrate_arms_up()
         self.center_all()
 
     def game_tts_2_prompt(self): # audio is 14 sec long
-        print('game_tts_2_prompt')
         # pause until when they're playing with...
+        time.sleep(1)
+        time.sleep(1)
         self.celebrate_arms_up()
         self.center_all()
+        time.sleep(1)
 
         # covered part of their vision in their left eye
         self.talking_left_arm()
         self.center_all()
 
+        time.sleep(1)
         # which of Alex's eyes...
-        self.talking_left_arm()
+        self.look_point_left()
         self.center_all()
 
     def game_tts_2_answer(self): # audio is 6 sec long
-        print('game_tts_2_answer')
         self.talking_right_arm()
         self.center_all()
         self.talking_left_arm()
         self.center_all()
 
     def game_tts_3_prompt(self): # audio is 15 sec long
-        print('game_tts_3_prompt')
+        time.sleep(5)
         #start when Fiona used to have an
         self.talking_right_arm()
         self.center_all()
-
+        time.sleep(3)
         # which eye do you think...
         self.look_point_left()
         self.center_all()
 
     def game_tts_3_answer(self): # audio is 7 sec long
-        print('game_tts_3_answer')
         self.talking_left_arm()
         self.center_all()
         self.celebrate_arms_up()
         self.center_all()
 
     def game_tts_4_prompt(self): # audio is 16 sec long
-        print('game_tts_4_prompt')
+        time.sleep(1)
         self.celebrate_arms_up()
         self.center_all()
 
@@ -507,31 +509,32 @@ class GestureController:
         self.talking_left_arm()
         self.center_all()
 
-        self.look_point_right()
+        time.sleep(1)
+        self.look_point_left()
         self.center_all()
 
     def game_tts_4_answer(self): # audio is 7 sec long
-        print('game_tts_4_answer')
         self.talking_left_arm()
         self.center_all()
         self.celebrate_arms_up()
         self.center_all()
 
     def game_tts_5_prompt(self): # audio is 14 sec long
-        print('game_tts_5_prompt')
+        time.sleep(2)
         self.celebrate_arms_up()
         self.center_all()
 
+        time.sleep(2)
         # Daniel's vision is blury
         self.talking_left_arm()
         self.center_all()
 
+        time.sleep(1)
         # which eye is should
         self.look_point_left()
         self.center_all()
 
     def game_tts_5_answer(self): # audio is 6 sec long
-        print('game_tts_5_answer')
         self.talking_right_arm()
         self.center_all()
         self.talking_left_arm()
@@ -654,19 +657,20 @@ class GestureController:
             print("  [SIMULATION] Performing gesture with video")
             interruptible_sleep(3.0)  # Simulate gesture duration
         else:
-            # Example: Celebratory gesture
-            head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
-            head_motors.move("head_pitch", LIMITS["head_pitch"]["up"], PITCH_SPEED)
-            head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
-            # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-            # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+            # # Example: Celebratory gesture
+            # head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
+            # head_motors.move("head_pitch", LIMITS["head_pitch"]["up"], PITCH_SPEED)
+            # head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
+            # # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+            # # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
-            torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
-            torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
-            torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
-            torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
+            # torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
+            # torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
+            # torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
+            # torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
             
-            time.sleep(0.5)
+            # time.sleep(0.5)
+            pass
         
         # Wait for video to finish if it was started
         if video_thread:
@@ -693,7 +697,7 @@ class GestureController:
             video_thread = media_player.play_video(
                 video_path=video_path,
                 fullscreen=True,
-                muted=False,
+                muted=True,
                 blocking=False
             )
         else:
@@ -704,20 +708,21 @@ class GestureController:
             print("  [SIMULATION] Performing countdown gesture")
             interruptible_sleep(5.0)
         else:
-            # Center position at start
-            head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
-            head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
-            head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
-            # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-            # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+            # # Center position at start
+            # head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
+            # head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+            # head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
+            # # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+            # # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
             
-            # Anticipatory arm movements
-            torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
-            torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
-            torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
-            torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
+            # # Anticipatory arm movements
+            # torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
+            # torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
+            # torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
+            # torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
             
             interruptible_sleep(0.5)
+            
         
         # Wait for countdown video to finish
         if video_thread:
