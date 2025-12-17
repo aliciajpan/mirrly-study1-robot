@@ -433,7 +433,6 @@ class GestureController:
 
         interruptible_sleep(2)
         
-        
     def game_tts_1_prompt(self): # audio is 15 sec long
         self.talking_both_arms()
         self.center_all()
@@ -540,7 +539,6 @@ class GestureController:
         self.talking_left_arm()
         self.center_all()
 
-
     def video_tts_all(self): # audio is 48 sec long
         print('video_tts_all')
         self.video_tts_1()
@@ -623,6 +621,37 @@ class GestureController:
         self.talking_both_arms()
         time.sleep(2)
         self.center_all()
+
+    def intro_game(self):
+        print('intro_game')
+        self.celebrate_arms_up()
+        time.sleep(3)
+        self.center_all()
+        #
+        self.talking_both_arms()
+        time.sleep(5)
+        self.center_all()
+        #
+        self.look_point_left()
+        self.center_all()
+        #
+        self.look_point_left()
+        time.sleep(4)
+        self.center_all()
+        #
+        self.talking_right_arm()
+        time.sleep(1)
+        self.center_all
+        #
+        self.talking_left_arm()
+        time.sleep(1)
+        self.center_all
+        #
+        self.talking_both_arms()
+        time.sleep(4)
+        self.center_all
+        #
+        self.celebrate_arms_up()
 
     def outro_game(self):
         print('outro_game')
@@ -843,6 +872,7 @@ GESTURES = {
     'video_tts_2': gesture_controller.video_tts_2,
     'video_tts_3': gesture_controller.video_tts_3,
     'video_tts_4': gesture_controller.video_tts_4,
+    'intro_game': gesture_controller.intro_game,
     'outro_game': gesture_controller.outro_game,
     'gesture_with_video': gesture_controller.gesture_with_video,
     'countdown_gesture': gesture_controller.countdown_gesture,
