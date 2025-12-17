@@ -340,7 +340,7 @@ class GestureController:
 
         interruptible_sleep(2)
 
-    def talking_both_arm(self):
+    def talking_both_arms(self):
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Talking with both arm gesture")
             interruptible_sleep(2)
