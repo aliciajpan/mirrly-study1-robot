@@ -622,7 +622,7 @@ class GestureController:
         time.sleep(2)
         self.center_all()
 
-    def intro_game(self):
+    def intro_game(self): # audio is 51 sec long 
         print('intro_game')
         self.celebrate_arms_up()
         time.sleep(3)
@@ -653,7 +653,7 @@ class GestureController:
         #
         self.celebrate_arms_up()
 
-    def outro_game(self):
+    def outro_game(self): # audio is 2 sec long 
         print('outro_game')
         self.celebrate_arms_up()
         self.center_all()
