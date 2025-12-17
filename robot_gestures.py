@@ -176,9 +176,13 @@ def start_idle_motions():
     """Start background idle motion threads."""
     global idle_threads
     
-    if not MOTORS_AVAILABLE:
-        print("✓ Idle motions ready (simulation mode)")
+    if MOTORS_AVAILABLE:
+        # In production mode, gestures run in a separate process that controls the motors.
+        # Starting idle threads here would compete for the same serial port.
+        print("✓ Idle motions disabled in production to avoid port conflicts")
         return
+    else:
+        print("✓ Idle motions ready (simulation mode)")
     
     # Resume idle motions
     Idle_paused.set()
@@ -862,6 +866,7 @@ class GestureController:
             return
         
         try:
+            torso_motors.stop_arm_motions()
             torso_motors.release_motors()
             torso_motors.release_hands('all')
             head_motors.close()
