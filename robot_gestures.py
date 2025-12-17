@@ -652,10 +652,20 @@ class GestureController:
         self.center_all
         #
         self.celebrate_arms_up()
+        self.center_all()
 
     def outro_game(self): # audio is 2 sec long 
         print('outro_game')
         self.celebrate_arms_up()
+        self.center_all()
+
+    def overall_outro(self): # audio is 8 sec long
+        print('overall_outro')
+        self.talking_both_arms()
+        time.sleep(3)
+        self.center_all()
+        self.celebrate_arms_up()
+        time.sleep(3)
         self.center_all()
 
     def gesture_with_video(self, video_path=None):
@@ -878,6 +888,7 @@ GESTURES = {
     'countdown_gesture': gesture_controller.countdown_gesture,
     'show_diamond': gesture_controller.show_diamond,
     'show_star': gesture_controller.show_star,
+    'overall_outro': gesture_controller.overall_outro
 }
 
 

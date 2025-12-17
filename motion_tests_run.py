@@ -29,8 +29,8 @@ def keyboard_listener(paused, eyebrow_process, yaw_process, rsh_process):
     global start_cond
     paused_state = True  # track the paused state
     while True:
-        user_input = input("Enter command ('test' or 'vid#' (# 1 to 4) to start, 'p' to toggle pausing, 'q' to quit): ").lower()
-        if user_input == 'test' or 'vid1' or 'vid2' or 'vid3' or 'vid4':
+        user_input = input("Enter command ('test' or 'test2') to start, 'p' to toggle pausing, 'q' to quit): ").lower()
+        if user_input == 'test' or 'test2':
             start_exp = True
             start_cond = user_input
             print("Test started.")
@@ -155,8 +155,7 @@ if __name__ == "__main__":
         robot_motions.center_all()
         
         # Wait until the experiment starts
-        # print("Enter 'test', 'vid1', 'vid2', 'vid3', or 'vid4' to start: ")
-        print("Enter 'test', 'game1', 'game2', 'game3', or 'game4' to start: ")
+        print("Enter 'test' or 'test2' to start: ")
         while not start_exp:
 
             time.sleep(1)
@@ -171,102 +170,12 @@ if __name__ == "__main__":
             paused.set()
         time.sleep(1)
 
-        if start_cond == 'g1':
+        if start_cond == 'test2':
             paused.clear()
             time.sleep(1)
 
-            print("game_tts_1")
-            robot_motions.game_tts_1_prompt()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'f1':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_1")
-            robot_motions.game_tts_1_answer()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'g2':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_2")
-            robot_motions.game_tts_2_prompt()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'f2':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_2")
-            robot_motions.game_tts_2_answer()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'g3':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_3")
-            robot_motions.game_tts_3_prompt()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'f3':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_3")
-            robot_motions.game_tts_1_answer()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'g4':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_4")
-            robot_motions.game_tts_4_prompt()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'f4':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_4")
-            robot_motions.game_tts_1_answer()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'g5':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_5")
-            robot_motions.game_tts_4_prompt()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'f5':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_5")
-            robot_motions.game_tts_1_answer()
+            print("overall outro test")
+            robot_motions.overall_outro()
 
             paused.set()
         time.sleep(1)
