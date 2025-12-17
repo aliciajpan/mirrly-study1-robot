@@ -697,7 +697,7 @@ class GestureController:
             video_thread = media_player.play_video(
                 video_path=video_path,
                 fullscreen=True,
-                muted=False,
+                muted=True,
                 blocking=False
             )
         else:
