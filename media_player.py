@@ -25,8 +25,14 @@ class MediaPlayer:
         self.active_players = []
         
         if VLC_AVAILABLE:
-            # Hide mouse cursor during playback
-            self.vlc_instance = vlc.Instance('--mouse-hide-timeout=0')
+            # VLC options: hide cursor, disable DRM for SSH/X11 compatibility, force X11 video output
+            self.vlc_instance = vlc.Instance(
+                '--mouse-hide-timeout=0',
+                '--no-video-deco',           # No window decorations
+                '--no-embedded-video',        # Don't embed video
+                '--vout=xcb_x11',            # Force X11 video output (works over SSH with DISPLAY=:0)
+                '--avcodec-hw=none'          # Disable hardware decoding to avoid DRM issues
+            )
     
     def play_video(self, video_path, fullscreen=True, muted=True, blocking=True):
         """
