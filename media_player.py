@@ -25,19 +25,26 @@ class MediaPlayer:
         self.active_players = []
         
         if VLC_AVAILABLE:
-            # VLC options: hide cursor, disable DRM for SSH/X11 compatibility, force X11 video output
-            self.vlc_instance = vlc.Instance(
-                '--mouse-hide-timeout=0',
-                '--no-video-deco',           # No window decorations
-                '--no-embedded-video',        # Don't embed video
-                '--vout=xcb_x11',            # Force X11 video output (works over SSH with DISPLAY=:0)
-                '--avcodec-hw=none',         # Disable hardware decoding to avoid DRM issues
-                '--no-hwaccel',              # Completely disable hardware acceleration
-                '--codec=avcodec,none',      # Force software avcodec decoder
-                '--file-caching=300',        # Reduce file cache to 300ms (default 1000ms)
-                '--network-caching=300',     # Reduce network cache to 300ms
-                '--verbose=0'                # Reduce error spam
-            )
+            try:
+                # VLC options: hide cursor, disable DRM for SSH/X11 compatibility, force X11 video output
+                self.vlc_instance = vlc.Instance(
+                    '--mouse-hide-timeout=0',
+                    '--no-video-deco',           # No window decorations
+                    '--no-embedded-video',        # Don't embed video
+                    '--vout=xcb_x11',            # Force X11 video output (works over SSH with DISPLAY=:0)
+                    '--avcodec-hw=none',         # Disable hardware decoding to avoid DRM issues
+                    '--no-hwaccel',              # Completely disable hardware acceleration
+                    '--codec=avcodec,none',      # Force software avcodec decoder
+                    '--file-caching=300',        # Reduce file cache to 300ms (default 1000ms)
+                    '--network-caching=300',     # Reduce network cache to 300ms
+                    '--verbose=0'                # Reduce error spam
+                )
+            except Exception as e:
+                # Fall back to simulation mode if VLC cannot initialize
+                print(f"Warning: VLC initialization failed: {e}")
+                self.vlc_instance = None
+                global VLC_AVAILABLE
+                VLC_AVAILABLE = False
     
     def play_video(self, video_path, fullscreen=True, muted=True, blocking=True):
         """
