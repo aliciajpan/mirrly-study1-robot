@@ -802,14 +802,14 @@ class GestureController:
     def show_diamond(self, duration=3.0):
         """
         Display diamond image on screen.
-        Uses: static/media/image/diamond.jpeg
+        Uses: static/media/image/diamond.png
         
         Args:
             duration (float): How long to display the image (default: 3 seconds)
         """
         print(f"SHOW DIAMOND (duration: {duration}s)")
         
-        image_path = "static/media/image/diamond.jpeg"
+        image_path = "static/media/image/diamond.png"
         
         # Display diamond image
         if MEDIA_AVAILABLE and media_player:
@@ -829,14 +829,14 @@ class GestureController:
     def show_star(self, duration=3.0):
         """
         Display star image on screen.
-        Uses: static/media/image/star.jpeg
+        Uses: static/media/image/star.png
         
         Args:
             duration (float): How long to display the image (default: 3 seconds)
         """
         print(f"SHOW STAR (duration: {duration}s)")
         
-        image_path = "static/media/image/star.jpeg"
+        image_path = "static/media/image/star.png"
         
         # Display star image
         if MEDIA_AVAILABLE and media_player:
@@ -947,9 +947,25 @@ def execute_gesture(gesture_name, **kwargs):
         
         # Create a wrapper function that can be run in a process
         def gesture_wrapper():
+            # Start idle motions in this subprocess (safe: shares motor instances)
+            subprocess_idle_threads = []
+            if MOTORS_AVAILABLE:
+                try:
+                    # Start idle threads in this subprocess
+                    Idle_paused.set()  # Enable idle motions
+                    eyebrow_thread = threading.Thread(target=idle_eyebrow_motion, daemon=True)
+                    yaw_thread = threading.Thread(target=idle_head_yaw_motion, daemon=True)
+                    eyebrow_thread.start()
+                    yaw_thread.start()
+                    subprocess_idle_threads = [eyebrow_thread, yaw_thread]
+                except Exception as e:
+                    print(f"[GESTURE] Could not start idle motions: {e}")
+            
             # Setup signal handler for graceful shutdown
             def signal_handler(signum, frame):
                 print(f"[GESTURE] Received SIGTERM, cleaning up motors...")
+                # Stop idle motions
+                Idle_paused.clear()
                 # Cleanly close motor connections
                 try:
                     if torso_motors:
@@ -978,6 +994,9 @@ def execute_gesture(gesture_name, **kwargs):
             except Exception as e:
                 print(f"[GESTURE] Error executing gesture: {e}")
                 raise
+            finally:
+                # Stop idle motions when gesture completes
+                Idle_paused.clear()
         
         # Run gesture in a separate process
         process = Process(target=gesture_wrapper, daemon=False)
