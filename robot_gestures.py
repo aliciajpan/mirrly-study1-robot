@@ -192,8 +192,8 @@ def start_idle_motions():
         eyebrow_thread = threading.Thread(target=idle_eyebrow_motion, daemon=True)
         yaw_thread = threading.Thread(target=idle_head_yaw_motion, daemon=True)
         
-        eyebrow_thread.start()
-        yaw_thread.start()
+        #eyebrow_thread.start()
+        #yaw_thread.start()
         
         idle_threads = [eyebrow_thread, yaw_thread]
         print("✓ Idle motions started")
@@ -229,6 +229,24 @@ class GestureController:
         torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
 
         interruptible_sleep(2.0)
+
+    def blink_test(self):
+        if not MOTORS_AVAILABLE:
+            print("  [SIMULATION] blinking")
+            interruptible_sleep(2)
+            return      
+
+        blink_speed = 800
+        head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["close"], blink_speed - 100)
+        time.sleep(0.01)
+        head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["close"], blink_speed)
+        sleep_dur = 0.4 if blink_speed == 1000 else 0.8 if blink_speed == 800 else 0.9
+        time.sleep(sleep_dur)
+        head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], blink_speed - 100)
+        time.sleep(0.01)
+        head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], blink_speed)
+
+        interruptible_sleep(2)
 
     def look_point_left(self):
         if not MOTORS_AVAILABLE:
@@ -920,6 +938,7 @@ GESTURES = {
     'overall_intro_tts': gesture_controller.overall_intro_tts,
     'intro_game': gesture_controller.intro_game,
     'overall_outro': gesture_controller.overall_outro,
+    'blink_test': gesture_controller.blink_test
 }
 
 
@@ -955,8 +974,8 @@ def execute_gesture(gesture_name, **kwargs):
                     Idle_paused.set()  # Enable idle motions
                     eyebrow_thread = threading.Thread(target=idle_eyebrow_motion, daemon=True)
                     yaw_thread = threading.Thread(target=idle_head_yaw_motion, daemon=True)
-                    eyebrow_thread.start()
-                    yaw_thread.start()
+                    # eyebrow_thread.start()
+                    # yaw_thread.start()
                     subprocess_idle_threads = [eyebrow_thread, yaw_thread]
                 except Exception as e:
                     print(f"[GESTURE] Could not start idle motions: {e}")
