@@ -176,9 +176,13 @@ def start_idle_motions():
     """Start background idle motion threads."""
     global idle_threads
     
-    if not MOTORS_AVAILABLE:
-        print("✓ Idle motions ready (simulation mode)")
+    if MOTORS_AVAILABLE:
+        # In production mode, gestures run in a separate process that controls the motors.
+        # Starting idle threads here would compete for the same serial port.
+        print("✓ Idle motions disabled in production to avoid port conflicts")
         return
+    else:
+        print("✓ Idle motions ready (simulation mode)")
     
     # Resume idle motions
     Idle_paused.set()
@@ -433,6 +437,70 @@ class GestureController:
 
         interruptible_sleep(2)
         
+    def overall_intro_tts(self):
+        self.talking_right_arm()
+        self.center_all()
+        time.sleep(2)
+        #I'm so excited to spend...
+        self.celebrate_arms_up()
+        self.center_all()
+        time.sleep(1)
+        #I will be helping
+        self.talking_left_arm()
+        self.center_all()
+        time.sleep(2)
+        self.talking_right_arm()
+        self.center_all()
+        time.sleep(3)
+        #Thank you for coming and...
+        self.celebrate_arms_up()
+        self.center_all()
+        time.sleep(2)
+        #all about an eye condition
+        self.look_point_left()
+        self.center_all()
+        time.sleep(1)
+        
+    def intro_game(self): # audio is 51 sec long 
+            print('intro_game')
+            self.celebrate_arms_up()
+            time.sleep(3)
+            self.center_all()
+            #
+            self.talking_both_arms()
+            time.sleep(5)
+            self.center_all()
+            #
+            self.look_point_left()
+            self.center_all()
+            #
+            self.look_point_left()
+            time.sleep(4)
+            self.center_all()
+            #
+            self.talking_right_arm()
+            time.sleep(1)
+            self.center_all
+            #
+            self.talking_left_arm()
+            time.sleep(1)
+            self.center_all
+            #
+            self.talking_both_arms()
+            time.sleep(4)
+            self.center_all
+            #
+            self.celebrate_arms_up()
+            self.center_all()
+
+    def overall_outro(self): # audio is 8 sec long
+            print('overall_outro')
+            self.talking_both_arms()
+            time.sleep(3)
+            self.center_all()
+            self.celebrate_arms_up()
+            time.sleep(3)
+            self.center_all()
         
     def game_tts_1_prompt(self): # audio is 15 sec long
         self.talking_both_arms()
@@ -734,14 +802,14 @@ class GestureController:
     def show_diamond(self, duration=3.0):
         """
         Display diamond image on screen.
-        Uses: static/media/image/diamond.jpeg
+        Uses: static/media/image/diamond.png
         
         Args:
             duration (float): How long to display the image (default: 3 seconds)
         """
         print(f"SHOW DIAMOND (duration: {duration}s)")
         
-        image_path = "static/media/image/diamond.jpeg"
+        image_path = "static/media/image/diamond.png"
         
         # Display diamond image
         if MEDIA_AVAILABLE and media_player:
@@ -761,14 +829,14 @@ class GestureController:
     def show_star(self, duration=3.0):
         """
         Display star image on screen.
-        Uses: static/media/image/star.jpeg
+        Uses: static/media/image/star.png
         
         Args:
             duration (float): How long to display the image (default: 3 seconds)
         """
         print(f"SHOW STAR (duration: {duration}s)")
         
-        image_path = "static/media/image/star.jpeg"
+        image_path = "static/media/image/star.png"
         
         # Display star image
         if MEDIA_AVAILABLE and media_player:
@@ -798,6 +866,7 @@ class GestureController:
             return
         
         try:
+            torso_motors.stop_arm_motions()
             torso_motors.release_motors()
             torso_motors.release_hands('all')
             head_motors.close()
@@ -848,6 +917,9 @@ GESTURES = {
     'countdown_gesture': gesture_controller.countdown_gesture,
     'show_diamond': gesture_controller.show_diamond,
     'show_star': gesture_controller.show_star,
+    'overall_intro_tts': gesture_controller.overall_intro_tts,
+    'intro_game': gesture_controller.intro_game,
+    'overall_outro': gesture_controller.overall_outro,
 }
 
 
@@ -875,9 +947,25 @@ def execute_gesture(gesture_name, **kwargs):
         
         # Create a wrapper function that can be run in a process
         def gesture_wrapper():
+            # Start idle motions in this subprocess (safe: shares motor instances)
+            subprocess_idle_threads = []
+            if MOTORS_AVAILABLE:
+                try:
+                    # Start idle threads in this subprocess
+                    Idle_paused.set()  # Enable idle motions
+                    eyebrow_thread = threading.Thread(target=idle_eyebrow_motion, daemon=True)
+                    yaw_thread = threading.Thread(target=idle_head_yaw_motion, daemon=True)
+                    eyebrow_thread.start()
+                    yaw_thread.start()
+                    subprocess_idle_threads = [eyebrow_thread, yaw_thread]
+                except Exception as e:
+                    print(f"[GESTURE] Could not start idle motions: {e}")
+            
             # Setup signal handler for graceful shutdown
             def signal_handler(signum, frame):
                 print(f"[GESTURE] Received SIGTERM, cleaning up motors...")
+                # Stop idle motions
+                Idle_paused.clear()
                 # Cleanly close motor connections
                 try:
                     if torso_motors:
@@ -906,6 +994,9 @@ def execute_gesture(gesture_name, **kwargs):
             except Exception as e:
                 print(f"[GESTURE] Error executing gesture: {e}")
                 raise
+            finally:
+                # Stop idle motions when gesture completes
+                Idle_paused.clear()
         
         # Run gesture in a separate process
         process = Process(target=gesture_wrapper, daemon=False)

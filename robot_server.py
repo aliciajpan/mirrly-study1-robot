@@ -37,6 +37,7 @@ from robot_gestures import (
     stop_idle_motions,
     Gesture_stop,
     motor_lock,
+    MOTORS_AVAILABLE,
 )
 
 import multiprocessing
@@ -80,6 +81,9 @@ class GestureExecutor:
                 logger.info(f"Gesture process was terminated")
             else:
                 logger.warning(f"Gesture process exited with code {process.exitcode}")
+            # After gesture completion, resume idle motions only in simulation mode
+            if not MOTORS_AVAILABLE:
+                start_idle_motions()
         except Exception as e:
             logger.error(f"Error waiting for gesture completion: {e}")
     
@@ -108,6 +112,12 @@ class GestureExecutor:
         self.is_running = True
         self.is_paused = False
         
+        # Pause idle motions to avoid port conflicts with child process
+        try:
+            stop_idle_motions()
+        except Exception:
+            pass
+
         # Run gesture in executor to avoid blocking
         loop = asyncio.get_event_loop()
         try:
@@ -327,8 +337,9 @@ class RobotServer:
         """Start the WebSocket server."""
         logger.info(f"Starting WebSocket server on ws://{self.host}:{self.port}")
         
-        # Start idle motions in background
-        start_idle_motions()
+        # Start idle motions in background only in simulation mode to avoid hardware port conflicts
+        if not MOTORS_AVAILABLE:
+            start_idle_motions()
         
         async with websockets.serve(self.handler, self.host, self.port):
             logger.info("Server is running. Press Ctrl+C to stop.")
