@@ -53,14 +53,14 @@ if MOTORS_AVAILABLE:
 
 # Motor calibration limits (device-specific)
 LIMITS = {
-    "head_yaw":   {"left": 0, "center": 200, "right": 400},
-    "head_pitch": {"up": 240, "center": 180, "down": 118},
+    "head_yaw":   {"left": 60, "center": 200, "right": 340},
+    "head_pitch": {"up": 200, "center": 150, "down": 118},
     "eye_self":   {"left": 160, "center": 210, "right": 268},
     "eye_brow_l": {"open": 370, "close": 210},
     "eye_brow_r": {"open": 343, "close": 510},
     "arm_r": {"up": 90, "rest": 120, "down": 170}, # rest means T-pose
-    "arm_l": {"up": 110, "rest": 130, "down": 30}, # rest means T-pose
-    "r_shoulder": {"up": 160, "front": 80}, # up means screw face of shoulder to ceiling
+    "arm_l": {"up": 110, "rest": 80, "down": 30}, # rest means T-pose
+    "r_shoulder": {"up": 175, "front": 80}, # up means screw face of shoulder to ceiling
     "l_shoulder": {"up": 60, "front": 160}, # up means screw face of shoulder to ceiling
 }
 
@@ -210,6 +210,27 @@ def stop_idle_motions():
 class GestureController:
     """Manages all robot gestures and coordinated movements."""
 
+    def pitch_tester(self):
+        if not MOTORS_AVAILABLE:
+            print("  [SIMULATION] Pitch range test")
+            interruptible_sleep(2.0)
+            return
+        
+        head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+        print("center")
+        time.sleep(3)
+
+        head_motors.move("head_pitch", LIMITS["head_pitch"]["up"], PITCH_SPEED)
+        print("up")
+        time.sleep(3)
+
+        head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+        print("center")
+        time.sleep(3)
+
+        head_motors.move("head_pitch", LIMITS["head_pitch"]["down"], PITCH_SPEED)
+        print("down")
+    
     def center_all(self):
         
         if not MOTORS_AVAILABLE:
@@ -260,7 +281,7 @@ class GestureController:
         # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
         # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
-        torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
+        torso_motors.arm_move("arm_l", LIMITS["arm_l"]["rest"], 0.01)
         torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
@@ -279,7 +300,7 @@ class GestureController:
         # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
         # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
-        torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
+        torso_motors.arm_move("arm_r", LIMITS["arm_r"]["rest"], 0.01)
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
         torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
         torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
