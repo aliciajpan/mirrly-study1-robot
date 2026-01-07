@@ -26,7 +26,7 @@ Plays countdown video with celebratory arm movements.
 ### 2. Show Diamond
 Displays diamond image for specified duration.
 
-**File**: `static/media/image/diamond.jpeg`
+**File**: `static/media/image/diamond.png`
 
 **Usage**:
 ```json
@@ -41,7 +41,7 @@ With custom duration:
 ### 3. Show Star
 Displays star image for specified duration.
 
-**File**: `static/media/image/star.jpeg`
+**File**: `static/media/image/star.png`
 
 **Usage**:
 ```json
@@ -62,8 +62,8 @@ With custom duration:
        ├── video/
        │   └── countdown_video.mp4
        └── image/
-           ├── diamond.jpeg
-           └── star.jpeg
+           ├── diamond.png
+           └── star.png
    ```
 
 2. The gestures will automatically find and play these files.

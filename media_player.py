@@ -161,6 +161,10 @@ class MediaPlayer:
         if fullscreen:
             player.set_fullscreen(True)
         
+        # Center the image by setting aspect ratio and zoom to fit
+        player.video_set_aspect_ratio('16:9')  # Match screen aspect
+        player.video_set_scale(0)  # Auto-scale to fit (0 = best fit)
+        
         # Start playback
         player.play()
         
