@@ -122,14 +122,14 @@ def idle_eyebrow_motion():
                     print("  [SIMULATION] Idle eyebrow blink")
                 else:
                     try:
-                        head_motors.move("eye_brow_l", 210, blink_speed - 100)
+                        head_motors.move("eye_brow_l", "close", blink_speed - 100)
                         time.sleep(0.01)
-                        head_motors.move("eye_brow_r", 510, blink_speed)
+                        head_motors.move("eye_brow_r", "close", blink_speed)
                         sleep_dur = 0.4 if blink_speed == 1000 else 0.8 if blink_speed == 800 else 0.9
                         time.sleep(sleep_dur)
-                        head_motors.move("eye_brow_l", 350, blink_speed - 100)
+                        head_motors.move("eye_brow_l", "open", blink_speed - 100)
                         time.sleep(0.01)
-                        head_motors.move("eye_brow_r", 343, blink_speed)
+                        head_motors.move("eye_brow_r", "open", blink_speed)
                     except Exception as e:
                         # Silently continue on port errors (gesture likely terminated)
                         pass
@@ -215,14 +215,14 @@ class GestureController:
         blinks with radom speed for the amount of sleep
         """
         end_time = time.time() + sleep
-        probability = 0.6
-        while time.time() < (end_time - 0.7):
-            print(time.time()-end_time)
+        #probability = 0.6
+        #for i in range(sleep):
+        #print(time.time()-end_time)
             #paused.wait()  # block the loop when the event is set (paused)
             #probability = 0.8#0.07  # probability of eyebrow idle movement
-            blink_speed = random.choice([800, 1000])
-            if random.random() < probability:
-                    try:
+        blink_speed = 1000 #random.choice([800, 1000])
+            #if random.random() < probability:
+        try:
                         head_motors.move("eye_brow_l", 210, blink_speed - 100)
                         time.sleep(0.01)
                         head_motors.move("eye_brow_r", 510, blink_speed)
@@ -230,16 +230,16 @@ class GestureController:
                         head_motors.move("eye_brow_l", 350, blink_speed - 100)
                         time.sleep(0.01)
                         head_motors.move("eye_brow_r", 343, blink_speed)
-                        probability = probability / 3
-                        time.sleep(0.3)
-                    except Exception as e:
+                        #probability = probability / 3
+                        time.sleep(0.5)
+        except Exception as e:
                         print(f"Error in eyebrow movement: {e}")
                         time.sleep(0.01)
-            else:
-                probability = min(0.6, probability * 2 )
-                time.sleep(0.5)
-            print(probability)          
-            
+            #else:
+                #probability = min(0.6, probability * 2 )
+             #   time.sleep(0.5)
+            #print(probability)          
+        time.sleep(sleep-1)
         while time.time() < (end_time-0.1):
             time.sleep(0.1)
 
