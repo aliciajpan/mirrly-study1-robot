@@ -22,192 +22,6 @@ robot_motions = GestureController() # THIS ALREADY INITS head_motors & torso_mot
 start_exp = False
 start_cond = "test"
 
-def game_tts_1_prompt(): # audio is 15 sec long
-    robot_motions.talking_both_arm()
-    robot_motions.center_all()
-    time.sleep(1)
-
-    # In his right eye, ...
-    robot_motions.talking_right_arm()
-    robot_motions.center_all()
-    time.sleep(1)
-
-    # ... made his vision cloudy
-    robot_motions.sad_look_down()
-    robot_motions.center_all()
-
-    # Which of Mikey's eyes...
-    robot_motions.look_point_left()
-    robot_motions.center_all()
-
-def game_tts_1_answer(): # audio is 8 sec long
-    robot_motions.talking_left_arm()
-    robot_motions.center_all()
-    time.sleep(1)
-
-    robot_motions.celebrate_arms_up()
-    robot_motions.center_all()
-
-def game_tts_2_prompt(): # audio is 14 sec long
-    # pause until when they're playing with...
-    time.sleep(1)
-    time.sleep(1)
-    robot_motions.celebrate_arms_up()
-    robot_motions.center_all()
-    time.sleep(1)
-
-    # covered part of their vision in their left eye
-    robot_motions.talking_left_arm()
-    robot_motions.center_all()
-
-    time.sleep(1)
-    # which of Alex's eyes...
-    robot_motions.look_point_left()
-    robot_motions.center_all()
-
-def game_tts_2_answer(): # audio is 6 sec long
-    robot_motions.talking_right_arm()
-    robot_motions.center_all()
-    robot_motions.talking_left_arm()
-    robot_motions.center_all()
-
-def game_tts_3_prompt(): # audio is 15 sec long
-    time.sleep(5)
-    #start when Fiona used to have an
-    robot_motions.talking_right_arm()
-    robot_motions.center_all()
-    time.sleep(3)
-    # which eye do you think...
-    robot_motions.look_point_left()
-    robot_motions.center_all()
-
-def game_tts_3_answer(): # audio is 7 sec long
-    robot_motions.talking_left_arm()
-    robot_motions.center_all()
-    robot_motions.celebrate_arms_up()
-    robot_motions.center_all()
-
-def game_tts_4_prompt(): # audio is 16 sec long
-    time.sleep(1)
-    robot_motions.celebrate_arms_up()
-    robot_motions.center_all()
-
-    # She used to get...
-    robot_motions.talking_right_arm()
-    robot_motions.talking_left_arm()
-    robot_motions.center_all()
-
-    time.sleep(1)
-    robot_motions.look_point_left()
-    robot_motions.center_all()
-
-def game_tts_4_answer(): # audio is 7 sec long
-    robot_motions.talking_left_arm()
-    robot_motions.center_all()
-    robot_motions.celebrate_arms_up()
-    robot_motions.center_all()
-
-def game_tts_5_prompt(): # audio is 14 sec long
-    time.sleep(2)
-    robot_motions.celebrate_arms_up()
-    robot_motions.center_all()
-
-    time.sleep(2)
-    # Daniel's vision is blury
-    robot_motions.talking_left_arm()
-    robot_motions.center_all()
-
-    time.sleep(1)
-    # which eye is should
-    robot_motions.look_point_left()
-    robot_motions.center_all()
-
-def game_tts_5_answer(): # audio is 6 sec long
-    robot_motions.talking_right_arm()
-    robot_motions.center_all()
-    robot_motions.talking_left_arm()
-    robot_motions.center_all()
-
-def video_tts_1(): # audio is 48 sec long
-    robot_motions.talking_right_arm()
-    robot_motions.center_all()
-    #
-    robot_motions.look_point_left()
-    time.sleep(3)
-    robot_motions.center_all()
-    #
-    robot_motions.celebrate_arms_up()
-    time.sleep(2)
-    robot_motions.center_all()
-    #
-    time.sleep(3)
-    robot_motions.talking_left_arm()
-    robot_motions.center_all()
-    #
-    robot_motions.talking_left_arm()
-    robot_motions.talking_right_arm()
-    robot_motions.center_all()
-    #
-    robot_motions.talking_right_arm()
-    time.sleep(4)
-    robot_motions.center_all()
-    #
-    robot_motions.sad_look_down()
-
-def video_tts_2(): # audio is 13 sec long
-    robot_motions.celebrate_arms_up()
-    time.sleep(3)
-    robot_motions.center_all()
-    #
-    robot_motions.talking_right_arm()
-    time.sleep(1)
-    robot_motions.center_all()
-
-def video_tts_3(): # audio is 56 sec long
-    robot_motions.celebrate_arms_up()
-    time.sleep(1)
-    robot_motions.center_all()
-    #
-    robot_motions.talking_left_arm()
-    time.sleep(2)
-    robot_motions.center_all()
-    #
-    robot_motions.talking_right_arm()
-    time.sleep(2)
-    robot_motions.center_all()
-    #
-    robot_motions.talking_both_arms()
-    time.sleep(7)
-    robot_motions.center_all()
-    #
-    robot_motions.celebrate_arms_up()
-    time.sleep(2)
-    robot_motions.center_all()
-    #
-    robot_motions.talking_left_arm()
-    time.sleep(2)
-    robot_motions.center_all()
-    #
-    robot_motions.talking_right_arm()
-    time.sleep(2)
-    robot_motions.turn_head_left()
-    robot_motions.turn_head_right()
-    robot_motions.center_all()
-
-def video_tts_4(): # audio is 21 sec long
-    robot_motions.celebrate_arms_up()
-    time.sleep(6)
-    #
-    robot_motions.talking_left_arm()
-    robot_motions.center_all()
-    robot_motions.talking_both_arms()
-    time.sleep(2)
-    robot_motions.center_all()
-
-def outro_game():
-    robot_motions.celebrate_arms_up()
-    robot_motions.center_all()
-
 ##### idle functions part of threading structure, so kept in 
 
 def keyboard_listener(paused, eyebrow_process, yaw_process, rsh_process):
@@ -341,8 +155,7 @@ if __name__ == "__main__":
         robot_motions.center_all()
         
         # Wait until the experiment starts
-        # print("Enter 'test', 'vid1', 'vid2', 'vid3', or 'vid4' to start: ")
-        print("Enter 'test', 'game1', 'game2', 'game3', or 'game4' to start: ")
+        print("Enter 'test' or 'test2' to start: ")
         while not start_exp:
 
             time.sleep(1)
@@ -351,113 +164,18 @@ if __name__ == "__main__":
             paused.clear()
             time.sleep(1)
 
-            print("celebrate")
-            robot_motions.center_all()
-            
-            torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
-            torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
-            torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
-            torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
+            print("game intro test")
+            robot_motions.intro_game()
 
             paused.set()
         time.sleep(1)
 
-        if start_cond == 'g1':
+        if start_cond == 'test2':
             paused.clear()
             time.sleep(1)
 
-            print("game_tts_1")
-            game_tts_1_prompt()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'f1':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_1")
-            game_tts_1_answer()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'g2':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_2")
-            game_tts_2_prompt()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'f2':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_2")
-            game_tts_2_answer()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'g3':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_3")
-            game_tts_3_prompt()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'f3':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_3")
-            game_tts_1_answer()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'g4':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_4")
-            game_tts_4_prompt()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'f4':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_4")
-            game_tts_1_answer()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'g5':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_5")
-            game_tts_4_prompt()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'f5':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_5")
-            game_tts_1_answer()
+            print("overall outro test")
+            robot_motions.overall_outro()
 
             paused.set()
         time.sleep(1)
