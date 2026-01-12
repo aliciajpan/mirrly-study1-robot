@@ -164,8 +164,8 @@ if __name__ == "__main__":
             paused.clear()
             time.sleep(1)
 
-            print("game intro test")
-            robot_motions.intro_game()
+            print("testing video all")
+            robot_motions.video_tts_all()
 
             paused.set()
         time.sleep(1)
@@ -174,8 +174,8 @@ if __name__ == "__main__":
             paused.clear()
             time.sleep(1)
 
-            print("overall outro test")
-            robot_motions.overall_outro()
+            print("testing blinking")
+            robot_motions.blinking()
 
             paused.set()
         time.sleep(1)

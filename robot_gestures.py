@@ -5,10 +5,8 @@ Contains all gesture definitions and motor control commands.
 
 import time
 import sys
-import os
 import random
 import threading
-import multiprocessing
 import signal
 from multiprocessing import Process
 
@@ -67,6 +65,7 @@ LIMITS = {
 # Speed constants
 PITCH_SPEED = 800      # Head pitch requires higher speed to overcome weight
 EYELID_SPEED = 800      # Eyelids need 700-1000 speed for unlubricated mechanism
+BLINK_SPEED = 1000
 
 # Concurrency primitives (imported by robot_server)
 Gesture_stop = threading.Event()  # Set to pause/resume, not for hard stop
@@ -122,14 +121,14 @@ def idle_eyebrow_motion():
                     print("  [SIMULATION] Idle eyebrow blink")
                 else:
                     try:
-                        head_motors.move("eye_brow_l", 210, blink_speed - 100)
+                        head_motors.move("eye_brow_l", "close", blink_speed - 100)
                         time.sleep(0.01)
-                        head_motors.move("eye_brow_r", 510, blink_speed)
+                        head_motors.move("eye_brow_r", "close", blink_speed)
                         sleep_dur = 0.4 if blink_speed == 1000 else 0.8 if blink_speed == 800 else 0.9
                         time.sleep(sleep_dur)
-                        head_motors.move("eye_brow_l", 350, blink_speed - 100)
+                        head_motors.move("eye_brow_l", "open", blink_speed - 100)
                         time.sleep(0.01)
-                        head_motors.move("eye_brow_r", 343, blink_speed)
+                        head_motors.move("eye_brow_r", "open", blink_speed)
                     except Exception as e:
                         # Silently continue on port errors (gesture likely terminated)
                         pass
@@ -210,6 +209,38 @@ def stop_idle_motions():
 class GestureController:
     """Manages all robot gestures and coordinated movements."""
 
+    def blinking(self, duration):
+        if not MOTORS_AVAILABLE:
+            print("  [SIMULATION] blinking function for {duration} sec")
+            interruptible_sleep(2.0)
+            return
+        
+        start_time = time.time()
+
+        try:
+            head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["close"], BLINK_SPEED - 100)
+            time.sleep(0.01)
+            head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["close"], BLINK_SPEED)
+            time.sleep(0.4)
+            head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], BLINK_SPEED - 100)
+            time.sleep(0.01)
+            head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], BLINK_SPEED)
+
+        except Exception as e:
+            print(f"Error in eyelid blinking movement: {e}")
+            time.sleep(0.01)
+
+        if (duration > 1):
+            time.sleep(0.5)
+
+        elapsed_time = time.time()-start_time
+        # print("time to blink:", elapsed_time)
+        remaining_time = max(0.01, duration-elapsed_time)
+        
+        # print("time to blink:", elapsed_time)
+        # elapsed_time = time.time()-start_time
+        interruptible_sleep(remaining_time)
+
     def pitch_tester(self):
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Pitch range test")
@@ -241,8 +272,6 @@ class GestureController:
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["center"], 400)
-        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
         torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
@@ -278,8 +307,6 @@ class GestureController:
         head_motors.move("head_yaw", LIMITS["head_yaw"]["left"], 500)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["left"], 500)
-        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_l", LIMITS["arm_l"]["rest"], 0.01)
         torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
@@ -297,8 +324,6 @@ class GestureController:
         head_motors.move("head_yaw", LIMITS["head_yaw"]["right"], 500)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["right"], 500)
-        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["rest"], 0.01)
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
@@ -316,8 +341,6 @@ class GestureController:
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["up"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
-        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
@@ -335,8 +358,6 @@ class GestureController:
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["down"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
-        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["close"], EYELID_SPEED)
-        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["close"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
@@ -354,8 +375,6 @@ class GestureController:
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
-        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
@@ -373,8 +392,6 @@ class GestureController:
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
-        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
@@ -409,8 +426,6 @@ class GestureController:
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["left"], 500)
-        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
@@ -428,8 +443,6 @@ class GestureController:
         head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["right"], 500)
-        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
@@ -447,8 +460,6 @@ class GestureController:
         head_motors.move("head_yaw", LIMITS["head_yaw"]["left"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["right"], 500)
-        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
@@ -466,8 +477,6 @@ class GestureController:
         head_motors.move("head_yaw", LIMITS["head_yaw"]["right"], 400)
         head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
         head_motors.move("eye_self", LIMITS["eye_self"]["right"], 500)
-        # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-        # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
 
         torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
         torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
@@ -479,55 +488,55 @@ class GestureController:
     def overall_intro_tts(self):
         self.talking_right_arm()
         self.center_all()
-        time.sleep(2)
+        self.blinking(2)
         #I'm so excited to spend...
         self.celebrate_arms_up()
         self.center_all()
-        time.sleep(1)
+        self.blinking(1)
         #I will be helping
         self.talking_left_arm()
         self.center_all()
-        time.sleep(2)
+        self.blinking(2)
         self.talking_right_arm()
         self.center_all()
-        time.sleep(3)
+        self.blinking(3)
         #Thank you for coming and...
         self.celebrate_arms_up()
         self.center_all()
-        time.sleep(2)
+        self.blinking(2)
         #all about an eye condition
         self.look_point_left()
         self.center_all()
-        time.sleep(1)
+        self.blinking(1)
         
     def intro_game(self): # audio is 51 sec long 
             print('intro_game')
             self.celebrate_arms_up()
-            time.sleep(3)
+            self.blinking(3)
             self.center_all()
             #
             self.talking_both_arms()
-            time.sleep(5)
+            self.blinking(5)
             self.center_all()
             #
             self.look_point_left()
             self.center_all()
             #
             self.look_point_left()
-            time.sleep(4)
+            self.blinking(4)
             self.center_all()
             #
             self.talking_right_arm()
-            time.sleep(1)
+            self.blinking(1)
             self.center_all
             #
             self.talking_left_arm()
-            time.sleep(1)
-            self.center_all
+            self.blinking(1)
+            self.center_all()
             #
             self.talking_both_arms()
-            time.sleep(4)
-            self.center_all
+            self.blinking(4)
+            self.center_all()
             #
             self.celebrate_arms_up()
             self.center_all()
@@ -535,21 +544,21 @@ class GestureController:
     def overall_outro(self): # audio is 8 sec long
             print('overall_outro')
             self.talking_both_arms()
-            time.sleep(3)
+            self.blinking(3)
             self.center_all()
             self.celebrate_arms_up()
-            time.sleep(3)
+            self.blinking(3)
             self.center_all()
         
     def game_tts_1_prompt(self): # audio is 15 sec long
         self.talking_both_arms()
         self.center_all()
-        time.sleep(1)
+        self.blinking(1)
 
         # In his right eye, ...
         self.talking_right_arm()
         self.center_all()
-        time.sleep(1)
+        self.blinking(1)
 
         # ... made his vision cloudy
         self.sad_look_down()
@@ -562,18 +571,17 @@ class GestureController:
     def game_tts_1_answer(self): # audio is 8 sec long
         self.talking_left_arm()
         self.center_all()
-        time.sleep(1)
+        self.blinking(1)
 
         self.celebrate_arms_up()
         self.center_all()
 
     def game_tts_2_prompt(self): # audio is 14 sec long
         # pause until when they're playing with...
-        time.sleep(1)
-        time.sleep(1)
+        self.blinking(2)
         self.celebrate_arms_up()
         self.center_all()
-        time.sleep(1)
+        self.blinking(1)
 
         # covered part of their vision in their left eye
         self.talking_left_arm()
@@ -591,11 +599,11 @@ class GestureController:
         self.center_all()
 
     def game_tts_3_prompt(self): # audio is 15 sec long
-        time.sleep(5)
+        self.blinking(5)
         #start when Fiona used to have an
         self.talking_right_arm()
         self.center_all()
-        time.sleep(3)
+        self.blinking(3)
         # which eye do you think...
         self.look_point_left()
         self.center_all()
@@ -607,7 +615,7 @@ class GestureController:
         self.center_all()
 
     def game_tts_4_prompt(self): # audio is 16 sec long
-        time.sleep(1)
+        self.blinking(1)
         self.celebrate_arms_up()
         self.center_all()
 
@@ -616,7 +624,7 @@ class GestureController:
         self.talking_left_arm()
         self.center_all()
 
-        time.sleep(1)
+        self.blinking(1)
         self.look_point_left()
         self.center_all()
 
@@ -627,16 +635,16 @@ class GestureController:
         self.center_all()
 
     def game_tts_5_prompt(self): # audio is 14 sec long
-        time.sleep(2)
+        self.blinking(2)
         self.celebrate_arms_up()
         self.center_all()
 
-        time.sleep(2)
+        self.blinking(2)
         # Daniel's vision is blury
         self.talking_left_arm()
         self.center_all()
 
-        time.sleep(1)
+        self.blinking(1)
         # which eye is should
         self.look_point_left()
         self.center_all()
@@ -646,7 +654,6 @@ class GestureController:
         self.center_all()
         self.talking_left_arm()
         self.center_all()
-
 
     def video_tts_all(self): # audio is 48 sec long
         print('video_tts_all')
@@ -660,14 +667,14 @@ class GestureController:
         self.center_all()
         #
         self.look_point_left()
-        time.sleep(3)
+        self.blinking(3)
         self.center_all()
         #
         self.celebrate_arms_up()
-        time.sleep(2)
+        self.blinking(2)
         self.center_all()
         #
-        time.sleep(3)
+        self.blinking(3)
         self.talking_left_arm()
         self.center_all()
         #
@@ -676,59 +683,59 @@ class GestureController:
         self.center_all()
         #
         self.talking_right_arm()
-        time.sleep(4)
+        self.blinking(4)
         self.center_all()
         #
         self.sad_look_down()
 
     def video_tts_2(self): # audio is 13 sec long
         self.celebrate_arms_up()
-        time.sleep(3)
+        self.blinking(3)
         self.center_all()
         #
         self.talking_right_arm()
-        time.sleep(1)
+        self.blinking(1)
         self.center_all()
 
     def video_tts_3(self): # audio is 56 sec long
         self.celebrate_arms_up()
-        time.sleep(1)
+        self.blinking(1)
         self.center_all()
         #
         self.talking_left_arm()
-        time.sleep(2)
+        self.blinking(2)
         self.center_all()
         #
         self.talking_right_arm()
-        time.sleep(2)
+        self.blinking(2)
         self.center_all()
         #
         self.talking_both_arms()
-        time.sleep(7)
+        self.blinking(7)
         self.center_all()
         #
         self.celebrate_arms_up()
-        time.sleep(2)
+        self.blinking(2)
         self.center_all()
         #
         self.talking_left_arm()
-        time.sleep(2)
+        self.blinking(2)
         self.center_all()
         #
         self.talking_right_arm()
-        time.sleep(2)
+        self.blinking(2)
         self.turn_head_left()
         self.turn_head_right()
         self.center_all()
 
     def video_tts_4(self): # audio is 21 sec long
         self.celebrate_arms_up()
-        time.sleep(6)
+        self.blinking(6)
         #
         self.talking_left_arm()
         self.center_all()
         self.talking_both_arms()
-        time.sleep(2)
+        self.blinking(2)
         self.center_all()
 
     def outro_game(self):
@@ -959,7 +966,9 @@ GESTURES = {
     'overall_intro_tts': gesture_controller.overall_intro_tts,
     'intro_game': gesture_controller.intro_game,
     'overall_outro': gesture_controller.overall_outro,
-    'blink_test': gesture_controller.blink_test
+    'blink_test': gesture_controller.blink_test,
+    'pitch_tester': gesture_controller.pitch_tester,
+    'blinking': gesture_controller.blinking
 }
 
 
