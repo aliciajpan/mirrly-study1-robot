@@ -164,8 +164,8 @@ if __name__ == "__main__":
             paused.clear()
             time.sleep(1)
 
-            print("testing video all")
-            robot_motions.video_tts_all()
+            print("testing video 3")
+            robot_motions.video_tts_3()
 
             paused.set()
         time.sleep(1)

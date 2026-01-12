@@ -707,15 +707,14 @@ class GestureController:
         #
         self.talking_left_arm()
         self.blinking(2)
-        self.blinking(2)
         self.center_all()
-        #
+        ##
         self.blinking(1)
         self.talking_right_arm()
         self.blinking(3)
         self.center_all()
         self.blinking(2)
-        # patches can look like...
+        # it's best to
         self.talking_both_arms()
         self.blinking(3)
         self.blinking(3)
