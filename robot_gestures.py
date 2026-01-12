@@ -714,16 +714,16 @@ class GestureController:
         self.blinking(3)
         self.center_all()
         self.blinking(2)
-        # patches can look like...
+        # it's best to start...
         self.talking_both_arms()
         self.blinking(3)
         self.blinking(3)
         self.center_all()
-        # your vision...
+
         self.celebrate_arms_up()
         self.blinking(3)
         self.center_all()
-        
+        # your vision...
         self.talking_right_arm()
         self.blinking(4)
         self.center_all()
@@ -746,6 +746,7 @@ class GestureController:
         self.celebrate_arms_up()
         self.blinking(2)
         self.center_all()
+        self.blinking(1)
 
     def outro_game(self):
         print('outro_game')
