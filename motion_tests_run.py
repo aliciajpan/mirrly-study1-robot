@@ -22,213 +22,12 @@ robot_motions = GestureController() # THIS ALREADY INITS head_motors & torso_mot
 start_exp = False
 start_cond = "test"
 
-def game_tts_1_prompt(): # audio is 15 sec long
-    robot_motions.talking_both_arms()
-    robot_motions.center_all()
-    robot_motions.blinking(1)
-    #time.sleep(1)
-
-    # In his right eye, ...
-    robot_motions.talking_right_arm()
-    robot_motions.center_all()
-    robot_motions.blinking(1)
-    #time.sleep(1)
-
-    # ... made his vision cloudy
-    robot_motions.sad_look_down()
-    robot_motions.center_all()
-
-    # Which of Mikey's eyes...
-    robot_motions.look_point_left()
-    robot_motions.center_all()
-
-def game_tts_1_answer(): # audio is 8 sec long
-    robot_motions.talking_left_arm()
-    robot_motions.center_all()
-    robot_motions.blinking(1)
-    #time.sleep(1)
-
-    robot_motions.celebrate_arms_up()
-    robot_motions.center_all()
-
-def game_tts_2_prompt(): # audio is 14 sec long
-    # pause until when they're playing with...
-    robot_motions.blinking(1)
-    #time.sleep(1)
-    robot_motions.blinking(1)
-    #time.sleep(1)
-    robot_motions.celebrate_arms_up()
-    robot_motions.center_all()
-    robot_motions.blinking(1)
-    #time.sleep(1)
-
-    # covered part of their vision in their left eye
-    robot_motions.talking_left_arm()
-    robot_motions.center_all()
-
-    robot_motions.blinking(1)
-    #time.sleep(1)
-    # which of Alex's eyes...
-    robot_motions.look_point_left()
-    robot_motions.center_all()
-
-def game_tts_2_answer(): # audio is 6 sec long
-    robot_motions.talking_right_arm()
-    robot_motions.center_all()
-    robot_motions.talking_left_arm()
-    robot_motions.center_all()
-
-def game_tts_3_prompt(): # audio is 15 sec long
-    robot_motions.blinking(5)
-    #time.sleep(5)
-    #start when Fiona used to have an
-    robot_motions.talking_right_arm()
-    robot_motions.center_all()
-    robot_motions.blinking(3)
-    #time.sleep(3)
-    # which eye do you think...
-    robot_motions.look_point_left()
-    robot_motions.center_all()
-
-def game_tts_3_answer(): # audio is 7 sec long
-    robot_motions.talking_left_arm()
-    robot_motions.center_all()
-    robot_motions.celebrate_arms_up()
-    robot_motions.center_all()
-
-def game_tts_4_prompt(): # audio is 16 sec long
-    robot_motions.blinking(1)
-    #time.sleep(1)
-    robot_motions.celebrate_arms_up()
-    robot_motions.center_all()
-
-    # She used to get...
-    robot_motions.talking_right_arm()
-    robot_motions.talking_left_arm()
-    robot_motions.center_all()
-
-    robot_motions.blinking(1)
-    #time.sleep(1)
-    robot_motions.look_point_left()
-    robot_motions.center_all()
-
-def game_tts_4_answer(): # audio is 7 sec long
-    robot_motions.talking_left_arm()
-    robot_motions.center_all()
-    robot_motions.celebrate_arms_up()
-    robot_motions.center_all()
-
-def game_tts_5_prompt(): # audio is 14 sec long
-    robot_motions.blinking(2)
-    #time.sleep(2)
-    robot_motions.celebrate_arms_up()
-    robot_motions.center_all()
-
-    robot_motions.blinking(2)
-    #time.sleep(2)
-    # Daniel's vision is blury
-    robot_motions.talking_left_arm()
-    robot_motions.center_all()
-
-    robot_motions.blinking(1)
-    #time.sleep(1)
-    # which eye is should
-    robot_motions.look_point_left()
-    robot_motions.center_all()
-
-def game_tts_5_answer(): # audio is 6 sec long
-    robot_motions.talking_right_arm()
-    robot_motions.center_all()
-    robot_motions.talking_left_arm()
-    robot_motions.center_all()
-
-def video_tts_1(): # audio is 48 sec long
-    robot_motions.talking_right_arm()
-    robot_motions.center_all()
-    #
-    robot_motions.look_point_left()
-    time.sleep(3)
-    robot_motions.center_all()
-    #
-    robot_motions.celebrate_arms_up()
-    time.sleep(2)
-    robot_motions.center_all()
-    #
-    time.sleep(3)
-    robot_motions.talking_left_arm()
-    robot_motions.center_all()
-    #
-    robot_motions.talking_left_arm()
-    robot_motions.talking_right_arm()
-    robot_motions.center_all()
-    #
-    robot_motions.talking_right_arm()
-    time.sleep(4)
-    robot_motions.center_all()
-    #
-    robot_motions.sad_look_down()
-
-def video_tts_2(): # audio is 13 sec long
-    robot_motions.celebrate_arms_up()
-    time.sleep(3)
-    robot_motions.center_all()
-    #
-    robot_motions.talking_right_arm()
-    time.sleep(1)
-    robot_motions.center_all()
-
-def video_tts_3(): # audio is 56 sec long
-    robot_motions.celebrate_arms_up()
-    time.sleep(1)
-    robot_motions.center_all()
-    #
-    robot_motions.talking_left_arm()
-    time.sleep(2)
-    robot_motions.center_all()
-    #
-    robot_motions.talking_right_arm()
-    time.sleep(2)
-    robot_motions.center_all()
-    #
-    robot_motions.talking_both_arms()
-    time.sleep(7)
-    robot_motions.center_all()
-    #
-    robot_motions.celebrate_arms_up()
-    time.sleep(2)
-    robot_motions.center_all()
-    #
-    robot_motions.talking_left_arm()
-    time.sleep(2)
-    robot_motions.center_all()
-    #
-    robot_motions.talking_right_arm()
-    time.sleep(2)
-    robot_motions.turn_head_left()
-    robot_motions.turn_head_right()
-    robot_motions.center_all()
-
-def video_tts_4(): # audio is 21 sec long
-    robot_motions.celebrate_arms_up()
-    time.sleep(6)
-    #
-    robot_motions.talking_left_arm()
-    robot_motions.center_all()
-    robot_motions.talking_both_arms()
-    time.sleep(2)
-    robot_motions.center_all()
-
-def outro_game():
-    robot_motions.celebrate_arms_up()
-    robot_motions.center_all()
-
 ##### idle functions part of threading structure, so kept in 
 
 def keyboard_listener(paused, eyebrow_process, yaw_process, rsh_process):
     global start_exp
     global start_cond
     paused_state = True  # track the paused state
-    
     while True:
         user_input = input("Enter command ('test' or 'vid#' (# 1 to 4) to start, 'p' to toggle pausing, 'q' to quit): ").lower()
         if user_input == 'test' or 'vid1' or 'vid2' or 'vid3' or 'vid4':
@@ -244,25 +43,23 @@ def keyboard_listener(paused, eyebrow_process, yaw_process, rsh_process):
                 print("Program paused.")
             paused_state = not paused_state  # toggle paused state
         elif user_input == 'q':
-            #eyebrow_process.terminate()
-            #eyebrow_process.join()  # ensure the process has terminated
+            eyebrow_process.terminate()
+            eyebrow_process.join()  # ensure the process has terminated
             
-            #yaw_process.terminate()
-            #yaw_process.join()
+            yaw_process.terminate()
+            yaw_process.join()
 
-            #rsh_process.terminate()
-            #rsh_process.join()
+            rsh_process.terminate()
+            rsh_process.join()
             terminate_program()
             break
 
-def blinking(paused):
-    """
-    blinks with radom speed
-    """
-    paused.wait()  # block the loop when the event is set (paused)
-    probability = 0.07  # probability of eyebrow idle movement
-    blink_speed = random.choice([800, 1000])
-    if random.random() < probability:
+def eye_brow_idle(paused):
+    while True:
+        paused.wait()  # block the loop when the event is set (paused)
+        probability = 0.07  # probability of eyebrow idle movement
+        blink_speed = random.choice([800, 1000])
+        if random.random() < probability:
             try:
                 head_motors.move("eye_brow_l", 210, blink_speed - 100)
                 time.sleep(0.01)
@@ -274,26 +71,6 @@ def blinking(paused):
             except Exception as e:
                 print(f"Error in eyebrow movement: {e}")
                 time.sleep(0.01)
-                
-    time.sleep(0.5)
-
-def eye_brow_idle(paused):
-    while True:
-        paused.wait()  # block the loop when the event is set (paused)
-        probability = 0.07  # probability of eyebrow idle movement
-        blink_speed = random.choice([800, 1000])
-        if random.random() < probability:
-            try:
-                #head_motors.move("eye_brow_l", 210, blink_speed - 100)
-                time.sleep(0.01)
-                #head_motors.move("eye_brow_r", 510, blink_speed)
-                #time.sleep(0.4 if blink_speed == 1000 else 0.8 if blink_speed == 800 else 0.9)
-                #head_motors.move("eye_brow_l", 350, blink_speed - 100)
-                #time.sleep(0.01)
-                #head_motors.move("eye_brow_r", 343, blink_speed)
-            except Exception as e:
-                print(f"Error in eyebrow movement: {e}")
-                time.sleep(0.01)
                 continue
         time.sleep(0.5)
 
@@ -301,13 +78,13 @@ def yaw_roll(paused):
     while True:
         paused.wait()  # block the loop when the event is set (paused)
         probability = 0.07  # probability of eye movement
-        """ if random.random() < probability:
+        if random.random() < probability:
             random_value = random.randint(0, 300)
             random_speed = random.randint(300, 500)
             head_motors.move("head_yaw", random_value, random_speed)
             random_rt = random.randint(1, 3)
             time.sleep(random_rt)
-            head_motors.move("head_yaw", 180, random_speed) """
+            head_motors.move("head_yaw", 180, random_speed)
 
         time.sleep(0.5)
 
@@ -318,7 +95,7 @@ def hand_shoulder_idle(paused):
         movement_number = random.randint(1, 2)
         if random.random() < probability:
             try:
-                """  if movement_number == 1:
+                if movement_number == 1:
                     torso_motors.arm_move("arm_r", 170, 0.01)  # 170 Down - 90 Up When screw is front
                     torso_motors.arm_move("arm_l", 80, 0.01)  # 160 Up - 80 Down When screw is front
                     time.sleep(0.5)
@@ -339,9 +116,9 @@ def hand_shoulder_idle(paused):
                         time.sleep(0.5)
                         torso_motors.arm_move("arm_r", 170, 0.01)  # 170 Down - 90 Up When screw is front
                         torso_motors.arm_move("arm_l", 80, 0.01)  # 160 Up - 80 Down When screw is front
-                        time.sleep(0.5) """
+                        time.sleep(0.5)
 
-                if movement_number == 3:
+                elif movement_number == 3:
                     pass
                 elif movement_number == 4:
                     pass
@@ -375,10 +152,10 @@ if __name__ == "__main__":
         keyboard_thread.daemon = True
         keyboard_thread.start()
 
+        robot_motions.center_all()
         
         # Wait until the experiment starts
-        # print("Enter 'test', 'vid1', 'vid2', 'vid3', or 'vid4' to start: ")
-        print("Enter 'test', 'game1', 'game2', 'game3', or 'game4' to start: ")
+        print("Enter 'test' or 'test2' to start: ")
         while not start_exp:
 
             time.sleep(1)
@@ -387,113 +164,18 @@ if __name__ == "__main__":
             paused.clear()
             time.sleep(1)
 
-            print("celebrate")
-            robot_motions.center_all()
-            
-            torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
-            torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
-            torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
-            torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
+            print("testing video all")
+            robot_motions.video_tts_all()
 
             paused.set()
         time.sleep(1)
 
-        if start_cond == 'g1':
+        if start_cond == 'test2':
             paused.clear()
             time.sleep(1)
 
-            print("game_tts_1")
-            game_tts_1_prompt()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'f1':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_1")
-            game_tts_1_answer()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'g2':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_2")
-            game_tts_2_prompt()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'f2':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_2")
-            game_tts_2_answer()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'g3':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_3")
-            game_tts_3_prompt()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'f3':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_3")
-            game_tts_1_answer()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'g4':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_4")
-            game_tts_4_prompt()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'f4':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_4")
-            game_tts_4_answer()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'g5':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_5")
-            game_tts_5_prompt()
-
-            paused.set()
-        time.sleep(1)
-
-        if start_cond == 'f5':
-            paused.clear()
-            time.sleep(1)
-
-            print("game_tts_5")
-            game_tts_1_answer()
+            print("testing blinking")
+            robot_motions.blinking()
 
             paused.set()
         time.sleep(1)
