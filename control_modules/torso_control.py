@@ -3,7 +3,7 @@
 import time
 import math
 import subprocess
-import multiprocessing
+import threading
 #import pyfirmata
 #from pyfirmata import util
 from gpiozero import Servo, AngularServo, PWMOutputDevice
@@ -32,7 +32,7 @@ class TorsoMotors():
         # Hand pins
         # self.hs_pins = [31, 11 ,13, 15] #BOARD scheme l_hand, shoulder, r_hand, Shoulder
         self.hs_pins = [6, 27 ,17, 22] #BOARD scheme
-        self.s_positions = [0, 0, 0, 0]
+        self.s_positions = [0, 0, 0, 0] # arm_l, l_shoulder, arm_r, r_shoulder
         self.read_positions()
 
         # Connect to the Arduino
@@ -107,6 +107,10 @@ class TorsoMotors():
         # Set the initial motor speeds
         self.speed1 = 255
         self.speed2 = 255
+
+        # Track active arm motion threads for safe cancellation/overlap handling
+        self.arm_threads = {}
+        self.arm_stop_flags = {}
         
     def read_positions(self, filename="./positions.txt"):
         import os
@@ -127,46 +131,78 @@ class TorsoMotors():
             for position in self.s_positions:
                 file.write(str(position) + "\n")
         
-    def arm_motion_smooth(self, servo, initial, angle, speed=0.01):
-        #print("initial: " + str(initial))
-        #print("target: " + str(angle))
+    def _component_index(self, comp):
+        mapping = {
+            "arm_l": 0,
+            "l_shoulder": 1,
+            "arm_r": 2,
+            "r_shoulder": 3,
+        }
+        return mapping.get(comp)
+
+    def stop_arm_motions(self):
+        """Cancel and join any active arm motion threads."""
+        for comp, stop_flag in list(self.arm_stop_flags.items()):
+            stop_flag.set()
+        for comp, thread in list(self.arm_threads.items()):
+            thread.join(timeout=0.2)
+        self.arm_threads.clear()
+        self.arm_stop_flags.clear()
+
+    def arm_motion_smooth(self, comp, servo, initial, angle, speed=0.01):
+        """Move a servo smoothly using a cancellable thread, allowing concurrency across arms."""
+
+        # If a motion is already running for this component, cancel it first
+        if comp in self.arm_stop_flags:
+            self.arm_stop_flags[comp].set()
+        if comp in self.arm_threads:
+            self.arm_threads[comp].join(timeout=0.2)
+
+        stop_flag = threading.Event()
+        self.arm_stop_flags[comp] = stop_flag
+
+        idx = self._component_index(comp)
+
         def motion_smooth():
             for i in custom_range(initial, angle):
-                # Abort early if the servo has already been closed by cleanup/stop
-                if getattr(servo, "closed", False):
-                    break
+                if stop_flag.is_set() or getattr(servo, "closed", False):
+                    return
                 try:
                     servo.angle = i
                 except Exception:
-                    # Swallow pigpio state errors that occur when stop closes the pin mid-move
-                    break
+                    return
                 time.sleep(speed)
-            time.sleep(0.5)
-            
-        process = multiprocessing.Process(target=motion_smooth)
-        process.daemon = True
-        process.start()
-        #process.join()
+            # Update stored position only if we reached the target
+            if not stop_flag.is_set() and idx is not None:
+                self.s_positions[idx] = angle
+                self.update_positions(self.s_positions)
+            # Clean up tracking for this component when done
+            if self.arm_threads.get(comp) is threading.current_thread():
+                self.arm_threads.pop(comp, None)
+                self.arm_stop_flags.pop(comp, None)
+
+        t = threading.Thread(target=motion_smooth, daemon=True)
+        self.arm_threads[comp] = t
+        t.start()
         
     def arm_move(self, comp, angle, speed):
+        """Start a cancellable smooth motion for a specific arm/shoulder component."""
         self.read_positions()
-        #print(comp)
         if comp == "r_shoulder":
-            self.arm_motion_smooth(self.r_shoulder, self.s_positions[3], angle, speed)
-            self.s_positions[3] = angle
+            initial = getattr(self.r_shoulder, "angle", self.s_positions[3])
+            self.arm_motion_smooth(comp, self.r_shoulder, initial, angle, speed)
         elif comp == "l_shoulder":
-            self.arm_motion_smooth(self.l_shoulder, self.s_positions[1], angle, speed)
-            self.s_positions[1] = angle
+            initial = getattr(self.l_shoulder, "angle", self.s_positions[1])
+            self.arm_motion_smooth(comp, self.l_shoulder, initial, angle, speed)
         elif comp == "arm_r":
-            self.arm_motion_smooth(self.r_hand, self.s_positions[2], angle, speed)
-            self.s_positions[2] = angle
+            initial = getattr(self.r_hand, "angle", self.s_positions[2])
+            self.arm_motion_smooth(comp, self.r_hand, initial, angle, speed)
         elif comp == "arm_l":
-            self.arm_motion_smooth(self.l_hand, self.s_positions[0], angle, speed)
-            self.s_positions[0] = angle
+            initial = getattr(self.l_hand, "angle", self.s_positions[0])
+            self.arm_motion_smooth(comp, self.l_hand, initial, angle, speed)
         else:
-            pass
-        self.update_positions(self.s_positions)
-        #print("===============================")
+            return
+        # Position updates happen in the motion thread when it completes
         
     def hands_freq(self, comp, n):
         if comp == "r_shoulder":
@@ -184,10 +220,13 @@ class TorsoMotors():
             self.r_shoulder.ChangeFrequency(n)
             
     def release_hands(self, comp):
+        # Stop any ongoing arm motions before closing servos
+        self.stop_arm_motions()
+
         if comp == "r_shoulder":
-            self.l_shoulder.close()
-        elif comp == "l_shoulder":
             self.r_shoulder.close()
+        elif comp == "l_shoulder":
+            self.l_shoulder.close()
         elif comp == "arm_r":
             self.r_hand.close()
         elif comp == "arm_l":
@@ -197,8 +236,6 @@ class TorsoMotors():
             self.r_hand.close()
             self.l_shoulder.close()
             self.r_shoulder.close()
-        else:
-            pass
             
     def move(self, motor, speed):
         pwm_speed = float(speed) / 255.0

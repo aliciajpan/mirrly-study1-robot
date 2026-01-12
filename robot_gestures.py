@@ -280,6 +280,24 @@ class GestureController:
 
         interruptible_sleep(2.0)
 
+    def blink_test(self):
+        if not MOTORS_AVAILABLE:
+            print("  [SIMULATION] blinking")
+            interruptible_sleep(2)
+            return      
+
+        blink_speed = 800
+        head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["close"], blink_speed - 100)
+        time.sleep(0.01)
+        head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["close"], blink_speed)
+        sleep_dur = 0.4 if blink_speed == 1000 else 0.8 if blink_speed == 800 else 0.9
+        time.sleep(sleep_dur)
+        head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], blink_speed - 100)
+        time.sleep(0.01)
+        head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], blink_speed)
+
+        interruptible_sleep(2)
+
     def look_point_left(self):
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Looking and pointing left")

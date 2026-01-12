@@ -25,8 +25,19 @@ class MediaPlayer:
         self.active_players = []
         
         if VLC_AVAILABLE:
-            # Hide mouse cursor during playback
-            self.vlc_instance = vlc.Instance('--mouse-hide-timeout=0')
+            # VLC options: hide cursor, disable DRM for SSH/X11 compatibility, force X11 video output
+            self.vlc_instance = vlc.Instance(
+                '--mouse-hide-timeout=0',
+                '--no-video-deco',           # No window decorations
+                '--no-embedded-video',        # Don't embed video
+                '--vout=xcb_x11',            # Force X11 video output (works over SSH with DISPLAY=:0)
+                '--avcodec-hw=none',         # Disable hardware decoding to avoid DRM issues
+                '--no-hwaccel',              # Completely disable hardware acceleration
+                '--codec=avcodec,none',      # Force software avcodec decoder
+                '--file-caching=300',        # Reduce file cache to 300ms (default 1000ms)
+                '--network-caching=300',     # Reduce network cache to 300ms
+                '--verbose=0'                # Reduce error spam
+            )
     
     def play_video(self, video_path, fullscreen=True, muted=True, blocking=True):
         """
@@ -112,9 +123,15 @@ class MediaPlayer:
         # Start playback
         player.play()
         
-        # Wait for player to initialize
-        time.sleep(1)
-        player.play()  # Ensure it's playing
+        # Wait for player to initialize (smart wait instead of fixed 1s)
+        max_wait = 0.5  # Maximum 500ms wait
+        elapsed = 0
+        while elapsed < max_wait:
+            state = player.get_state()
+            if state in [vlc.State.Playing, vlc.State.Opening]:
+                break
+            time.sleep(0.05)
+            elapsed += 0.05
         
         # Track active player
         self.active_players.append(player)
@@ -143,6 +160,10 @@ class MediaPlayer:
         
         if fullscreen:
             player.set_fullscreen(True)
+        
+        # Center the image by setting aspect ratio and zoom to fit
+        player.video_set_aspect_ratio('16:9')  # Match screen aspect
+        player.video_set_scale(0)  # Auto-scale to fit (0 = best fit)
         
         # Start playback
         player.play()
