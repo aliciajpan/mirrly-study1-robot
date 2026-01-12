@@ -690,7 +690,6 @@ class GestureController:
         self.center_all()
         #
         self.sad_look_down()
-        self.blinking(1)
 
     def video_tts_2(self): # audio is 13 sec long
         self.celebrate_arms_up()
@@ -711,15 +710,16 @@ class GestureController:
         self.center_all()
         #
         self.talking_right_arm()
-        self.blinking(2)
+        self.blinking(3)
         self.center_all()
         #
         self.talking_both_arms()
-        self.blinking(7)
+        self.blinking(3)
+        self.blinking(3)
         self.center_all()
         #
         self.celebrate_arms_up()
-        self.blinking(2)
+        self.blinking(3)
         self.center_all()
         #
         self.talking_left_arm()
