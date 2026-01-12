@@ -707,38 +707,50 @@ class GestureController:
         #
         self.talking_left_arm()
         self.blinking(2)
+        self.blinking(2)
         self.center_all()
         #
+        self.blinking(1)
         self.talking_right_arm()
         self.blinking(3)
         self.center_all()
-        #
+        self.blinking(2)
+        # patches can look like...
         self.talking_both_arms()
         self.blinking(3)
         self.blinking(3)
         self.center_all()
-        #
+        self.blinking(3)
+        # your vision...
         self.celebrate_arms_up()
         self.blinking(3)
         self.center_all()
-        #
+        # 
         self.talking_left_arm()
-        self.blinking(2)
+        self.blinking(3)
         self.center_all()
-        #
-        self.talking_right_arm()
         self.blinking(2)
+        # typically...
+        self.talking_right_arm()
+        self.blinking(4)
+        self.center_all()
+        self.blinking(2)
+        #
         self.turn_head_left()
         self.turn_head_right()
         self.center_all()
+        self.blinking(1)
 
     def video_tts_4(self): # audio is 21 sec long
         self.celebrate_arms_up()
         self.blinking(6)
+        self.center_all()
         #
         self.talking_left_arm()
         self.center_all()
         self.talking_both_arms()
+        self.blinking(2)
+        self.celebrate_arms_up()
         self.blinking(2)
         self.center_all()
 
