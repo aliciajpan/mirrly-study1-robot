@@ -723,7 +723,7 @@ class GestureController:
         self.celebrate_arms_up()
         self.blinking(3)
         self.center_all()
-        # typically...
+        
         self.talking_right_arm()
         self.blinking(4)
         self.center_all()
