@@ -689,6 +689,7 @@ class GestureController:
         self.center_all()
         #
         self.sad_look_down()
+        self.blinking(1)
 
     def video_tts_2(self): # audio is 13 sec long
         self.celebrate_arms_up()
