@@ -5,8 +5,10 @@ Contains all gesture definitions and motor control commands.
 
 import time
 import sys
+import os
 import random
 import threading
+import multiprocessing
 import signal
 from multiprocessing import Process
 
