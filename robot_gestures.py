@@ -714,21 +714,15 @@ class GestureController:
         self.blinking(3)
         self.center_all()
         self.blinking(2)
-        # it's best to
+        # patches can look like...
         self.talking_both_arms()
         self.blinking(3)
         self.blinking(3)
         self.center_all()
-        self.blinking(3)
         # your vision...
         self.celebrate_arms_up()
         self.blinking(3)
         self.center_all()
-        # 
-        self.talking_left_arm()
-        self.blinking(3)
-        self.center_all()
-        self.blinking(2)
         # typically...
         self.talking_right_arm()
         self.blinking(4)
