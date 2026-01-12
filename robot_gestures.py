@@ -234,8 +234,11 @@ class GestureController:
             time.sleep(0.5)
 
         elapsed_time = time.time()-start_time
+        # print("time to blink:", elapsed_time)
         remaining_time = max(0.01, duration-elapsed_time)
         
+        # print("time to blink:", elapsed_time)
+        # elapsed_time = time.time()-start_time
         interruptible_sleep(remaining_time)
 
     def pitch_tester(self):
