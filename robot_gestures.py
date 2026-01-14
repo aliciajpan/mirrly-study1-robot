@@ -864,14 +864,14 @@ class GestureController:
     def show_diamond(self, duration=3.0):
         """
         Display diamond image on screen.
-        Uses: static/media/image/diamond.png
+        Uses: static/media/images/diamond.png
         
         Args:
             duration (float): How long to display the image (default: 3 seconds)
         """
         print(f"SHOW DIAMOND (duration: {duration}s)")
         
-        image_path = "static/media/image/diamond.jpeg"
+        image_path = "static/media/images/diamond.jpeg"
         
         # Display diamond image
         if MEDIA_AVAILABLE and media_player:
@@ -891,14 +891,14 @@ class GestureController:
     def show_star(self, duration=3.0):
         """
         Display star image on screen.
-        Uses: static/media/image/star.png
+        Uses: static/media/images/star.png
         
         Args:
             duration (float): How long to display the image (default: 3 seconds)
         """
         print(f"SHOW STAR (duration: {duration}s)")
         
-        image_path = "static/media/image/star.jpeg"
+        image_path = "static/media/images/star.jpeg"
         
         # Display star image
         if MEDIA_AVAILABLE and media_player:
