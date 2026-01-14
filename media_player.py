@@ -23,8 +23,10 @@ class MediaPlayer:
         """Initialize VLC instance if available."""
         self.vlc_instance = None
         self.active_players = []
+        print("TRY init media player")
         
         if VLC_AVAILABLE:
+            print("init media player")
             # VLC options: hide cursor, disable DRM for SSH/X11 compatibility, force X11 video output
             self.vlc_instance = vlc.Instance(
                 '--mouse-hide-timeout=0',
@@ -32,7 +34,7 @@ class MediaPlayer:
                 '--no-embedded-video',        # Don't embed video
                 '--vout=xcb_x11',            # Force X11 video output (works over SSH with DISPLAY=:0)
                 '--avcodec-hw=none',         # Disable hardware decoding to avoid DRM issues
-                '--no-hwaccel',              # Completely disable hardware acceleration
+                #'--no-hwaccel',              # Completely disable hardware acceleration
                 '--codec=avcodec,none',      # Force software avcodec decoder
                 '--file-caching=300',        # Reduce file cache to 300ms (default 1000ms)
                 '--network-caching=300',     # Reduce network cache to 300ms
