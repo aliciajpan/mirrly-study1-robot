@@ -22,6 +22,333 @@ robot_motions = GestureController() # THIS ALREADY INITS head_motors & torso_mot
 start_exp = False
 start_cond = "test"
 
+<<<<<<< HEAD
+=======
+'''
+# Motor calibration limits (device-specific)
+LIMITS = {
+    "head_yaw":   {"left": 0, "center": 200, "right": 400},
+    "head_pitch": {"up": 240, "center": 180, "down": 118},
+    "eye_self":   {"left": 160, "center": 210, "right": 268},
+    "eye_brow_l": {"open": 370, "close": 210},
+    "eye_brow_r": {"open": 343, "close": 510},
+    "arm_r": {"up": 90, "rest": 120, "down": 170}, # rest means T-pose
+    "arm_l": {"up": 160, "rest": 130, "down": 80}, # rest means T-pose
+    "r_shoulder": {"up": 160, "front": 70}, # up means screw face of shoulder to ceiling
+    "l_shoulder": {"up": 60, "front": 150}, # up means screw face of shoulder to ceiling
+}
+
+# Speed constants
+PITCH_SPEED = 1000      # Head pitch requires higher speed to overcome weight
+EYELID_SPEED = 800      # Eyelids need 700-1000 speed for unlubricated mechanism
+
+def center_all():
+    head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
+    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+    head_motors.move("eye_self", LIMITS["eye_self"]["center"], 400)
+    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+
+    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
+    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
+    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
+    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
+
+    time.sleep(2.0)
+
+def look_point_left():
+    head_motors.move("head_yaw", LIMITS["head_yaw"]["left"], 500)
+    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+    head_motors.move("eye_self", LIMITS["eye_self"]["left"], 500)
+    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+
+    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
+    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
+    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
+    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
+
+    time.sleep(2)
+
+def look_point_right():
+    head_motors.move("head_yaw", LIMITS["head_yaw"]["right"], 500)
+    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+    head_motors.move("eye_self", LIMITS["eye_self"]["right"], 500)
+    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+
+    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
+    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
+    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
+    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
+
+    time.sleep(2)
+
+def celebrate_arms_up():
+    head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
+    head_motors.move("head_pitch", LIMITS["head_pitch"]["up"], PITCH_SPEED)
+    head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
+    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+
+    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
+    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
+    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
+    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
+
+    time.sleep(2)
+
+def sad_look_down():
+    head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
+    head_motors.move("head_pitch", LIMITS["head_pitch"]["down"], PITCH_SPEED)
+    head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
+    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["close"], EYELID_SPEED)
+    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["close"], EYELID_SPEED)
+
+    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
+    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
+    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
+    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
+    time.sleep(2)
+
+def talking_left_arm():
+    head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
+    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+    head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
+    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+
+    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
+    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
+    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
+    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
+
+    time.sleep(2)
+
+def talking_right_arm():
+    head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
+    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+    head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
+    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+
+    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
+    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
+    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
+    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
+
+    time.sleep(2)
+
+def eyes_left():
+    head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
+    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+    head_motors.move("eye_self", LIMITS["eye_self"]["left"], 500)
+    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+
+    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
+    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
+    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
+    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
+
+    time.sleep(2)
+
+def eyes_right(self):
+    head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
+    head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
+    head_motors.move("eye_self", LIMITS["eye_self"]["right"], 500)
+    head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
+    head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
+
+    torso_motors.arm_move("arm_r", LIMITS["arm_r"]["down"], 0.01)
+    torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["front"], 0.01)
+    torso_motors.arm_move("arm_l", LIMITS["arm_l"]["down"], 0.01)
+    torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["front"], 0.01)
+
+    time.sleep(2)
+'''
+
+def game_tts_1_prompt(): # audio is 15 sec long
+    robot_motions.talking_both_arm()
+    robot_motions.center_all()
+    time.sleep(1)
+
+    # In his right eye, ...
+    robot_motions.talking_right_arm()
+    robot_motions.center_all()
+    time.sleep(1)
+
+    # ... made his vision cloudy
+    robot_motions.sad_look_down()
+    robot_motions.center_all()
+
+    # Which of Mikey's eyes...
+    robot_motions.look_point_left()
+    robot_motions.center_all()
+
+def game_tts_1_answer(): # audio is 8 sec long
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+    time.sleep(1)
+
+    robot_motions.celebrate_arms_up()
+    robot_motions.center_all()
+
+def game_tts_2_prompt(): # audio is 14 sec long
+    # pause until when they're playing with...
+    time.sleep(1)
+    time.sleep(1)
+    robot_motions.celebrate_arms_up()
+    robot_motions.center_all()
+    time.sleep(1)
+
+    # covered part of their vision in their left eye
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+
+    time.sleep(1)
+    # which of Alex's eyes...
+    robot_motions.look_point_left()
+    robot_motions.center_all()
+
+def game_tts_2_answer(): # audio is 6 sec long
+    robot_motions.talking_right_arm()
+    robot_motions.center_all()
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+
+def game_tts_3_prompt(): # audio is 15 sec long
+    time.sleep(5)
+    #start when Fiona used to have an
+    robot_motions.talking_right_arm()
+    robot_motions.center_all()
+    time.sleep(3)
+    # which eye do you think...
+    robot_motions.look_point_left()
+    robot_motions.center_all()
+
+def game_tts_3_answer(): # audio is 7 sec long
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+    robot_motions.celebrate_arms_up()
+    robot_motions.center_all()
+
+def game_tts_4_prompt(): # audio is 16 sec long
+    time.sleep(1)
+    robot_motions.celebrate_arms_up()
+    robot_motions.center_all()
+
+    # She used to get...
+    robot_motions.talking_right_arm()
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+
+    time.sleep(1)
+    robot_motions.look_point_left()
+    robot_motions.center_all()
+
+def game_tts_4_answer(): # audio is 7 sec long
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+    robot_motions.celebrate_arms_up()
+    robot_motions.center_all()
+
+def game_tts_5_prompt(): # audio is 14 sec long
+    time.sleep(2)
+    robot_motions.celebrate_arms_up()
+    robot_motions.center_all()
+
+    time.sleep(2)
+    # Daniel's vision is blury
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+
+    time.sleep(1)
+    # which eye is should
+    robot_motions.look_point_left()
+    robot_motions.center_all()
+
+def game_tts_5_answer(): # audio is 6 sec long
+    robot_motions.talking_right_arm()
+    robot_motions.center_all()
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+
+
+def video_tts_1(): # audio is 48 sec long
+    robot_motions.talking_right_arm()
+    robot_motions.center_all()
+    #
+    robot_motions.look_point_left()
+    robot_motions.center_all()
+    #
+    robot_motions.celebrate_arms_up()
+    robot_motions.center_all()
+    #
+    time.sleep(3)
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+    #
+    robot_motions.talking_left_arm()
+    robot_motions.talking_right_arm()
+    robot_motions.center_all()
+    #
+    robot_motions.talking_right_arm()
+    robot_motions.center_all()
+    #
+    robot_motions.sad_look_down()
+
+def video_tts_2(): # audio is 13 sec long
+    robot_motions.celebrate_arms_up()
+    time.sleep(3)
+    robot_motions.center_all()
+    #
+    robot_motions.talking_right_arm()
+    robot_motions.center_all()
+
+def video_tts_3(): # audio is 56 sec long
+    robot_motions.celebrate_arms_up()
+    time.sleep(2)
+    robot_motions.center_all()
+    #
+    robot_motions.talking_left_arm()
+    time.sleep(2)
+    robot_motions.center_all()
+    #
+    robot_motions.talking_right_arm()
+    robot_motions.center_all()
+    #
+    robot_motions.talking_right_arm()
+    time.sleep(3)
+    robot_motions.center_all()
+    #
+    robot_motions.celebrate_arms_up()
+    time.sleep(2)
+    robot_motions.center_all()
+    #
+    robot_motions.talking_left_arm()
+    time.sleep(2)
+    robot_motions.center_all()
+    #
+    robot_motions.talking_right_arm()
+    time.sleep(2)
+    robot_motions.center_all()
+
+def video_tts_4(): # audio is 21 sec long
+    robot_motions.celebrate_arms_up()
+    time.sleep(6)
+    #
+    robot_motions.talking_left_arm()
+    robot_motions.center_all()
+    robot_motions.talking_both_arms()
+    time.sleep(2)
+    robot_motions.center_all()
+
+def outro_game():
+    robot_motions.celebrate_arms_up()
+    robot_motions.center_all()
+
+>>>>>>> 450bf0b (tested timing for all game prompts and answers)
 ##### idle functions part of threading structure, so kept in 
 
 def keyboard_listener(paused, eyebrow_process, yaw_process, rsh_process):
@@ -164,18 +491,122 @@ if __name__ == "__main__":
             paused.clear()
             time.sleep(1)
 
+<<<<<<< HEAD
             print("testing video 3")
             robot_motions.video_tts_3()
+=======
+            print("OUTRO GAME")
+            outro_game()
 
             paused.set()
         time.sleep(1)
 
+        if start_cond == 'g1':
+            paused.clear()
+            time.sleep(1)
+
+            print("game_tts_1")
+            game_tts_1_prompt()
+
+            paused.set()
+        time.sleep(1)
+
+        if start_cond == 'f1':
+            paused.clear()
+            time.sleep(1)
+
+            print("game_tts_1")
+            game_tts_1_answer()
+
+            paused.set()
+        time.sleep(1)
+
+        if start_cond == 'g2':
+            paused.clear()
+            time.sleep(1)
+
+            print("game_tts_2")
+            game_tts_2_prompt()
+
+            paused.set()
+        time.sleep(1)
+
+        if start_cond == 'f2':
+            paused.clear()
+            time.sleep(1)
+
+            print("game_tts_2")
+            game_tts_2_answer()
+
+            paused.set()
+        time.sleep(1)
+
+        if start_cond == 'g3':
+            paused.clear()
+            time.sleep(1)
+
+            print("game_tts_3")
+            game_tts_3_prompt()
+>>>>>>> 450bf0b (tested timing for all game prompts and answers)
+
+            paused.set()
+        time.sleep(1)
+
+<<<<<<< HEAD
         if start_cond == 'test2':
             paused.clear()
             time.sleep(1)
 
             print("testing blinking")
             robot_motions.blinking()
+=======
+        if start_cond == 'f3':
+            paused.clear()
+            time.sleep(1)
+
+            print("game_tts_3")
+            game_tts_1_answer()
+
+            paused.set()
+        time.sleep(1)
+
+        if start_cond == 'g4':
+            paused.clear()
+            time.sleep(1)
+
+            print("game_tts_4")
+            game_tts_4_prompt()
+
+            paused.set()
+        time.sleep(1)
+
+        if start_cond == 'f4':
+            paused.clear()
+            time.sleep(1)
+
+            print("game_tts_4")
+            game_tts_1_answer()
+
+            paused.set()
+        time.sleep(1)
+
+        if start_cond == 'g5':
+            paused.clear()
+            time.sleep(1)
+
+            print("game_tts_5")
+            game_tts_4_prompt()
+>>>>>>> 450bf0b (tested timing for all game prompts and answers)
+
+            paused.set()
+        time.sleep(1)
+
+        if start_cond == 'f5':
+            paused.clear()
+            time.sleep(1)
+
+            print("game_tts_5")
+            game_tts_1_answer()
 
             paused.set()
         time.sleep(1)
