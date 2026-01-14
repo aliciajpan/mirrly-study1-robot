@@ -865,7 +865,7 @@ class GestureController:
         """
         print(f"SHOW DIAMOND (duration: {duration}s)")
         
-        image_path = "static/media/image/diamond.png"
+        image_path = "static/media/image/diamond.jpeg"
         
         # Display diamond image
         if MEDIA_AVAILABLE and media_player:
@@ -892,7 +892,7 @@ class GestureController:
         """
         print(f"SHOW STAR (duration: {duration}s)")
         
-        image_path = "static/media/image/star.png"
+        image_path = "static/media/image/star.jpeg"
         
         # Display star image
         if MEDIA_AVAILABLE and media_player:
