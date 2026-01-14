@@ -59,15 +59,9 @@ LIMITS = {
     "eye_brow_l": {"open": 370, "close": 210},
     "eye_brow_r": {"open": 343, "close": 510},
     "arm_r": {"up": 90, "rest": 120, "down": 170}, # rest means T-pose
-<<<<<<< HEAD
     "arm_l": {"up": 110, "rest": 80, "down": 30}, # rest means T-pose
     "r_shoulder": {"up": 175, "front": 80}, # up means screw face of shoulder to ceiling
     "l_shoulder": {"up": 60, "front": 160}, # up means screw face of shoulder to ceiling
-=======
-    "arm_l": {"up": 160, "rest": 130, "down": 50}, # rest means T-pose
-    "r_shoulder": {"up": 160, "front": 70}, # up means screw face of shoulder to ceiling
-    "l_shoulder": {"up": 60, "front": 150}, # up means screw face of shoulder to ceiling
->>>>>>> 450bf0b (tested timing for all game prompts and answers)
 }
 
 # Speed constants
