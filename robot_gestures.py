@@ -521,10 +521,10 @@ class GestureController:
             self.blinking(5)
             self.center_all()
             #
-            self.look_point_left()
+            self.talking_both_arms()
             self.center_all()
             #
-            self.look_point_left()
+            self.talking_both_arms()
             self.blinking(4)
             self.center_all()
             #
@@ -567,7 +567,7 @@ class GestureController:
         self.center_all()
 
         # Which of Mikey's eyes...
-        self.look_point_left()
+        self.talking_both_arms()
         self.center_all()
 
     def game_tts_1_answer(self): # audio is 8 sec long
@@ -591,7 +591,7 @@ class GestureController:
 
         time.sleep(1)
         # which of Alex's eyes...
-        self.look_point_left()
+        self.talking_both_arms()
         self.center_all()
 
     def game_tts_2_answer(self): # audio is 6 sec long
@@ -609,7 +609,7 @@ class GestureController:
         self.center_all()
         self.blinking(3)
         # which eye do you think...
-        self.look_point_left()
+        self.talking_both_arms()
         self.center_all()
 
     def game_tts_3_answer(self): # audio is 7 sec long
@@ -629,7 +629,7 @@ class GestureController:
         self.center_all()
 
         self.blinking(1)
-        self.look_point_left()
+        self.talking_both_arms()
         self.center_all()
 
     def game_tts_4_answer(self): # audio is 7 sec long
@@ -650,7 +650,7 @@ class GestureController:
 
         self.blinking(1)
         # which eye is should
-        self.look_point_left()
+        self.talking_both_arms()
         self.center_all()
 
     def game_tts_5_answer(self): # audio is 6 sec long
