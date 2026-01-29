@@ -546,10 +546,11 @@ class GestureController:
         self.center_all()
         #
         self.talking_both_arms()
-        self.blinking(3)
+        self.blinking(2)
         self.center_all()
         #
         self.talking_both_arms()
+        self.blinking(3)
         self.center_all()
         #
         self.talking_right_arm()
@@ -688,8 +689,7 @@ class GestureController:
     def game_tts_5_answer(self): # audio is 6 sec long
         self.open_eyes()
         self.talking_left_arm()
-        self.center_all()
-        self.talking_both_arms()
+        self.blinking(2)
         self.center_all()
 
     def video_tts_all(self): # audio is 48 sec long
