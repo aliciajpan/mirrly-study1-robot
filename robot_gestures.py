@@ -245,7 +245,7 @@ class GestureController:
         # elapsed_time = time.time()-start_time
         interruptible_sleep(remaining_time)
 
-    def close_eyes():
+    def close_eyes(self):
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Closing eyes")
             interruptible_sleep(2.0)
@@ -255,7 +255,9 @@ class GestureController:
         time.sleep(0.01)
         head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["close"], BLINK_SPEED)
 
-    def open_eyes():
+        interruptible_sleep(2.0)
+
+    def open_eyes(self):
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Opening eyes")
             interruptible_sleep(2.0)
@@ -264,6 +266,8 @@ class GestureController:
         head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], BLINK_SPEED - 100)
         time.sleep(0.01)
         head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], BLINK_SPEED)
+
+        interruptible_sleep(2.0)
 
     def pitch_tester(self):
         if not MOTORS_AVAILABLE:
