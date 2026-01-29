@@ -514,6 +514,7 @@ class GestureController:
         interruptible_sleep(2)
         
     def overall_intro_tts(self):
+        self.open_eyes()
         self.talking_right_arm()
         self.center_all()
         self.blinking(2)
