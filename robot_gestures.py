@@ -572,13 +572,14 @@ class GestureController:
 
     def overall_outro(self): # audio is 8 sec long
             print('overall_outro')
-            self.close_eyes()
+            self.open_eyes()
             self.talking_both_arms()
             self.blinking(3)
             self.center_all()
             self.celebrate_arms_up()
-            self.blinking(3)
+            self.blinking(2)
             self.center_all()
+            self.close_eyes()
         
     def game_tts_1_prompt(self): # audio is 15 sec long
         self.talking_both_arms()
@@ -684,7 +685,7 @@ class GestureController:
     def game_tts_5_answer(self): # audio is 6 sec long
         self.talking_left_arm()
         self.center_all()
-        self.talking_left_arm()
+        self.talking_both_arms()
         self.center_all()
         self.talking_left_arm()
         self.center_all()
@@ -778,6 +779,7 @@ class GestureController:
         self.celebrate_arms_up()
         self.blinking(2)
         self.center_all()
+        time.sleep(1)
         self.close_eyes()
 
     def outro_game(self):
