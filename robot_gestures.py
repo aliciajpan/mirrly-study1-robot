@@ -245,6 +245,26 @@ class GestureController:
         # elapsed_time = time.time()-start_time
         interruptible_sleep(remaining_time)
 
+    def close_eyes()
+        if not MOTORS_AVAILABLE:
+            print("  [SIMULATION] Closing eyes")
+            interruptible_sleep(2.0)
+            return
+        
+        head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["close"], BLINK_SPEED - 100)
+        time.sleep(0.01)
+        head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["close"], BLINK_SPEED)
+
+    def open_eyes()
+        if not MOTORS_AVAILABLE:
+            print("  [SIMULATION] Opening eyes")
+            interruptible_sleep(2.0)
+            return
+        
+        head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], BLINK_SPEED - 100)
+        time.sleep(0.01)
+        head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], BLINK_SPEED)
+
     def pitch_tester(self):
         if not MOTORS_AVAILABLE:
             print("  [SIMULATION] Pitch range test")
@@ -515,6 +535,7 @@ class GestureController:
         
     def intro_game(self): # audio is 51 sec long 
             print('intro_game')
+            self.open_eyes()
             self.celebrate_arms_up()
             self.blinking(3)
             self.center_all()
@@ -547,6 +568,7 @@ class GestureController:
 
     def overall_outro(self): # audio is 8 sec long
             print('overall_outro')
+            self.close_eyes()
             self.talking_both_arms()
             self.blinking(3)
             self.center_all()
@@ -752,12 +774,13 @@ class GestureController:
         self.celebrate_arms_up()
         self.blinking(2)
         self.center_all()
-        self.blinking(1)
+        self.close_eyes()
 
     def outro_game(self):
         print('outro_game')
         self.celebrate_arms_up()
         self.center_all()
+        self.close_eyes()
 
     def gesture_with_video(self, video_path=None):
         """
@@ -986,7 +1009,9 @@ GESTURES = {
     'overall_outro': gesture_controller.overall_outro,
     'blink_test': gesture_controller.blink_test,
     'pitch_tester': gesture_controller.pitch_tester,
-    'blinking': gesture_controller.blinking
+    'blinking': gesture_controller.blinking,
+    'close_eyes': gesture_controller.close_eyes,
+    'open_eyes': gesture_controller.open_eyes
 }
 
 
