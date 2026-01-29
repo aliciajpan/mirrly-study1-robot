@@ -550,19 +550,19 @@ class GestureController:
         self.center_all()
         #
         self.talking_both_arms()
-        self.blinking(3)
+        self.blinking(2)
         self.center_all()
         #
         self.talking_right_arm()
-        self.blinking(1)
+        self.blinking(5)
         self.center_all
         #
         self.talking_left_arm()
-        self.blinking(1)
+        self.blinking(5)
         self.center_all()
         #
         self.talking_both_arms()
-        self.blinking(4)
+        self.blinking(7)
         self.center_all()
         #
         self.celebrate_arms_up()
