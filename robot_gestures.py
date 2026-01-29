@@ -539,50 +539,46 @@ class GestureController:
         self.blinking(1)
         
     def intro_game(self): # audio is 51 sec long 
-            print('intro_game')
-            self.open_eyes()
-            self.celebrate_arms_up()
-            self.blinking(3)
-            self.center_all()
-            #
-            self.talking_both_arms()
-            self.blinking(5)
-            self.center_all()
-            #
-            self.talking_both_arms()
-            self.center_all()
-            #
-            self.talking_both_arms()
-            self.blinking(4)
-            self.center_all()
-            #
-            self.talking_right_arm()
-            self.blinking(1)
-            self.center_all
-            #
-            self.talking_left_arm()
-            self.blinking(1)
-            self.center_all()
-            #
-            self.talking_both_arms()
-            self.blinking(4)
-            self.center_all()
-            #
-            self.celebrate_arms_up()
-            self.center_all()
+        print('intro_game')
+        self.open_eyes()
+        self.celebrate_arms_up()
+        self.blinking(2)
+        self.center_all()
+        #
+        self.talking_both_arms()
+        self.blinking(3)
+        self.center_all()
+        #
+        self.talking_both_arms()
+        self.center_all()
+        #
+        self.talking_right_arm()
+        self.blinking(1)
+        self.center_all
+        #
+        self.talking_left_arm()
+        self.blinking(1)
+        self.center_all()
+        #
+        self.talking_both_arms()
+        self.blinking(4)
+        self.center_all()
+        #
+        self.celebrate_arms_up()
+        self.center_all()
 
     def overall_outro(self): # audio is 8 sec long
-            print('overall_outro')
-            self.open_eyes()
-            self.talking_both_arms()
-            self.blinking(3)
-            self.center_all()
-            self.celebrate_arms_up()
-            self.blinking(2)
-            self.center_all()
-            self.close_eyes()
+        print('overall_outro')
+        self.open_eyes()
+        self.talking_both_arms()
+        self.blinking(1)
+        self.center_all()
+        self.celebrate_arms_up()
+        self.center_all()
+        self.close_eyes()
         
     def game_tts_1_prompt(self): # audio is 15 sec long
+        self.open_eyes()
         self.talking_both_arms()
         self.center_all()
         self.blinking(1)
@@ -601,6 +597,7 @@ class GestureController:
         self.center_all()
 
     def game_tts_1_answer(self): # audio is 8 sec long
+        self.open_eyes()
         self.talking_right_arm() # right answer is LS from participant POV
         self.center_all()
         self.blinking(1)
@@ -609,6 +606,7 @@ class GestureController:
         self.center_all()
 
     def game_tts_2_prompt(self): # audio is 14 sec long
+        self.open_eyes()
         # pause until when they're playing with...
         self.blinking(2)
         self.celebrate_arms_up()
@@ -625,6 +623,7 @@ class GestureController:
         self.center_all()
 
     def game_tts_2_answer(self): # audio is 6 sec long
+        self.open_eyes()
         self.talking_left_arm()
         self.center_all()
         self.talking_left_arm()
@@ -633,6 +632,7 @@ class GestureController:
         self.center_all()
 
     def game_tts_3_prompt(self): # audio is 15 sec long
+        self.open_eyes()
         self.blinking(5)
         #start when Fiona used to have an
         self.talking_left_arm()
@@ -643,6 +643,7 @@ class GestureController:
         self.center_all()
 
     def game_tts_3_answer(self): # audio is 7 sec long
+        self.open_eyes()
         self.talking_right_arm()
         self.center_all()
         self.celebrate_arms_up()
@@ -663,6 +664,7 @@ class GestureController:
         self.center_all()
 
     def game_tts_4_answer(self): # audio is 7 sec long
+        self.open_eyes()
         self.talking_right_arm()
         self.center_all()
         self.celebrate_arms_up()
@@ -684,14 +686,14 @@ class GestureController:
         self.center_all()
 
     def game_tts_5_answer(self): # audio is 6 sec long
+        self.open_eyes()
         self.talking_left_arm()
         self.center_all()
         self.talking_both_arms()
         self.center_all()
-        self.talking_left_arm()
-        self.center_all()
 
     def video_tts_all(self): # audio is 48 sec long
+        self.open_eyes()
         print('video_tts_all')
         self.video_tts_1()
         self.video_tts_2()
@@ -785,6 +787,7 @@ class GestureController:
 
     def outro_game(self):
         print('outro_game')
+        self.open_eyes()
         self.celebrate_arms_up()
         self.center_all()
         self.close_eyes()
