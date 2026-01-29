@@ -558,7 +558,7 @@ class GestureController:
         self.blinking(1)
 
         # In his right eye, ...
-        self.talking_right_arm()
+        self.talking_left_arm() # mirrly POV and participant POV are opposite directions
         self.center_all()
         self.blinking(1)
 
@@ -571,7 +571,7 @@ class GestureController:
         self.center_all()
 
     def game_tts_1_answer(self): # audio is 8 sec long
-        self.talking_left_arm()
+        self.talking_right_arm() # right answer is LS from participant POV
         self.center_all()
         self.blinking(1)
 
@@ -586,7 +586,7 @@ class GestureController:
         self.blinking(1)
 
         # covered part of their vision in their left eye
-        self.talking_left_arm()
+        self.talking_right_arm()
         self.center_all()
 
         time.sleep(1)
@@ -595,17 +595,17 @@ class GestureController:
         self.center_all()
 
     def game_tts_2_answer(self): # audio is 6 sec long
-        self.talking_right_arm()
+        self.talking_left_arm()
         self.center_all()
         self.talking_left_arm()
         self.center_all()
-        self.talking_right_arm()
+        self.talking_left_arm()
         self.center_all()
 
     def game_tts_3_prompt(self): # audio is 15 sec long
         self.blinking(5)
         #start when Fiona used to have an
-        self.talking_right_arm()
+        self.talking_left_arm()
         self.center_all()
         self.blinking(3)
         # which eye do you think...
@@ -613,7 +613,7 @@ class GestureController:
         self.center_all()
 
     def game_tts_3_answer(self): # audio is 7 sec long
-        self.talking_left_arm()
+        self.talking_right_arm()
         self.center_all()
         self.celebrate_arms_up()
         self.center_all()
@@ -624,7 +624,7 @@ class GestureController:
         self.center_all()
 
         # She used to get...
-        self.talking_right_arm()
+        self.talking_left_arm()
         self.talking_left_arm()
         self.center_all()
 
@@ -633,7 +633,7 @@ class GestureController:
         self.center_all()
 
     def game_tts_4_answer(self): # audio is 7 sec long
-        self.talking_left_arm()
+        self.talking_right_arm()
         self.center_all()
         self.celebrate_arms_up()
         self.center_all()
@@ -644,8 +644,8 @@ class GestureController:
         self.center_all()
 
         self.blinking(2)
-        # Daniel's vision is blury
-        self.talking_left_arm()
+        # Daniel's vision is blurry
+        self.talking_right_arm()
         self.center_all()
 
         self.blinking(1)
@@ -654,11 +654,11 @@ class GestureController:
         self.center_all()
 
     def game_tts_5_answer(self): # audio is 6 sec long
-        self.talking_right_arm()
+        self.talking_left_arm()
         self.center_all()
         self.talking_left_arm()
         self.center_all()
-        self.talking_right_arm()
+        self.talking_left_arm()
         self.center_all()
 
     def video_tts_all(self): # audio is 48 sec long
