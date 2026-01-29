@@ -780,7 +780,7 @@ class GestureController:
         self.celebrate_arms_up()
         self.blinking(2)
         self.center_all()
-        time.sleep(1)
+        time.sleep(2)
         self.close_eyes()
 
     def outro_game(self):
