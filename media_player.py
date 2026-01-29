@@ -34,8 +34,8 @@ class MediaPlayer:
                 '--no-embedded-video',        # Don't embed video
                 '--vout=xcb_x11',            # Force X11 video output (works over SSH with DISPLAY=:0)
                 '--avcodec-hw=none',         # Disable hardware decoding to avoid DRM issues
-                #'--no-hwaccel',              # Completely disable hardware acceleration
-                '--codec=avcodec,none',      # Force software avcodec decoder
+                # '--no-hwaccel',              # Completely disable hardware acceleration (apparently commenting out is redundant & harmless)
+                # '--codec=avcodec,none',      # Force software avcodec decoder (want to allow image decoding PNG)
                 '--file-caching=300',        # Reduce file cache to 300ms (default 1000ms)
                 '--network-caching=300',     # Reduce network cache to 300ms
                 '--verbose=0'                # Reduce error spam
