@@ -872,7 +872,7 @@ class GestureController:
         print(f"SHOW DIAMOND (duration: {duration}s)")
         
         # image_path = "static/media/images/diamond.jpeg"
-        image_path = os.path.join(BASE_DIR, "static", "media", "images", "diamond.jpeg")
+        image_path = os.path.join(BASE_DIR, "static", "media", "images", "diamond.png")
         
         # Display diamond image
         if MEDIA_AVAILABLE and media_player:
@@ -900,7 +900,7 @@ class GestureController:
         print(f"SHOW STAR (duration: {duration}s)")
         
         # image_path = "static/media/images/star.jpeg"
-        image_path = os.path.join(BASE_DIR, "static", "media", "images", "star.jpeg")
+        image_path = os.path.join(BASE_DIR, "static", "media", "images", "star.png")
         
         # Display star image
         if MEDIA_AVAILABLE and media_player:

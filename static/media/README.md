@@ -6,8 +6,8 @@ Place your media files in these directories:
 - `video/countdown_video.mp4` - Countdown video for countdown_gesture
 
 ## Images
-- `image/diamond.jpeg` - Diamond image for show_diamond gesture
-- `image/star.jpeg` - Star image for show_star gesture
+- `image/diamond.png` - Diamond image for show_diamond gesture
+- `image/star.png` - Star image for show_star gesture
 
 ## Supported Formats
 - **Videos**: mp4, avi, mov, mkv, wmv (any VLC-supported format)
