@@ -553,6 +553,11 @@ class GestureController:
         self.blinking(2)
         self.center_all()
         #
+        # TIMING ADJUSTMENT HERE
+        self.celebrate_arms_up()
+        self.blinking(4)
+        self.center_all()
+        #
         self.talking_right_arm()
         self.blinking(5)
         self.center_all
