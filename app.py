@@ -9,6 +9,8 @@ import multiprocessing
 from control_modules.head_control import HeadMotors
 from control_modules.torso_control import TorsoMotors
 
+from vision.camera_server import run_server
+
 head_motors = HeadMotors()
 torso_motors = TorsoMotors()
 
@@ -169,10 +171,11 @@ def eyes_right():
 
 ##### idle functions not needed but part of threading structure, so kept in 
 
-def keyboard_listener(paused, eyebrow_process, yaw_process, rsh_process):
+def keyboard_listener(paused, eyebrow_process, yaw_process, rsh_process, camera_process):
     global start_exp
     global start_cond
     paused_state = True  # track the paused state
+
     while True:
         user_input = input("Enter command ('test' to start, 'p' to toggle pausing, 'q' to quit): ").lower()
         if user_input == 'test':
@@ -196,6 +199,10 @@ def keyboard_listener(paused, eyebrow_process, yaw_process, rsh_process):
 
             rsh_process.terminate()
             rsh_process.join()
+
+            camera_process.terminate()
+            camera_process.join()
+
             terminate_program()
             break
 
@@ -290,11 +297,15 @@ if __name__ == "__main__":
     random_brow_process = multiprocessing.Process(target=eye_brow_idle, args=(paused,))
     random_yaw_roll_process = multiprocessing.Process(target=yaw_roll, args=(paused,))
     random_rsh_process = multiprocessing.Process(target=hand_shoulder_idle, args=(paused,))
+
+    video_server_process = multiprocessing.Process(target=run_server)
+    video_server_process.start()
+    print("Camera server initiated in background process via vision/camera_server.py...")
         
     try:
         # Start a separate thread to listen for the keyboard inputs
         keyboard_thread = threading.Thread(target=keyboard_listener, args=(paused, random_brow_process,
-                                                                            random_yaw_roll_process, random_rsh_process))
+                                                                            random_yaw_roll_process, random_rsh_process, video_server_process))
         keyboard_thread.daemon = True
         keyboard_thread.start()
         

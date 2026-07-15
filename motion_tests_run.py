@@ -22,8 +22,6 @@ robot_motions = GestureController() # THIS ALREADY INITS head_motors & torso_mot
 start_exp = False
 start_cond = "test"
 
-<<<<<<< HEAD
-=======
 '''
 # Motor calibration limits (device-specific)
 LIMITS = {
@@ -348,7 +346,6 @@ def outro_game():
     robot_motions.celebrate_arms_up()
     robot_motions.center_all()
 
->>>>>>> 450bf0b (tested timing for all game prompts and answers)
 ##### idle functions part of threading structure, so kept in 
 
 def keyboard_listener(paused, eyebrow_process, yaw_process, rsh_process):
