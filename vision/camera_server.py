@@ -9,7 +9,7 @@ from vision.eye_camera import EyeCameraManager
 
 def run_server():
     app = Flask(__name__)
-    eye_manager = EyeCameraManager(left_index=0, right_index=2)
+    eye_manager = EyeCameraManager(left_index=0, right_index=1)
 
     @app.route('/video_feed/left')
     def video_feed_left():
@@ -22,7 +22,7 @@ def run_server():
                         mimetype='multipart/x-mixed-replace; boundary=frame')
 
     print("Starting Camera Server on port 5001...")
-    app.run(debug=False, host='0.0.0.0', port=5001, use_reloader=False)
+    app.run(debug=False, host='0.0.0.0', port=5002, use_reloader=False)
 
 if __name__ == '__main__':
     run_server()
