@@ -21,7 +21,7 @@ def run_server():
         return Response(eye_manager.generate_frames("right"),
                         mimetype='multipart/x-mixed-replace; boundary=frame')
 
-    print("Starting Camera Server on port 5001...")
+    print("Starting Camera Server on port 5002...")
     app.run(debug=False, host='0.0.0.0', port=5002, use_reloader=False)
 
 if __name__ == '__main__':
