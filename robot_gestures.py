@@ -898,7 +898,6 @@ GESTURES = {
     'video_tts_3': gesture_controller.video_tts_3,
     'video_tts_4': gesture_controller.video_tts_4,
     'outro_game': gesture_controller.outro_game,
-    'gesture_with_video': gesture_controller.gesture_with_video,
     'show_belly_image': gesture_controller.show_belly_image,
     'countdown_gesture': gesture_controller.countdown_gesture,
     'show_RS': gesture_controller.show_RS,
