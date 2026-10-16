@@ -213,7 +213,22 @@ echo -e "${GREEN}Ready for connections!${NC}"
 echo -e "${YELLOW}Press Ctrl+C to stop${NC}"
 echo ""
 
-# Start server
+# Start the Camera Streaming Server in the background (port 5002)
+print_info "Starting Dual Camera Server on port 5002..."
+python3 vision/camera_server.py &
+CAM_PID=$!
+
+# Ensure both servers exit cleanly on Ctrl+C or script termination
+cleanup_servers() {
+    print_warning "Stopping servers..."
+    if kill -0 "$CAM_PID" 2>/dev/null; then
+        kill "$CAM_PID" 2>/dev/null
+    fi
+    exit 0
+}
+trap cleanup_servers SIGINT SIGTERM EXIT
+
+# Start main WebSocket robot server (foreground on port 8765)
 if [ "$LOCAL_MODE" = true ]; then
     python3 robot_server.py --local --port "$PORT"
 else
