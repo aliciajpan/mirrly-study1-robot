@@ -225,3 +225,5 @@ static/media/image/*.jpg
 static/media/image/*.png
 # But keep the README
 !static/media/README.md
+
+.DS_Store
