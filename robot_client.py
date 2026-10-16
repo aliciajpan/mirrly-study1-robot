@@ -146,9 +146,9 @@ class RobotClient:
         print("  list                    - List all available gestures")
         print("  status                  - Get server status")
         print("  gesture <name>          - Execute gesture (interrupts previous)")
-        print("  countdown               - Play countdown video")
-        print("  diamond [duration]      - Show diamond image (default: 3s)")
-        print("  star [duration]         - Show star image (default: 3s)")
+        print("  countdown               - Show image for when timer bar runs")
+        print("  RS [duration]      - Show RS image (default: 3s)")
+        print("  LS [duration]         - Show LS image (default: 3s)")
         print("  stop                    - Stop current gesture")
         print("  quit                    - Exit\n")
         
@@ -173,20 +173,20 @@ class RobotClient:
                     await self.stop()
                 elif command == 'countdown':
                     await self.execute_gesture('countdown_gesture')
-                elif command.startswith('diamond'):
+                elif command.startswith('RS'):
                     parts = command.split()
                     duration = float(parts[1]) if len(parts) > 1 else 3.0
                     await self.send_command({
                         'action': 'gesture',
-                        'gesture': 'show_diamond',
+                        'gesture': 'show_RS',
                         'params': {'duration': duration}
                     })
-                elif command.startswith('star'):
+                elif command.startswith('LS'):
                     parts = command.split()
                     duration = float(parts[1]) if len(parts) > 1 else 3.0
                     await self.send_command({
                         'action': 'gesture',
-                        'gesture': 'show_star',
+                        'gesture': 'show_LS',
                         'params': {'duration': duration}
                     })
                 elif command.startswith('gesture '):
@@ -231,18 +231,18 @@ async def media_demo(client: RobotClient):
     await client.execute_gesture('countdown_gesture')
     await asyncio.sleep(1)
     
-    print("\n2. Show diamond (3 seconds)...")
+    print("\n2. Show RS (3 seconds)...")
     await client.send_command({
         'action': 'gesture',
-        'gesture': 'show_diamond',
+        'gesture': 'show_RS',
         'params': {'duration': 3.0}
     })
     await asyncio.sleep(0.5)
     
-    print("\n3. Show star (3 seconds)...")
+    print("\n3. Show LS (3 seconds)...")
     await client.send_command({
         'action': 'gesture',
-        'gesture': 'show_star',
+        'gesture': 'show_LS',
         'params': {'duration': 3.0}
     })
     
@@ -265,8 +265,8 @@ async def main():
     parser.add_argument('--media-demo', action='store_true', help='Run media demo (video/images)')
     parser.add_argument('--gesture', help='Execute single gesture')
     parser.add_argument('--countdown', action='store_true', help='Play countdown video')
-    parser.add_argument('--diamond', type=float, metavar='DURATION', help='Show diamond image (duration in seconds)')
-    parser.add_argument('--star', type=float, metavar='DURATION', help='Show star image (duration in seconds)')
+    parser.add_argument('--RS', type=float, metavar='DURATION', help='Show RS image (duration in seconds)')
+    parser.add_argument('--LS', type=float, metavar='DURATION', help='Show LS image (duration in seconds)')
     
     args = parser.parse_args()
     
@@ -284,17 +284,17 @@ async def main():
             await media_demo(client)
         elif args.countdown:
             await client.execute_gesture('countdown_gesture')
-        elif args.diamond is not None:
+        elif args.RS is not None:
             await client.send_command({
                 'action': 'gesture',
-                'gesture': 'show_diamond',
-                'params': {'duration': args.diamond}
+                'gesture': 'show_RS',
+                'params': {'duration': args.RS}
             })
-        elif args.star is not None:
+        elif args.LS is not None:
             await client.send_command({
                 'action': 'gesture',
-                'gesture': 'show_star',
-                'params': {'duration': args.star}
+                'gesture': 'show_LS',
+                'params': {'duration': args.LS}
             })
         elif args.gesture:
             await client.execute_gesture(args.gesture)

@@ -797,163 +797,46 @@ class GestureController:
         self.center_all()
         self.close_eyes()
 
-    def gesture_with_video(self, video_path=None):
+    def show_belly_image(self, filename: str, duration: float = 6.0):
         """
-        Example gesture with synchronized video playback.
-        Play video on screen while performing gesture.
-        
-        Args:
-            video_path (str): Path to video file. If None, uses default or skips video.
+        Display any graphic on the robot's belly screen via VLC.
+        Non-blocking so arm/head movements and speech can run simultaneously.
         """
-        print("GESTURE WITH VIDEO")
+        image_path = os.path.join(BASE_DIR, "static", "media", filename)
+        print(f"BELLY DISPLAY: {image_path} ({duration}s)")
         
-        # Start video playback in background (non-blocking)
-        video_thread = None
-        if MEDIA_AVAILABLE and video_path and media_player:
-            print(f"  Playing video: {video_path}")
-            video_thread = media_player.play_video(
-                video_path=video_path,
+        if MEDIA_AVAILABLE and media_player:
+            media_player.play_image(
+                image_path=image_path,
+                duration=duration,
                 fullscreen=True,
-                muted=False,
-                blocking=False  # Don't wait for video to finish
+                blocking=False  # do not block motor movements
             )
-        elif video_path:
-            print(f"  [SIMULATION] Would play video: {video_path}")
-        
-        # Perform gesture movements
-        if not MOTORS_AVAILABLE:
-            print("  [SIMULATION] Performing gesture with video")
-            interruptible_sleep(3.0)  # Simulate gesture duration
         else:
-            # # Example: Celebratory gesture
-            # head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
-            # head_motors.move("head_pitch", LIMITS["head_pitch"]["up"], PITCH_SPEED)
-            # head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
-            # # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-            # # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
-
-            # torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
-            # torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
-            # torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
-            # torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
-            
-            # time.sleep(0.5)
-            pass
-        
-        # Wait for video to finish if it was started
-        if video_thread:
-            print("  Waiting for video to complete...")
-            video_thread.join()
-        
-        print("  Gesture with video complete")
+            print(f"  [SIMULATION] Would show belly graphic: {filename}")    
 
     def countdown_gesture(self):
-        print('COUNTDOWN GESTURE')
+        print('TIMER BAR GESTURE')
+        
+        self.show_belly_image("YourTurnToAnswer.png", duration=9.0)
+        self.center_all()
+        interruptible_sleep(0.5)
 
-        """
-        Play countdown video with synchronized celebratory gesture.
-        Uses: static/media/video/countdown_video.mp4
-        """
-        print("COUNTDOWN GESTURE")
-        
-        video_path = "static/media/video/countdown_video.mp4"
-        
-        # Start countdown video (non-blocking)
-        video_thread = None
-        if MEDIA_AVAILABLE and media_player:
-            print(f"  Playing countdown video: {video_path}")
-            video_thread = media_player.play_video(
-                video_path=video_path,
-                fullscreen=True,
-                muted=True,
-                blocking=False
-            )
-        else:
-            print(f"  [SIMULATION] Would play countdown video: {video_path}")
-        
-        # Perform celebratory movements during countdown
-        if not MOTORS_AVAILABLE:
-            print("  [SIMULATION] Performing countdown gesture")
-            interruptible_sleep(5.0)
-        else:
-            # # Center position at start
-            # head_motors.move("head_yaw", LIMITS["head_yaw"]["center"], 400)
-            # head_motors.move("head_pitch", LIMITS["head_pitch"]["center"], PITCH_SPEED)
-            # head_motors.move("eye_self", LIMITS["eye_self"]["center"], 500)
-            # # head_motors.move("eye_brow_l", LIMITS["eye_brow_l"]["open"], EYELID_SPEED)
-            # # head_motors.move("eye_brow_r", LIMITS["eye_brow_r"]["open"], EYELID_SPEED)
-            
-            # # Anticipatory arm movements
-            # torso_motors.arm_move("arm_r", LIMITS["arm_r"]["up"], 0.01)
-            # torso_motors.arm_move("r_shoulder", LIMITS["r_shoulder"]["up"], 0.01)
-            # torso_motors.arm_move("arm_l", LIMITS["arm_l"]["up"], 0.01)
-            # torso_motors.arm_move("l_shoulder", LIMITS["l_shoulder"]["up"], 0.01)
-            
-            interruptible_sleep(0.5)
-            
-        
-        # Wait for countdown video to finish
-        if video_thread:
-            print("  Waiting for countdown to complete...")
-            video_thread.join()
-        
-        print("  Countdown gesture complete")
+    def show_RS(self):
+        print("SHOW RS")
 
-    def show_diamond(self, duration=3.0):
-        """
-        Display diamond image on screen.
-        Uses: static/media/images/diamond.png
-        
-        Args:
-            duration (float): How long to display the image (default: 3 seconds)
-        """
-        print(f"SHOW DIAMOND (duration: {duration}s)")
-        
-        # image_path = "static/media/images/diamond.jpeg"
-        image_path = os.path.join(BASE_DIR, "static", "media", "images", "diamond.png")
-        
-        # Display diamond image
-        if MEDIA_AVAILABLE and media_player:
-            print(f"  Displaying diamond: {image_path}")
-            media_player.play_image(
-                image_path=image_path,
-                duration=duration,
-                fullscreen=True,
-                blocking=True
-            )
-        else:
-            print(f"  [SIMULATION] Would display diamond: {image_path} for {duration}s")
-            time.sleep(duration)
-        
-        print("  Diamond display complete")
+        self.show_belly_image("AnswerRSEye.png", duration=3.0)
+        self.talking_left_arm()
+        self.center_all()
+        self.blinking(1)
 
-    def show_star(self, duration=3.0):
-        """
-        Display star image on screen.
-        Uses: static/media/images/star.png
-        
-        Args:
-            duration (float): How long to display the image (default: 3 seconds)
-        """
-        print(f"SHOW STAR (duration: {duration}s)")
-        
-        # image_path = "static/media/images/star.jpeg"
-        image_path = os.path.join(BASE_DIR, "static", "media", "images", "star.png")
-        
-        # Display star image
-        if MEDIA_AVAILABLE and media_player:
-            print(f"  Displaying star: {image_path}")
-            media_player.play_image(
-                image_path=image_path,
-                duration=duration,
-                fullscreen=True,
-                blocking=True
-            )
-        else:
-            print(f"  [SIMULATION] Would display star: {image_path} for {duration}s")
-            time.sleep(duration)
-        
-        print("  Star display complete")
+    def show_LS(self):
+        print("SHOW LS")
+
+        self.show_belly_image("AnswerLSEye.png", duration=3.0)
+        self.talking_left_arm()
+        self.center_all()
+        self.blinking(1)
 
     def cleanup(self):
         """Release all motors and close connections."""
@@ -1016,9 +899,10 @@ GESTURES = {
     'video_tts_4': gesture_controller.video_tts_4,
     'outro_game': gesture_controller.outro_game,
     'gesture_with_video': gesture_controller.gesture_with_video,
+    'show_belly_image': gesture_controller.show_belly_image,
     'countdown_gesture': gesture_controller.countdown_gesture,
-    'show_diamond': gesture_controller.show_diamond,
-    'show_star': gesture_controller.show_star,
+    'show_RS': gesture_controller.show_RS,
+    'show_LS': gesture_controller.show_LS,
     'overall_intro_tts': gesture_controller.overall_intro_tts,
     'intro_game': gesture_controller.intro_game,
     'overall_outro': gesture_controller.overall_outro,
