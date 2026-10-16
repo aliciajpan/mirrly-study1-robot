@@ -797,7 +797,7 @@ class GestureController:
         self.center_all()
         self.close_eyes()
 
-    def show_belly_image(self, filename: str, duration: float = 6.0):
+    def show_belly_image(self, filename: str, duration: float=3.0, blocking: bool=False):
         """
         Display any graphic on the robot's belly screen via VLC.
         Non-blocking so arm/head movements and speech can run simultaneously.
@@ -810,7 +810,7 @@ class GestureController:
                 image_path=image_path,
                 duration=duration,
                 fullscreen=True,
-                blocking=False  # do not block motor movements
+                blocking=blocking
             )
         else:
             print(f"  [SIMULATION] Would show belly graphic: {filename}")    
@@ -818,25 +818,27 @@ class GestureController:
     def countdown_gesture(self):
         print('TIMER BAR GESTURE')
         
-        self.show_belly_image("YourTurnToAnswer.png", duration=9.0)
+        self.show_belly_image("YourTurnToAnswer.png", duration=9.0, blocking=False)
         self.center_all()
-        interruptible_sleep(0.5)
+        interruptible_sleep(9.0)
 
-    def show_RS(self):
+    def show_RS(self, duration: float=3.0, **kwargs):
         print("SHOW RS")
 
-        self.show_belly_image("AnswerRSEye.png", duration=3.0)
+        self.show_belly_image("AnswerRSEye.png", duration=duration, blocking=False)
         self.talking_left_arm()
         self.center_all()
         self.blinking(1)
+        interruptible_sleep(duration)
 
-    def show_LS(self):
+    def show_LS(self, duration: float=3.0, **kwargs):
         print("SHOW LS")
 
-        self.show_belly_image("AnswerLSEye.png", duration=3.0)
-        self.talking_left_arm()
+        self.show_belly_image("AnswerLSEye.png", duration=duration, blocking=False)
+        self.talking_right_arm()
         self.center_all()
         self.blinking(1)
+        interruptible_sleep(duration)
 
     def cleanup(self):
         """Release all motors and close connections."""
