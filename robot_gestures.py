@@ -560,7 +560,7 @@ class GestureController:
         #
         self.talking_right_arm()
         self.blinking(5)
-        self.center_all
+        self.center_all()
         #
         self.talking_left_arm()
         self.blinking(5)
@@ -603,6 +603,7 @@ class GestureController:
         self.center_all()
 
     def game_tts_1_answer(self): # audio is 8 sec long
+        self.show_belly_image("AnswerLSEye.png", duration=9.0)
         self.open_eyes()
         self.talking_right_arm() # right answer is LS from participant POV
         self.center_all()
@@ -629,6 +630,7 @@ class GestureController:
         self.center_all()
 
     def game_tts_2_answer(self): # audio is 6 sec long
+        self.show_belly_image("AnswerRSEye.png", duration=9.0)
         self.open_eyes()
         self.talking_left_arm()
         self.center_all()
@@ -649,6 +651,7 @@ class GestureController:
         self.center_all()
 
     def game_tts_3_answer(self): # audio is 7 sec long
+        self.show_belly_image("AnswerLSEye.png", duration=9.0)
         self.open_eyes()
         self.talking_right_arm()
         self.center_all()
@@ -670,6 +673,7 @@ class GestureController:
         self.center_all()
 
     def game_tts_4_answer(self): # audio is 7 sec long
+        self.show_belly_image("AnswerLSEye.png", duration=9.0)
         self.open_eyes()
         self.talking_right_arm()
         self.center_all()
@@ -692,6 +696,7 @@ class GestureController:
         self.center_all()
 
     def game_tts_5_answer(self): # audio is 6 sec long
+        self.show_belly_image("AnswerRSEye.png", duration=9.0)
         self.open_eyes()
         self.talking_left_arm()
         self.blinking(2)
@@ -806,30 +811,23 @@ class GestureController:
         print(f"BELLY DISPLAY: {image_path} ({duration}s)")
         
         if MEDIA_AVAILABLE and media_player:
-            media_player.play_image(
-                image_path=image_path,
-                duration=duration,
-                fullscreen=True,
-                blocking=blocking
-            )
+            try:
+                media_player.play_image(
+                    image_path=image_path,
+                    duration=duration,
+                    fullscreen=True,
+                    blocking=blocking
+                )
+            except Exception as err:
+                print(f"[BELLY ERROR] VLC playback error: {err}")
         else:
             print(f"  [SIMULATION] Would show belly graphic: {filename}")    
 
     def countdown_gesture(self):
         print('TIMER BAR GESTURE')
         
-        self.show_belly_image("YourTurnToAnswer.png", duration=9.0, blocking=False)
-        interruptible_sleep(0.5)
-
-    def show_RS(self, duration: float=3.0, **kwargs):
-        print("SHOW RS")
-
-        self.show_belly_image("AnswerRSEye.png", duration=duration, blocking=False)
-
-    def show_LS(self, duration: float=3.0, **kwargs):
-        print("SHOW LS")
-
-        self.show_belly_image("AnswerLSEye.png", duration=duration, blocking=False)
+        self.show_belly_image("YourTurnToAnswer.png", duration=9.0, blocking=True)
+        interruptible_sleep(9.0)
 
     def cleanup(self):
         """Release all motors and close connections."""
