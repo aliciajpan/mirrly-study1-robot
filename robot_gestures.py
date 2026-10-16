@@ -819,26 +819,17 @@ class GestureController:
         print('TIMER BAR GESTURE')
         
         self.show_belly_image("YourTurnToAnswer.png", duration=9.0, blocking=False)
-        self.center_all()
-        interruptible_sleep(9.0)
+        interruptible_sleep(0.5)
 
     def show_RS(self, duration: float=3.0, **kwargs):
         print("SHOW RS")
 
         self.show_belly_image("AnswerRSEye.png", duration=duration, blocking=False)
-        self.talking_left_arm()
-        self.center_all()
-        self.blinking(1)
-        interruptible_sleep(duration)
 
     def show_LS(self, duration: float=3.0, **kwargs):
         print("SHOW LS")
 
         self.show_belly_image("AnswerLSEye.png", duration=duration, blocking=False)
-        self.talking_right_arm()
-        self.center_all()
-        self.blinking(1)
-        interruptible_sleep(duration)
 
     def cleanup(self):
         """Release all motors and close connections."""
