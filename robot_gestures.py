@@ -715,7 +715,7 @@ class GestureController:
         self.center_all()
         self.blinking(2)
         #
-        self.look_point_left()
+        self.look_point_right()
         self.center_all()
         self.blinking(3)
         #
