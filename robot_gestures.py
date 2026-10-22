@@ -720,7 +720,8 @@ class GestureController:
         self.blinking(2)
         self.center_all()
         # sometimes our eyes
-        self.blinking(5)
+        self.blinking(3)
+        self.blinking(2)
         self.center_all()
         #
         self.talking_both_arms()
@@ -731,9 +732,12 @@ class GestureController:
         self.center_all()
         # or cataract
         self.sad_look_down()
+        self.blinking(1)
+        self.center_all()
 
     def video_tts_2(self): # audio is 13 sec long
         # over time
+        self.blinking(2)
         self.talking_right_arm()
         self.blinking(3)
         self.center_all()
