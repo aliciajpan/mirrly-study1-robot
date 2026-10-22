@@ -508,29 +508,25 @@ class GestureController:
         interruptible_sleep(2)
         
     def overall_intro_tts(self):
+        # it's nice to meet you
         self.open_eyes()
-        self.talking_right_arm()
+        self.talking_both_arms()
         self.center_all()
         self.blinking(2)
-        #I'm so excited to spend...
+        # thank you for coming
         self.celebrate_arms_up()
         self.center_all()
         self.blinking(1)
-        #I will be helping
         self.talking_left_arm()
         self.center_all()
+        # during this appt
         self.blinking(2)
         self.talking_right_arm()
         self.center_all()
         self.blinking(3)
-        #Thank you for coming and...
+        # first, let's learn a bit about amblyopia
         self.celebrate_arms_up()
         self.center_all()
-        self.blinking(2)
-        #all about an eye condition
-        self.look_point_left()
-        self.center_all()
-        self.blinking(1)
         
     def intro_game(self): # audio is 51 sec long 
         print('intro_game')
