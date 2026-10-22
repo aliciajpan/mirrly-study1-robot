@@ -833,10 +833,9 @@ class GestureController:
         self.open_eyes()
         self.center_all()
         self.talking_both_arms()
-        time.sleep(2)
         self.center_all()
         self.look_point_right()
-        time.sleep(3)
+        time.sleep(1)
         self.talking_right_arm() # currently hardcoded for default LEFT EYE
         self.center_all()
         self.talking_left_arm()
@@ -871,7 +870,6 @@ class GestureController:
         self.celebrate_arms_up()
         self.center_all()
         self.blinking(2)
-        self.celebrate_arms_up()
         self.center_all()
         self.close_eyes()
 
