@@ -1,8 +1,3 @@
-"""
-Robot gesture functions module.
-Contains all gesture definitions and motor control commands.
-"""
-
 import time
 import sys
 import os
@@ -79,7 +74,6 @@ motor_lock = threading.Lock()
 Idle_paused = threading.Event()  # Set when idle motions should pause
 Idle_paused.set()  # Start paused (unpause when gesture starts)
 idle_threads = []  # Track background idle threads
-
 
 def interruptible_sleep(duration: float):
     """
