@@ -801,8 +801,18 @@ class GestureController:
         self.center_all()
         self.close_eyes()
 
-    def sim_1_gesture(self):
+    def sim_1_gesture(self, target_side="left", **kwargs):
         self.open_eyes()
+        self.center_all()
+
+        if str(target_side).lower() in ["left", "ls"]:
+            print("--> Pointing to participant LEFT eye (using Mirrly's right arm)")
+            self.talking_right_arm()
+        elif str(target_side).lower() in ["right", "rs"]:
+            print("--> Pointing to participant RIGHT eye (using Mirrly's left arm)")
+            self.talking_left_arm()
+
+        self.blinking(1)
         self.center_all()
 
     def sim_2_gesture(self):
