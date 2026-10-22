@@ -508,7 +508,8 @@ class GestureController:
         interruptible_sleep(2)
         
     def overall_intro_tts(self):
-        self.play_sound("MirrlyOverallIntro.mp3", blocking=False)
+        # self.play_sound("MirrlyOverallIntro.mp3", blocking=False)
+
         # it's nice to meet you
         self.open_eyes()
         self.talking_both_arms()
@@ -530,7 +531,7 @@ class GestureController:
         self.center_all()
 
         # Buffer to guarantee audio finishes before process termination
-        interruptible_sleep(3.0)
+        # interruptible_sleep(3.0)
         
     def intro_game(self): # audio is 51 sec long 
         print('intro_game')
@@ -705,43 +706,44 @@ class GestureController:
         self.video_tts_4()
         
     def video_tts_1(self): # audio is 48 sec long
+        # did you know
         self.talking_right_arm()
         self.center_all()
+        self.blinking(3)
+        # then the brain is happy
+        self.talking_both_arms()
+        self.center_all()
         self.blinking(2)
-        #
+        # and you have to pick
         self.look_point_right()
-        self.center_all()
-        self.blinking(3)
-        #
-        self.celebrate_arms_up()
         self.blinking(2)
         self.center_all()
-        #
-        self.blinking(3)
-        self.talking_left_arm()
+        # sometimes our eyes
+        self.blinking(5)
         self.center_all()
         #
-        self.talking_left_arm()
-        self.talking_right_arm()
+        self.talking_both_arms()
         self.center_all()
         #
         self.talking_right_arm()
-        self.blinking(4)
+        self.blinking(2)
         self.center_all()
-        #
+        # or cataract
         self.sad_look_down()
 
     def video_tts_2(self): # audio is 13 sec long
-        self.celebrate_arms_up()
+        # over time
+        self.talking_right_arm()
         self.blinking(3)
         self.center_all()
         #
-        self.talking_right_arm()
+        self.talking_left_arm()
         self.blinking(1)
         self.center_all()
 
     def video_tts_3(self): # audio is 56 sec long
-        self.celebrate_arms_up()
+        # harder to see depth
+        self.talking_both_arms()
         self.blinking(1)
         self.center_all()
         #
@@ -762,21 +764,22 @@ class GestureController:
 
         self.celebrate_arms_up()
         self.blinking(3)
-        self.center_all()
         # your vision...
-        self.talking_right_arm()
+        self.center_all()
+        self.talking_both_arms()
         self.blinking(4)
         self.center_all()
-        self.blinking(2)
+        self.blinking(5)
         #
         self.turn_head_left()
         self.turn_head_right()
+        self.blinking(2)
         self.center_all()
-        self.blinking(1)
 
     def video_tts_4(self): # audio is 21 sec long
         self.celebrate_arms_up()
-        self.blinking(6)
+        self.blinking(3)
+        self.blinking(3)
         self.center_all()
         #
         self.talking_left_arm()
