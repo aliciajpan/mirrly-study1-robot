@@ -655,7 +655,7 @@ class GestureController:
         self.talking_both_arms()
         self.blinking(2)
         self.center_all()
-        #
+        # im going to show you 
         self.talking_both_arms()
         self.blinking(2)
         self.center_all()
