@@ -142,37 +142,44 @@ class HeadMotors(object):
             pass
         
         self.moving == True
-        if component == "head_yaw":
-            # Setting speed
-            self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_1, ADDR_GOAL_SPEED, int(speed))
-            # Setting goal position
-            dxl_comm_result, dxl_error = self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_1, ADDR_GOAL_POSITION, int(g_pos))
-        elif component == "head_pitch":
-            # Setting speed
-            self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_2, ADDR_GOAL_SPEED, int(speed))
-            dxl_comm_result, dxl_error = self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_2, ADDR_GOAL_POSITION, int(g_pos))
-        elif component == "eye_brow":
-            # Setting speed
-            self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_3, ADDR_GOAL_SPEED, int(speed))
-            self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_4, ADDR_GOAL_SPEED, int(speed))
-            dxl_comm_result, dxl_error = self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_3, ADDR_GOAL_POSITION, int(g_pos))
-            dxl_comm_result_2, dxl_error_2 = self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_4, ADDR_GOAL_POSITION, g_pos)
-        elif component == "eye_brow_l":
-            # Setting speed
-            self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_3, ADDR_GOAL_SPEED, int(speed))
-            dxl_comm_result, dxl_error = self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_3, ADDR_GOAL_POSITION, int(g_pos))
-        elif component == "eye_brow_r":
-            # Setting speed
-            self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_4, ADDR_GOAL_SPEED, int(speed))
-            dxl_comm_result_2, dxl_error_2 = self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_4, ADDR_GOAL_POSITION, g_pos)
-        elif component == "eye_self":
-            # Setting speed
-            self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_5, ADDR_GOAL_SPEED, int(speed))
-            dxl_comm_result, dxl_error = self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_5, ADDR_GOAL_POSITION, int(g_pos))
-        else:
-            pass
-        self.moving == False
+        try: 
+            if component == "head_yaw":
+                # Setting speed
+                self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_1, ADDR_GOAL_SPEED, int(speed))
+                # Setting goal position
+                dxl_comm_result, dxl_error = self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_1, ADDR_GOAL_POSITION, int(g_pos))
+            elif component == "head_pitch":
+                # Setting speed
+                self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_2, ADDR_GOAL_SPEED, int(speed))
+                dxl_comm_result, dxl_error = self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_2, ADDR_GOAL_POSITION, int(g_pos))
+            elif component == "eye_brow":
+                # Setting speed
+                self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_3, ADDR_GOAL_SPEED, int(speed))
+                self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_4, ADDR_GOAL_SPEED, int(speed))
+                dxl_comm_result, dxl_error = self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_3, ADDR_GOAL_POSITION, int(g_pos))
+                dxl_comm_result_2, dxl_error_2 = self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_4, ADDR_GOAL_POSITION, g_pos)
+            elif component == "eye_brow_l":
+                # Setting speed
+                self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_3, ADDR_GOAL_SPEED, int(speed))
+                dxl_comm_result, dxl_error = self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_3, ADDR_GOAL_POSITION, int(g_pos))
+            elif component == "eye_brow_r":
+                # Setting speed
+                self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_4, ADDR_GOAL_SPEED, int(speed))
+                dxl_comm_result_2, dxl_error_2 = self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_4, ADDR_GOAL_POSITION, g_pos)
+            elif component == "eye_self":
+                # Setting speed
+                self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_5, ADDR_GOAL_SPEED, int(speed))
+                dxl_comm_result, dxl_error = self.packetHandler.write2ByteTxRx(self.portHandler, DXL_ID_5, ADDR_GOAL_POSITION, int(g_pos))
+            else:
+                print(f"[WARN] Unknown head motor component: {component}")
+
+        except Exception as e:
+            print(f"[SERIAL DROP] Head motor write failed on {component}: {e}")
+            self.moving = False
+            return "failed_hardware_io"
         
+        #self.moving == False
+        self.moving = False
         
         if dxl_comm_result != None:
             if dxl_comm_result != COMM_SUCCESS:
