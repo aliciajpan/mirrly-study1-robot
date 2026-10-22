@@ -549,23 +549,12 @@ class GestureController:
         self.center_all()
         #
         # TIMING ADJUSTMENT HERE
-        self.celebrate_arms_up()
+        self.look_point_right()
         self.blinking(4)
         self.center_all()
         #
         self.talking_right_arm()
         self.blinking(5)
-        self.center_all()
-        #
-        self.talking_left_arm()
-        self.blinking(5)
-        self.center_all()
-        #
-        self.talking_both_arms()
-        self.blinking(7)
-        self.center_all()
-        #
-        self.celebrate_arms_up()
         self.center_all()
 
     def overall_outro(self): # audio is 8 sec long
