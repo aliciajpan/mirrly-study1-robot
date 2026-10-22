@@ -8,6 +8,7 @@ import json
 import logging
 import sys
 import os
+import time
 from datetime import datetime
 from typing import Dict, Optional
 from pathlib import Path
@@ -107,6 +108,7 @@ class GestureExecutor:
                 logger.warning("Gesture process did not terminate gracefully, killing it")
                 self.gesture_process.kill()
                 self.gesture_process.join()
+            time.sleep(0.3) # give kernel time to release serial port lock
         
         self.current_gesture = gesture_name
         self.is_running = True

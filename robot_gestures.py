@@ -802,18 +802,26 @@ class GestureController:
         self.close_eyes()
 
     def sim_1_gesture(self, target_side="left", **kwargs):
-        self.open_eyes()
-        self.center_all()
+        try:
+            self.open_eyes()
+            self.center_all()
+        except Exception as e:
+            print(f"[SIM_1 HEAD WARN] {e}")
 
-        if str(target_side).lower() in ["left", "ls"]:
+        side = str(target_side).strip().lower()
+
+        if side in ["left", "ls"]:
             print("--> Pointing to participant LEFT eye (using Mirrly's right arm)")
             self.talking_right_arm()
-        elif str(target_side).lower() in ["right", "rs"]:
+        elif side in ["right", "rs"]:
             print("--> Pointing to participant RIGHT eye (using Mirrly's left arm)")
             self.talking_left_arm()
 
-        self.blinking(1)
-        self.center_all()
+        try:
+            self.blinking(1)
+            self.center_all()
+        except Exception as e:
+            print(f"[SIM_1 HEAD WARN] {e}")
 
     def sim_2_gesture(self):
         self.open_eyes()
