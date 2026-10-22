@@ -108,6 +108,59 @@ class MediaPlayer:
             thread.join()  # Wait for display duration
         
         return thread
+
+    def play_audio(self, audio_path, blocking=False):
+        # blocking (bool): Wait for audio to finish before returning
+        if not VLC_AVAILABLE:
+            print(f"[SIMULATION] Would play audio: {audio_path}")
+            return None
+        
+        if not Path(audio_path).exists():
+            print(f"Warning: Audio file not found: {audio_path}")
+            return None
+        
+        thread = threading.Thread(
+            target=self._play_audio_thread,
+            args=(audio_path,)
+        )
+        thread.daemon = True
+        thread.start()
+        
+        if blocking:
+            thread.join()
+            
+        return thread
+    
+    def _play_audio_thread(self, audio_path):
+        # can be nested inside play_audio, which it is an internal worker function for
+        player = self.vlc_instance.media_player_new()
+        media = self.vlc_instance.media_new(str(audio_path))
+        player.set_media(media)
+        player.play()
+        
+        # Track player for cleanup
+        self.active_players.append(player)
+        
+        # Wait for player to reach an active state (up to 1.5s on Pi)
+        max_wait = 1.5
+        elapsed = 0.0
+        while elapsed < max_wait:
+            state = player.get_state()
+            if state in [vlc.State.Playing, vlc.State.Opening, vlc.State.Buffering]:
+                break
+            time.sleep(0.05)
+            elapsed += 0.05
+        
+        # Wait until audio track actually finishes or errors out
+        while True:
+            state = player.get_state()
+            if state in [vlc.State.Ended, vlc.State.Stopped, vlc.State.Error]:
+                break
+            time.sleep(0.1)
+            
+        player.stop()
+        if player in self.active_players:
+            self.active_players.remove(player)
     
     def _play_video_thread(self, video_path, fullscreen, muted):
         """Internal method to play video in a thread."""

@@ -508,6 +508,7 @@ class GestureController:
         interruptible_sleep(2)
         
     def overall_intro_tts(self):
+        self.play_sound("MirrlyOverallIntro.mp3", blocking=False)
         # it's nice to meet you
         self.open_eyes()
         self.talking_both_arms()
@@ -527,6 +528,9 @@ class GestureController:
         # first, let's learn a bit about amblyopia
         self.celebrate_arms_up()
         self.center_all()
+
+        # Buffer to guarantee audio finishes before process termination
+        interruptible_sleep(3.0)
         
     def intro_game(self): # audio is 51 sec long 
         print('intro_game')
@@ -828,6 +832,18 @@ class GestureController:
         print("SHOW LS")
 
         self.show_belly_image("AnswerLSEye.png", duration=duration, blocking=False)
+
+    def play_sound(self, filename: str, blocking: bool = False):
+        """Play sound through the onboard speaker."""
+        audio_path = os.path.join(BASE_DIR, "static", "media", "audio", filename)
+        if not os.path.exists(audio_path):
+            audio_path = os.path.join(BASE_DIR, "static", "media", filename)
+            
+        print(f"ROBOT AUDIO: {audio_path}")
+        if MEDIA_AVAILABLE and media_player:
+            media_player.play_audio(audio_path, blocking=blocking)
+        else:
+            print(f"  [SIMULATION] Would play sound: {filename}")
 
     def cleanup(self):
         """Release all motors and close connections."""
