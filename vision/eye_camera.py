@@ -5,7 +5,7 @@ import threading
 import time
 
 class EyeCameraManager:
-    def __init__(self, left_index=1, right_index=3): # TODO: CHECK HW IDX
+    def __init__(self, left_index=0, right_index=2): # TODO: CHECK HW IDX
         # indices (0, 1, 2) based on how USB hardware maps on robot
         self.indices = {
             "left": left_index,
