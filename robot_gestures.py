@@ -826,10 +826,29 @@ class GestureController:
     def sim_2_gesture(self):
         self.open_eyes()
         self.center_all()
+        self.talking_both_arms()
+        self.blinking(2)
+        self.blinking(1)
+        self.center_all()
+        self.look_point_right()
+        self.blinking(3)
+        self.talking_right_arm() # currently hardcoded for default LEFT EYE
+        self.center_all()
+        self.talking_left_arm()
+        self.center_all()
 
     def sim_3_gesture(self):
         self.open_eyes()
         self.center_all()
+        self.talking_both_arms()
+        self.blinking(2)
+        self.blinking(1)
+        self.center_all()
+        self.talking_left_arm()
+        self.blinking(2)
+        self.center_all()
+        self.celebrate_arms_up()
+        self.blinking(2)
 
     def overall_outro(self): # audio is 8 sec long
         print('overall_outro')
