@@ -840,6 +840,8 @@ class GestureController:
         self.center_all()
         self.celebrate_arms_up()
         self.center_all()
+        self.blinking(2)
+        self.celebrate_arms_up()
         self.close_eyes()
 
     def show_belly_image(self, filename: str, duration: float=3.0, blocking: bool=False):
