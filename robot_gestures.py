@@ -536,8 +536,9 @@ class GestureController:
     def intro_game(self): # audio is 51 sec long 
         print('intro_game')
         self.open_eyes()
+        self.center_all()
         self.celebrate_arms_up()
-        self.blinking(2)
+        self.blinking(1)
         self.center_all()
         #
         self.talking_both_arms()
@@ -554,7 +555,8 @@ class GestureController:
         self.center_all()
         #
         self.talking_right_arm()
-        self.blinking(5)
+        self.blinking(2)
+        self.blinking(3)
         self.center_all()
 
     def overall_outro(self): # audio is 8 sec long
