@@ -9,7 +9,7 @@ from vision.eye_camera import EyeCameraManager
 
 def run_server():
     app = Flask(__name__)
-    eye_manager = EyeCameraManager(left_index=0, right_index=2)
+    eye_manager = EyeCameraManager(left_index=1, right_index=3)
 
     @app.route('/video_feed/left')
     def video_feed_left():

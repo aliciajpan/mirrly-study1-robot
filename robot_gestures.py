@@ -802,6 +802,9 @@ class GestureController:
         self.close_eyes()
 
     def sim_1_gesture(self, target_side="left", **kwargs):
+        # Buffer to allow camera stream connections to settle on the USB bus
+        time.sleep(0.5)
+
         try:
             self.open_eyes()
             self.center_all()
@@ -824,6 +827,9 @@ class GestureController:
             print(f"[SIM_1 HEAD WARN] {e}")
 
     def sim_2_gesture(self):
+        # Buffer to allow camera stream connections to settle on the USB bus
+        time.sleep(0.5)
+
         self.open_eyes()
         self.center_all()
         self.talking_both_arms()
@@ -838,6 +844,9 @@ class GestureController:
         self.center_all()
 
     def sim_3_gesture(self):
+        # Buffer to allow camera stream connections to settle on the USB bus
+        time.sleep(0.5)
+        
         self.open_eyes()
         self.center_all()
         self.talking_both_arms()

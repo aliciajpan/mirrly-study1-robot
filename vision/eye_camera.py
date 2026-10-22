@@ -3,7 +3,7 @@ import threading
 import time
 
 class EyeCameraManager:
-    def __init__(self, left_index=0, right_index=2): # TODO: CHECK HW IDX
+    def __init__(self, left_index=1, right_index=3): # TODO: CHECK HW IDX
         # indices (0, 1, 2) based on how USB hardware maps on robot
         self.indices = {
             "left": left_index,
@@ -14,7 +14,8 @@ class EyeCameraManager:
         self.running = True
 
         for side, i in self.indices.items():
-            capture = cv2.VideoCapture(i)
+            # capture = cv2.VideoCapture(i)
+            capture = cv2.VideoCapture(i, cv2.CAP_V4L2) # to explicitly help w USB bus bw starvation...?
 
             # force MJPG compression to prevent USB bandwidth bottlenecks on RPi, HW-level
             capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
