@@ -525,7 +525,7 @@ class GestureController:
         self.blinking(2)
         self.talking_right_arm()
         self.center_all()
-        self.blinking(3)
+        self.blinking(2)
         # first, let's learn a bit about amblyopia
         self.celebrate_arms_up()
         self.center_all()
@@ -707,9 +707,10 @@ class GestureController:
         
     def video_tts_1(self): # audio is 48 sec long
         # did you know
+        self.center_all()
         self.talking_right_arm()
         self.center_all()
-        self.blinking(3)
+        self.blinking(2)
         # then the brain is happy
         self.talking_both_arms()
         self.center_all()
