@@ -833,11 +833,10 @@ class GestureController:
         self.open_eyes()
         self.center_all()
         self.talking_both_arms()
-        self.blinking(2)
-        self.blinking(1)
+        time.sleep(2)
         self.center_all()
         self.look_point_right()
-        self.blinking(3)
+        time.sleep(3)
         self.talking_right_arm() # currently hardcoded for default LEFT EYE
         self.center_all()
         self.talking_left_arm()
@@ -846,18 +845,21 @@ class GestureController:
     def sim_3_gesture(self):
         # Buffer to allow camera stream connections to settle on the USB bus
         time.sleep(0.5)
-        
+
         self.open_eyes()
         self.center_all()
         self.talking_both_arms()
-        self.blinking(2)
-        self.blinking(1)
+        time.sleep(3)
         self.center_all()
         self.talking_left_arm()
-        self.blinking(2)
+        time.sleep(3)
+        self.talking_right_arm()
+        time.sleep(1)
         self.center_all()
         self.celebrate_arms_up()
-        self.blinking(2)
+        self.talking_left_arm()
+        time.sleep(2)
+        self.center_all()
 
     def overall_outro(self): # audio is 8 sec long
         print('overall_outro')
@@ -870,6 +872,7 @@ class GestureController:
         self.center_all()
         self.blinking(2)
         self.celebrate_arms_up()
+        self.center_all()
         self.close_eyes()
 
     def show_belly_image(self, filename: str, duration: float=3.0, blocking: bool=False):

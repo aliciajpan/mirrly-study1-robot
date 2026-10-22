@@ -1,3 +1,5 @@
+#test
+
 import cv2
 import threading
 import time
@@ -44,10 +46,12 @@ class EyeCameraManager:
         while self.running:
             if capture and capture.isOpened():
                 success, frame = capture.read()
-                if success:
+                if success and frame is not None:
                     self.frames[eye_side] = frame
                 # prevent tight spin/busy loop ? (where thread repeatedly executes, waiting for condition change)
-                time.sleep(0.03) 
+                else:
+                    time.sleep(0.05) 
+                time.sleep(0.04) # 25fps throttle            
             else:
                 time.sleep(0.1)
 
