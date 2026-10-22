@@ -723,14 +723,14 @@ class GestureController:
         self.blinking(3)
         self.blinking(2)
         self.center_all()
-        #
+        # it is called
         self.talking_both_arms()
         self.center_all()
-        #
+        # happen because of
         self.talking_right_arm()
         self.blinking(2)
         self.center_all()
-        # or cataract
+        # drooping
         self.sad_look_down()
         self.blinking(1)
         self.center_all()
@@ -741,7 +741,7 @@ class GestureController:
         self.talking_right_arm()
         self.blinking(3)
         self.center_all()
-        #
+        # it can also
         self.talking_left_arm()
         self.blinking(1)
         self.center_all()
@@ -755,18 +755,19 @@ class GestureController:
         self.talking_left_arm()
         self.blinking(2)
         self.center_all()
-        ##
+        #
         self.blinking(1)
         self.talking_right_arm()
         self.blinking(3)
         self.center_all()
-        self.blinking(2)
         # it's best to start...
+        self.blinking(2)
         self.talking_both_arms()
         self.blinking(3)
         self.blinking(3)
         self.center_all()
 
+        self.blinking(2)
         self.celebrate_arms_up()
         self.blinking(3)
         # your vision...
@@ -778,10 +779,11 @@ class GestureController:
         #
         self.turn_head_left()
         self.turn_head_right()
-        self.blinking(2)
         self.center_all()
+        self.blinking(2)
 
     def video_tts_4(self): # audio is 21 sec long
+        # lots of fun
         self.celebrate_arms_up()
         self.blinking(3)
         self.blinking(3)
@@ -794,7 +796,7 @@ class GestureController:
         self.celebrate_arms_up()
         self.blinking(2)
         self.center_all()
-        time.sleep(2)
+        time.sleep(0.5)
         self.close_eyes()
 
     def outro_game(self):
