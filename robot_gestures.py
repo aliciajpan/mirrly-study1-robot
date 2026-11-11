@@ -50,8 +50,8 @@ if MOTORS_AVAILABLE:
 
 # Motor calibration limits (device-specific)
 LIMITS = {
-    # "head_yaw":   {"left": 60, "center": 200, "right": 340},
-    "head_yaw":   {"left": 200, "center": 200, "right": 200},
+    "head_yaw":   {"left": 60, "center": 200, "right": 340},
+    # "head_yaw":   {"left": 200, "center": 200, "right": 200},
     # "head_pitch": {"up": 150, "center": 150, "down": 150},
     "head_pitch": {"up": 200, "center": 150, "down": 118},
     "eye_self":   {"left": 210, "center": 210, "right": 210},
