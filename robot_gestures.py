@@ -746,26 +746,30 @@ class GestureController:
         # Buffer to allow camera stream connections to settle on the USB bus
         time.sleep(0.5)
 
-        try:
-            self.open_eyes()
-            self.center_all()
-        except Exception as e:
-            print(f"[SIM_1 HEAD WARN] {e}")
+        # try:
+        #     self.open_eyes()
+        #     self.center_all()
+        # except Exception as e:
+        #     print(f"[SIM_1 HEAD WARN] {e}")
 
-        side = str(target_side).strip().lower()
+        self.center_all()
 
-        if side in ["left", "ls"]:
-            print("--> Pointing to participant LEFT eye (using Mirrly's right arm)")
-            self.talking_right_arm()
-        elif side in ["right", "rs"]:
-            print("--> Pointing to participant RIGHT eye (using Mirrly's left arm)")
-            self.talking_left_arm()
+        # side = str(target_side).strip().lower()
 
-        try:
-            self.blinking(1)
-            self.center_all()
-        except Exception as e:
-            print(f"[SIM_1 HEAD WARN] {e}")
+        # if side in ["left", "ls", "l", "left_eye"]:
+        #     print("--> Pointing to participant LEFT eye (using Mirrly's right arm)")
+        #     self.talking_right_arm()
+        # elif side in ["right", "rs", "r", "right_eye"]:
+        #     print("--> Pointing to participant RIGHT eye (using Mirrly's left arm)")
+        #     self.talking_left_arm()
+        # else:
+        #     print(f"[SIM_1 ERROR] Unrecognized target_side: '{side}' - no arm moved!")
+
+        # try:
+        #     self.blinking(1)
+        #     self.center_all()
+        # except Exception as e:
+        #     print(f"[SIM_1 HEAD WARN] {e}")
 
     def sim_2_gesture(self):
         # Buffer to allow camera stream connections to settle on the USB bus
@@ -837,7 +841,7 @@ class GestureController:
         print('TIMER BAR GESTURE')
         
         self.show_belly_image("YourTurnToAnswer.png", duration=9.0, blocking=False)
-        interruptible_sleep(9.0)
+        interruptible_sleep(175)
 
     def show_RS(self, duration: float=3.0, **kwargs):
         print("SHOW RS")
