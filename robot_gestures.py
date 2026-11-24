@@ -511,7 +511,6 @@ class GestureController:
         interruptible_sleep(2)
         
     def overall_intro_tts(self):
-        # self.play_sound("MirrlyOverallIntro.mp3", blocking=False)
 
         # it's nice to meet you
         self.open_eyes()
@@ -529,7 +528,7 @@ class GestureController:
         self.blinking(2)
         self.talking_right_arm()
         self.center_all()
-        self.blinking(2)
+        self.blinking(1)
         # first, let's learn a bit about amblyopia
         self.celebrate_arms_up()
         self.center_all()
@@ -550,101 +549,88 @@ class GestureController:
         # did you know
         self.open_eyes()
         self.center_all()
-        self.talking_right_arm()
-        self.center_all()
-        self.blinking(2)
+        self.talking_both_arms()
         # then the brain is happy
-        self.talking_both_arms()
         self.center_all()
         self.blinking(2)
-        # and you have to pick
-        self.look_point_right()
-        self.blinking(2)
+        # but imagine
+        self.talking_left_arm()
+        interruptible_sleep(1)
         self.center_all()
-        # sometimes our eyes
-        self.blinking(3)
-        self.blinking(2)
-        self.center_all()
-        # it is called
-        self.talking_both_arms()
-        self.center_all()
-        # happen because of
+        interruptible_sleep(4)
+        # sometimes
         self.talking_right_arm()
         self.blinking(2)
         self.center_all()
-        # drooping
+        interruptible_sleep(5)
+        # amblyopia can happen
+        self.talking_both_arms()
+        interruptible_sleep(2)
+        self.center_all()
+        interruptible_sleep(3)
+        self.center_all()
+        # over time
         self.sad_look_down()
         self.blinking(1)
         self.center_all()
 
     def video_tts_2(self): # audio is 13 sec long
+        # amblyopia can make your eyes
         self.open_eyes()
         self.center_all()
-        # over time
         self.blinking(2)
+        # it can also 
         self.talking_right_arm()
-        self.blinking(3)
+        interruptible_sleep(2)
         self.center_all()
-        # it can also
-        self.talking_left_arm()
-        self.blinking(1)
+        # but there is
+        self.celebrate_arms_up()
+        interruptible_sleep(1)
         self.center_all()
 
     def video_tts_3(self): # audio is 56 sec long
+        # if we cover
         self.open_eyes()
-        self.center_all()
-        # harder to see depth
-        self.talking_both_arms()
-        self.blinking(1)
-        self.center_all()
-        #
+        # we can help the brain
         self.talking_left_arm()
-        self.blinking(2)
+        interruptible_sleep(1)
         self.center_all()
-        #
-        self.blinking(1)
+        # this is called
+        self.talking_both_arms()
+        self.center_all()
+        interruptible_sleep(4)
+        # patches can look like 
         self.talking_right_arm()
-        self.blinking(3)
+        interruptible_sleep(2)
         self.center_all()
-        # it's best to start...
         self.blinking(2)
+        # your vision
+        self.talking_right_arm()
+        interruptible_sleep(3)
+        self.center_all()
+        # it's really 
+        interruptible_sleep(2)
         self.talking_both_arms()
-        self.blinking(3)
-        self.blinking(3)
+        interruptible_sleep(8)
         self.center_all()
-
-        self.blinking(2)
-        self.celebrate_arms_up()
-        self.blinking(3)
-        # your vision...
-        self.center_all()
-        self.talking_both_arms()
-        self.blinking(4)
-        self.center_all()
-        self.blinking(5)
-        #
+        # remember
         self.turn_head_left()
         self.turn_head_right()
         self.center_all()
-        self.blinking(2)
 
     def video_tts_4(self): # audio is 21 sec long
         self.open_eyes()
         self.center_all()
-        # lots of fun
+        # to help your brain
         self.celebrate_arms_up()
-        self.blinking(3)
-        self.blinking(3)
+        interruptible_sleep(6)
+        # have fun
         self.center_all()
-        #
         self.talking_left_arm()
-        self.center_all()
+        interruptible_sleep(2)
+        # and brain
         self.talking_both_arms()
-        self.blinking(2)
-        self.celebrate_arms_up()
-        self.blinking(2)
         self.center_all()
-        time.sleep(0.5)
         self.close_eyes()
         
     def intro_game(self): # audio is 51 sec long 
