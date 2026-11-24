@@ -637,26 +637,22 @@ class GestureController:
         print('intro_game')
         self.open_eyes()
         self.center_all()
+        interruptible_sleep(1)
+        # i have 5 friends
         self.celebrate_arms_up()
-        self.blinking(1)
+        interruptible_sleep(3)
         self.center_all()
-        #
+        # theyre new to 
         self.talking_both_arms()
-        self.blinking(2)
+        interruptible_sleep(5)
         self.center_all()
-        # im going to show you 
-        self.talking_both_arms()
-        self.blinking(2)
-        self.center_all()
-        #
-        # TIMING ADJUSTMENT HERE
-        self.look_point_right()
-        self.blinking(4)
-        self.center_all()
-        #
+        interruptible_sleep(2)
+        # ill tell you a bit
         self.talking_right_arm()
-        self.blinking(2)
-        self.blinking(3)
+        interruptible_sleep(3)
+        self.center_all()
+        interruptible_sleep(1)
+        self.celebrate_arms_up()
         self.center_all()
         
     def game_tts_1_prompt(self): # audio is 15 sec long
