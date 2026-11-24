@@ -658,133 +658,89 @@ class GestureController:
     def game_tts_1_prompt(self): # audio is 15 sec long
         self.open_eyes()
         self.center_all()
-        self.talking_both_arms()
-        self.center_all()
-        # In his right eye, ...
-        self.blinking(1)
+        interruptible_sleep(1)
         self.talking_left_arm() # mirrly POV and participant POV are opposite directions
+        interruptible_sleep(2)
         self.center_all()
         self.blinking(1)
-
-        # ... made his vision cloudy
-        self.sad_look_down()
-        self.center_all()
-
-        # Which of Mikey's eyes...
-        self.talking_both_arms()
 
     def game_tts_1_answer(self): # audio is 8 sec long
         self.open_eyes()
         self.center_all()
         self.show_belly_image("AnswerLSEye.png", duration=9.0)
-        self.open_eyes()
         self.talking_right_arm() # right answer is LS from participant POV
-        self.center_all()
-        self.blinking(1)
+        interruptible_sleep(1)
         self.center_all()
 
     def game_tts_2_prompt(self): # audio is 14 sec long
         self.open_eyes()
         self.center_all()
-        self.look_point_right()
-        self.blinking(2)
-        self.center_all()
-        self.blinking(1)
-
-        # covered part of their vision in their left eye
+        interruptible_sleep(1)
         self.talking_right_arm()
+        interruptible_sleep(2)
         self.center_all()
-
-        time.sleep(1)
-        # which of Alex's eyes...
-        self.talking_both_arms()
 
     def game_tts_2_answer(self): # audio is 6 sec long
         self.open_eyes()
         self.center_all()
         self.show_belly_image("AnswerRSEye.png", duration=9.0)
-        self.open_eyes()
         self.talking_left_arm()
+        interruptible_sleep(1)
         self.center_all()
 
     def game_tts_3_prompt(self): # audio is 15 sec long
         self.open_eyes()
         self.center_all()
-        self.blinking(3)
-        self.blinking(2)
-        #start when Fiona used to have an
+        interruptible_sleep(1)
         self.talking_left_arm()
-        self.blinking(1)
-        self.blinking(2)
+        interruptible_sleep(2)
         self.center_all()
-        # which eye do you think...
-        self.talking_both_arms()
 
     def game_tts_3_answer(self): # audio is 7 sec long
         self.open_eyes()
         self.center_all()
         self.show_belly_image("AnswerLSEye.png", duration=9.0)
-        self.open_eyes()
         self.talking_right_arm()
-        self.blinking(2)
+        interruptible_sleep(1)
         self.center_all()
 
     def game_tts_4_prompt(self): # audio is 16 sec long
         self.open_eyes()
         self.center_all()
-        self.blinking(1)
-        self.look_point_right()
-        self.center_all()
-
-        # She used to get...
+        interruptible_sleep(1)
         self.talking_left_arm()
-        self.blinking(1)
+        interruptible_sleep(2)
         self.center_all()
-
-        self.talking_both_arms()
-        self.blinking(2)
+        self.blinking(1)
 
     def game_tts_4_answer(self): # audio is 7 sec long
         self.open_eyes()
         self.center_all()
         self.show_belly_image("AnswerLSEye.png", duration=9.0)
-        self.open_eyes()
         self.talking_right_arm()
-        self.blinking(2)
+        interruptible_sleep(1)
         self.center_all()
 
     def game_tts_5_prompt(self): # audio is 14 sec long
         self.open_eyes()
         self.center_all()
-        self.blinking(2)
-        self.look_point_right()
-        self.center_all()
-
-        self.blinking(2)
-        # Daniel's vision is blurry
+        interruptible_sleep(1)
         self.talking_right_arm()
+        interruptible_sleep(2)
         self.center_all()
-
-        self.blinking(1)
-        # which eye is should
-        self.talking_both_arms()
 
     def game_tts_5_answer(self): # audio is 6 sec long
         self.open_eyes()
         self.center_all()
-        self.show_belly_image("AnswerRSEye.png", duration=9.0)
-        self.open_eyes()
+        self.show_belly_image("AnswerLSEye.png", duration=9.0)
         self.talking_left_arm()
-        self.blinking(2)
+        interruptible_sleep(1)
         self.center_all()
 
     def outro_game(self):
         print('outro_game')
-        self.open_eyes()
+        self.blinking(1)
         self.center_all()
-        self.celebrate_arms_up()
-        self.center_all()
-        self.close_eyes()
 
     def sim_1_gesture(self, target_side="left", **kwargs):
         # Buffer to allow camera stream connections to settle on the USB bus
