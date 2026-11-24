@@ -773,14 +773,14 @@ class GestureController:
 
         self.open_eyes()
         self.center_all()
+        interruptible_sleep(1)
         self.talking_both_arms()
+        interruptible_sleep(1)
         self.center_all()
-        self.look_point_right()
-        time.sleep(1)
-        self.talking_right_arm() # currently hardcoded for default LEFT EYE
+        self.celebrate_arms_up()
+        interruptible_sleep(1)
         self.center_all()
-        self.talking_left_arm()
-        self.center_all()
+        self.blinking(1)
 
     def sim_3_gesture(self):
         # Buffer to allow camera stream connections to settle on the USB bus
@@ -788,17 +788,16 @@ class GestureController:
 
         self.open_eyes()
         self.center_all()
-        self.talking_both_arms()
-        time.sleep(3)
-        self.center_all()
+        self.sad_look_down()
+        interruptible_sleep(3)
         self.talking_left_arm()
-        time.sleep(3)
+        interruptible_sleep(2)
         self.talking_right_arm()
-        time.sleep(1)
+        interruptible_sleep(1)
         self.center_all()
+        interruptible_sleep(4)
         self.celebrate_arms_up()
-        self.talking_left_arm()
-        time.sleep(2)
+        interruptible_sleep(1)
         self.center_all()
 
     def overall_outro(self): # audio is 8 sec long
